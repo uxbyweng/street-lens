@@ -2,7 +2,7 @@ export default function Home() {
   return (
     <main className="p-6">
       <div className="mx-auto max-w-md rounded-2xl border p-6">
-        <h1 className="text-xl font-semibold">StreetArt Atlas</h1>
+        <h1 className="text-xl font-semibold">StreetLens</h1>
         <p className="mt-2 text-sm text-zinc-600">
           Placeholder for the capstone MVP.
         </p>
