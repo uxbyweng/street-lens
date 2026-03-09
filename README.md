@@ -201,7 +201,7 @@ npm install
 
 ### 3. Create environment variables
 
-Create a `.env.local` file and add:
+Create a `.env.local` file in the project root and add the required environment variables.
 
 ```bash
 MONGODB_URI=
@@ -209,6 +209,8 @@ CLOUDINARY_CLOUD_NAME=
 CLOUDINARY_API_KEY=
 CLOUDINARY_API_SECRET=
 ```
+
+See `env.example` for the expected variable names.
 
 If authentication is added later, additional variables will be required.
 
