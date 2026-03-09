@@ -1,7 +1,7 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "street-lens",
+  title: "STREETLENS",
   description: "Discover and document urban spots.",
 };
 

@@ -5,8 +5,8 @@ export default function Home() {
   return (
     <AppShell>
       <section className="mx-auto max-w-2xl rounded-2xl border p-6">
-        <h1 className="text-2xl font-semibold tracking-tight">
-          StreetArt Atlas
+        <h1 className="text-2xl font-semibold primary">
+          STREET<span className="accent">LENS</span>
         </h1>
         <p className="mt-3 text-sm text-muted-foreground">
           A mobile-first app to collect, manage, and discover urban spots with

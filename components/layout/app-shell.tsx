@@ -8,7 +8,7 @@ export function AppShell({ children }: AppShellProps) {
       <header className="border-b">
         <div className="mx-auto flex min-h-14 max-w-5xl items-center px-4">
           <span className="text-sm font-semibold tracking-tight">
-            StreetLens
+            STREETLENS
           </span>
         </div>
       </header>
