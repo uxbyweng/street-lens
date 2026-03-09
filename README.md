@@ -1,4 +1,4 @@
-# StreetLens
+# STREETLENS
 
 A mobile-first web application to create, manage, and discover spots in a simple, visual way. Users can add entries with text, images, and location data, browse existing spots, and later explore them on an interactive map.
 
