@@ -1,22 +1,32 @@
 import { AppShell } from "@/components/layout/app-shell";
-import { ArtworkCard } from "@/components/artworks/artwork-card";
+import { ArtworkList } from "@/components/artworks/artwork-list";
 import { mockArtworks } from "@/lib/mock-artworks";
 
-export default function Artworks() {
+export default function HomePage() {
+  const latestThreeArtworks = [...mockArtworks]
+    .sort((a, b) => {
+      return (
+        new Date(b.createdAt ?? 0).getTime() -
+        new Date(a.createdAt ?? 0).getTime()
+      );
+    })
+    .slice(0, 3);
+
   return (
     <AppShell>
       <section className="mx-auto rounded-2xl border p-6">
-        <h1 className="text-2xl font-semibold">Artwork List</h1>
+        <h1 className="text-2xl font-semibold">
+          Awesome Streetart. <br />
+          Well saved in your Map.
+        </h1>
         <p className="mt-3 text-sm text-muted-foreground">
-          Overview of all available artworks to quickly discover interesting
-          artworks.
+          A mobile-first app to collect, manage, and discover urban artworks
+          with images, notes, and location data.
         </p>
       </section>
 
-      <section className="mx-auto mt-8 grid max-w-6xl gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {mockArtworks.map((artwork) => (
-          <ArtworkCard key={artwork._id} artwork={artwork} />
-        ))}
+      <section className="mx-auto mt-8 max-w-6xl">
+        <ArtworkList artworks={latestThreeArtworks} />
       </section>
     </AppShell>
   );

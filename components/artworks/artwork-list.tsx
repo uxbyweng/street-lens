@@ -1,44 +1,30 @@
-import useSWR from "swr";
-import { ArtworkCard } from "@/components/artworks/artwork-card";
-// import useSWR from "swr";
 import Link from "next/link";
-// import { useRouter } from "next/router";
+import { ArtworkCard } from "@/components/artworks/artwork-card";
+import type { Artwork } from "@/types/artwork";
 
-export default function ArtworkList({
-  artworkcards = [],
-  bookmarkIds = [],
-  onToggleBookmark,
-  onShowAnswer,
-  showActions = true,
-  onDelete,
-}) {
-  const { mutate } = useSWR("/api/artwork");
+type ArtworkListProps = {
+  artworks?: Artwork[];
+};
+
+export function ArtworkList({ artworks = [] }: ArtworkListProps) {
+  if (artworks.length === 0) {
+    return (
+      <section className="space-y-3">
+        <p>No artworks yet. Start by adding one.</p>
+        <Link href="/artworks/new" className="underline">
+          Add a new artwork
+        </Link>
+      </section>
+    );
+  }
 
   return (
-    <>
-      {artworkcards.length === 0 && (
-        <>
-          <p>No artworkcards yet... start to add one.</p>
-          <Link href="/add-artwork">Add a new artworkcard</Link>
-        </>
-      )}
-      <ul>
-        {artworkcards.map((artworkCard) => {
-          const isBookmarked = bookmarkIds.includes(artworkCard._id);
-          return (
-            <li key={artworkCard._id}>
-              <ArtworkCard
-                artworkcard={artworkCard}
-                isBookmarked={isBookmarked}
-                onToggleBookmark={onToggleBookmark}
-                onShowAnswer={onShowAnswer}
-                showActions={showActions}
-                onDelete={onDelete ?? handleDeleteResult}
-              />
-            </li>
-          );
-        })}
-      </ul>
-    </>
+    <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {artworks.map((artwork) => (
+        <li key={artwork._id}>
+          <ArtworkCard artwork={artwork} variant="preview" />
+        </li>
+      ))}
+    </ul>
   );
 }

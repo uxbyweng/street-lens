@@ -1,5 +1,5 @@
 import { AppShell } from "@/components/layout/app-shell";
-import { ArtworkCard } from "@/components/artworks/artwork-card";
+import { ArtworkList } from "@/components/artworks/artwork-list";
 import { mockArtworks } from "@/lib/mock-artworks";
 
 export default function Home() {
@@ -17,9 +17,10 @@ export default function Home() {
       </section>
 
       <section className="mx-auto mt-8 grid max-w-6xl gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {mockArtworks.map((artwork) => (
+        {/* {mockArtworks.map((artwork) => (
           <ArtworkCard key={artwork._id} artwork={artwork} variant="preview" />
-        ))}
+        ))} */}
+        <ArtworkList artworks={mockArtworks} />
       </section>
     </AppShell>
   );
