@@ -2,7 +2,7 @@ import "./globals.css";
 
 export const metadata = {
   title: "STREETLENS",
-  description: "Discover and document urban spots.",
+  description: "Discover and document urban artworks and places.",
 };
 
 export default function RootLayout({

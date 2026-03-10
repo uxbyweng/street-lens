@@ -1,21 +1,25 @@
-import { Button } from "@/components/ui/button";
 import { AppShell } from "@/components/layout/app-shell";
+import { ArtworkList } from "@/components/artworks/artwork-list";
+import { getLatestArtworks } from "@/lib/data/artworks";
 
-export default function Home() {
+export default async function HomePage() {
+  const latestArtworks = await getLatestArtworks(3);
+
   return (
     <AppShell>
-      <section className="mx-auto max-w-2xl rounded-2xl border p-6">
-        <h1 className="text-2xl font-semibold primary">
-          STREET<span className="accent">LENS</span>
+      <section className="mx-auto rounded-2xl border p-6">
+        <h1 className="text-2xl font-semibold">
+          Awesome Streetart. <br />
+          Well saved in your Map.
         </h1>
         <p className="mt-3 text-sm text-muted-foreground">
-          A mobile-first app to collect, manage, and discover urban spots with
-          images, notes, and location data.
+          A mobile-first app to collect, manage, and discover urban artworks
+          with images, notes, and location data.
         </p>
+      </section>
 
-        <div className="mt-6">
-          <Button>Start exploring</Button>
-        </div>
+      <section className="mx-auto mt-8 max-w-6xl">
+        <ArtworkList artworks={latestArtworks} />
       </section>
     </AppShell>
   );
