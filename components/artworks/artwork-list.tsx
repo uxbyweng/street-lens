@@ -23,8 +23,8 @@ export function ArtworkList({ artworks = [] }: ArtworkListProps) {
       {artworks.map((artwork) => (
         <li key={artwork._id}>
           <ArtworkCard
+            key={artwork._id}
             artwork={artwork}
-            variant="preview"
             href={`/artworks/${artwork._id}`}
           />
         </li>
