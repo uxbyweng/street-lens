@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { TextLink } from "@/components/ui/text-link";
 
 import {
   Card,
@@ -51,14 +52,12 @@ export function ArtworkDetail({ artwork }: ArtworkDetailProps) {
           <div className="space-y-3">
             <div className="space-y-1 text-sm text-muted-foreground">
               <p className="font-medium text-foreground">Location</p>
-              <a
-                className="link-primary"
+              <TextLink
                 href={`https://www.google.com/maps?q=${artwork.latitude},${artwork.longitude}`}
                 target="_blank"
-                rel="noopener noreferrer"
               >
                 {artwork.latitude.toFixed(4)}, {artwork.longitude.toFixed(4)}
-              </a>
+              </TextLink>
             </div>
 
             <div className="overflow-hidden rounded-xl border bg-muted">
@@ -76,9 +75,7 @@ export function ArtworkDetail({ artwork }: ArtworkDetailProps) {
 
         <div className="space-y-1 text-sm text-muted-foreground">
           <p className="font-medium text-foreground">User</p>
-          <Link href="/users/maxi1973" className="link-primary">
-            @maxi1973
-          </Link>
+          <TextLink href="/users/maxi1973">@maxi1973</TextLink>
         </div>
 
         {artwork.tags?.length ? (
