@@ -29,8 +29,8 @@ export async function POST(request: Request) {
       author: body.author,
       description: body.description,
       imageUrl: body.imageUrl ?? "",
-      locationName: body.locationName,
-      coordinates: body.coordinates ?? undefined,
+      latitude: body.latitude ?? undefined,
+      longitude: body.longitude ?? undefined,
       tags: body.tags ?? [],
     });
 
