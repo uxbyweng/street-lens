@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardDescription,
@@ -23,8 +22,8 @@ export function ArtworkCard({
 }: ArtworkCardProps) {
   const isDetail = variant === "detail";
 
-  return (
-    <Card className="mx-auto flex h-full w-full max-w-sm flex-col overflow-hidden pt-0">
+  const cardContent = (
+    <>
       <div className="relative">
         <Image
           src={artwork.imageUrl ?? "/images/artwork-placeholder.jpg"}
@@ -84,16 +83,30 @@ export function ArtworkCard({
               {artwork.tags.join(", ")}
             </p>
           ) : null}
+
+          <CardFooter>Username</CardFooter>
         </CardHeader>
       ) : null}
+    </>
+  );
 
-      {!isDetail && href ? (
-        <CardFooter>
-          <Button asChild className="w-full">
-            <Link href={href}>View details</Link>
-          </Button>
-        </CardFooter>
-      ) : null}
+  //  Verlinkung der Card nur im 'preview' mode
+  if (!isDetail && href) {
+    return (
+      <Card className="mx-auto flex h-full w-full max-w-sm flex-col overflow-hidden pt-0 py-0 transition hover:shadow-md">
+        <Link
+          href={href}
+          className="flex h-full flex-col focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+        >
+          {cardContent}
+        </Link>
+      </Card>
+    );
+  }
+
+  return (
+    <Card className="mx-auto flex h-full w-full max-w-sm flex-col overflow-hidden pt-0">
+      {cardContent}
     </Card>
   );
 }
