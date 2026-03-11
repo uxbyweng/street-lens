@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,11 +12,13 @@ import type { Artwork } from "@/types/artwork";
 
 type ArtworkCardProps = {
   artwork: Artwork;
+  href?: string;
   variant?: "preview" | "detail";
 };
 
 export function ArtworkCard({
   artwork,
+  href,
   variant = "preview",
 }: ArtworkCardProps) {
   const isDetail = variant === "detail";
@@ -56,9 +59,11 @@ export function ArtworkCard({
       </CardHeader>
 
       {/* Button auf Detailansicht ausblenden */}
-      {!isDetail ? (
+      {!isDetail && href ? (
         <CardFooter>
-          <Button className="w-full">View details</Button>
+          <Button asChild className="w-full">
+            <Link href={href}>View details</Link>
+          </Button>
         </CardFooter>
       ) : null}
     </Card>
