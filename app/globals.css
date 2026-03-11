@@ -85,3 +85,9 @@
     color: var(--color-accent);
   }
 }
+
+@layer components {
+  .link-primary {
+    @apply text-blue-700 underline underline-offset-2 transition-colors hover:text-blue-800;
+  }
+}

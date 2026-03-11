@@ -37,12 +37,12 @@ export function ArtworkCard({
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
             <div className="absolute inset-x-0 bottom-0 p-4 text-white">
-              <CardTitle className="line-clamp-2 text-lg text-white">
+              <CardTitle className="line-clamp-1 text-lg text-white">
                 {artwork.title}
               </CardTitle>
 
               {artwork.author ? (
-                <CardDescription className="text-white/80">
+                <CardDescription className="line-clamp-1 text-white/80">
                   {artwork.author}
                 </CardDescription>
               ) : null}
@@ -76,7 +76,7 @@ export function ArtworkCard({
             <p className="text-xs text-muted-foreground">
               Location:{" "}
               <a
-                className="text-blue-700 underline underline-offset-2"
+                className="link-primary"
                 href={`https://www.google.com/maps?q=${artwork.latitude},${artwork.longitude}`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -88,10 +88,7 @@ export function ArtworkCard({
 
           <p className="text-xs text-muted-foreground">
             User:{" "}
-            <Link
-              href="/users/maxi1973"
-              className="text-primary underline underline-offset-2"
-            >
+            <Link href="/users/maxi1973" className="link-primary">
               @maxi1973
             </Link>
           </p>
