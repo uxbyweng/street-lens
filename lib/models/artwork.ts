@@ -1,4 +1,10 @@
-import { Schema, model, models } from "mongoose";
+import {
+  Schema,
+  model,
+  models,
+  type InferSchemaType,
+  type Model,
+} from "mongoose";
 
 const artworkSchema = new Schema(
   {
@@ -36,4 +42,8 @@ const artworkSchema = new Schema(
   }
 );
 
-export const Artwork = models.Artwork || model("Artwork", artworkSchema);
+export type ArtworkDocument = InferSchemaType<typeof artworkSchema>;
+
+export const Artwork =
+  (models.Artwork as Model<ArtworkDocument>) ||
+  model<ArtworkDocument>("Artwork", artworkSchema);

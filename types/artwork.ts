@@ -1,5 +1,4 @@
-export type Artwork = {
-  _id: string;
+export type ArtworkBase = {
   title: string;
   author?: string;
   description: string;
@@ -7,6 +6,10 @@ export type Artwork = {
   latitude?: number;
   longitude?: number;
   tags?: string[];
+};
+
+export type Artwork = ArtworkBase & {
+  _id: string;
   createdAt?: string;
   updatedAt?: string;
 };

@@ -1,5 +1,5 @@
-import { connectDB } from "@/lib/mongodb";
-import { Artwork as ArtworkModel } from "@/models/artwork";
+import { connectDB } from "@/lib/db/mongodb";
+import { Artwork as ArtworkModel } from "@/lib/models/artwork";
 import type { Artwork } from "@/types/artwork";
 
 // Hilfsfunktion
