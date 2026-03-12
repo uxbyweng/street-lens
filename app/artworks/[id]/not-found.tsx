@@ -1,8 +1,9 @@
 import { TextLink } from "@/components/ui/text-link";
+import { AppShell } from "@/components/layout/app-shell";
 
 export default function ArtworkNotFound() {
   return (
-    <>
+    <AppShell>
       <section className="mx-auto max-w-3xl rounded-2xl border p-6">
         <h1 className="text-2xl font-semibold">Artwork not found</h1>
         <p
@@ -14,6 +15,6 @@ export default function ArtworkNotFound() {
         </p>
         <TextLink href="/artworks">Back to artworks</TextLink>
       </section>
-    </>
+    </AppShell>
   );
 }

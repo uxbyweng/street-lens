@@ -1,18 +1,8 @@
-import { AppShell } from "@/components/layout/app-shell";
 import "./globals.css";
-import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: {
-    default: "STREETLENS",
-    template: "%s | STREETLENS",
-  },
+export const metadata = {
+  title: "STREETLENS",
   description: "Discover and document urban artworks and places.",
-  manifest: "/site.webmanifest",
-  applicationName: "STREETLENS",
-  appleWebApp: {
-    title: "STREETLENS",
-  },
 };
 
 export default function RootLayout({
@@ -22,9 +12,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="de">
-      <body>
-        <AppShell>{children}</AppShell>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

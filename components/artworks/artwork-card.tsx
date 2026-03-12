@@ -19,7 +19,7 @@ export function ArtworkCard({ artwork, href }: ArtworkCardProps) {
         <div className="relative">
           <Image
             src={artwork.imageUrl ?? "/images/artwork-placeholder.jpg"}
-            alt={`${artwork.title}${artwork.artist ? ` - ${artwork.artist}` : ""}`}
+            alt={`${artwork.title}${artwork.author ? ` - ${artwork.author}` : ""}`}
             width={800}
             height={450}
             className="aspect-video w-full object-cover"
@@ -32,9 +32,9 @@ export function ArtworkCard({ artwork, href }: ArtworkCardProps) {
               {artwork.title}
             </CardTitle>
 
-            {artwork.artist ? (
+            {artwork.author ? (
               <CardDescription className="line-clamp-1 text-white/80">
-                {artwork.artist}
+                {artwork.author}
               </CardDescription>
             ) : null}
 

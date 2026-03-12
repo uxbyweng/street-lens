@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "@/lib/db/mongodb";
-import { Artwork } from "@/lib/models/artwork";
+import { connectDB } from "@/lib/mongodb";
+import { Artwork } from "@/models/artwork";
 
 export async function GET() {
   try {
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
 
     const newArtwork = await Artwork.create({
       title: body.title,
-      artist: body.artist,
+      author: body.author,
       description: body.description,
       imageUrl: body.imageUrl ?? "",
       latitude: body.latitude ?? undefined,

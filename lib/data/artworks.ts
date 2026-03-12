@@ -1,5 +1,5 @@
-import { connectDB } from "@/lib/db/mongodb";
-import { Artwork as ArtworkModel } from "@/lib/models/artwork";
+import { connectDB } from "@/lib/mongodb";
+import { Artwork as ArtworkModel } from "@/models/artwork";
 import type { Artwork } from "@/types/artwork";
 
 // Hilfsfunktion
@@ -34,7 +34,7 @@ function serializeArtwork(doc: any): Artwork {
   return {
     _id: doc._id.toString(),
     title: doc.title,
-    artist: doc.artist,
+    author: doc.author,
     description: doc.description,
     imageUrl: doc.imageUrl,
     latitude: doc.latitude,
@@ -70,12 +70,6 @@ export async function getLatestArtworks(limit = 3): Promise<Artwork[]> {
     .sort({ createdAt: -1 })
     .limit(limit)
     .lean();
-  //   console.log(
-  //     artworks.map((artwork) => ({
-  //       title: artwork.title,
-  //       createdAt: artwork.createdAt,
-  //     }))
-  //   );
 
   return artworks.map(serializeArtwork);
 }

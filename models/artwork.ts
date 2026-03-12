@@ -1,10 +1,4 @@
-import {
-  Schema,
-  model,
-  models,
-  type InferSchemaType,
-  type Model,
-} from "mongoose";
+import { Schema, model, models } from "mongoose";
 
 const artworkSchema = new Schema(
   {
@@ -13,7 +7,7 @@ const artworkSchema = new Schema(
       required: true,
       trim: true,
     },
-    artist: {
+    author: {
       type: String,
       trim: true,
     },
@@ -42,8 +36,4 @@ const artworkSchema = new Schema(
   }
 );
 
-export type ArtworkDocument = InferSchemaType<typeof artworkSchema>;
-
-export const Artwork =
-  (models.Artwork as Model<ArtworkDocument>) ||
-  model<ArtworkDocument>("Artwork", artworkSchema);
+export const Artwork = models.Artwork || model("Artwork", artworkSchema);
