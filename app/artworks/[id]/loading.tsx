@@ -1,8 +1,6 @@
-import { AppShell } from "@/components/layout/app-shell";
-
 export default function ArtworkDetailLoading() {
   return (
-    <AppShell>
+    <>
       <section className="mx-auto max-w-3xl rounded-2xl border p-6">
         <h1 className="text-2xl font-semibold">Artwork details</h1>
         <p
@@ -13,6 +11,6 @@ export default function ArtworkDetailLoading() {
           Loading artwork details...
         </p>
       </section>
-    </AppShell>
+    </>
   );
 }

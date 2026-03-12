@@ -4,7 +4,7 @@ export const mockArtworks: Artwork[] = [
   {
     _id: "1",
     title: "A Wise Man",
-    author: "Hiariu",
+    artist: "Hiariu",
     description:
       "Beneath its striking black-and-white composition, A Wise Man explores how wisdom often clashes with modern society.",
     imageUrl: "/images/huariu-a-whise-man.jpg",
@@ -17,7 +17,7 @@ export const mockArtworks: Artwork[] = [
   {
     _id: "2",
     title: "A Beautiful Mind",
-    author: "Tank",
+    artist: "Tank",
     description:
       "Dieses Mural von TANK (Eike Conzen) entstand im Rahmen des Berlin Mural Fest 2018 und befindet sich etwas versteckt an einer zurückgesetzten Seitenwand der Manteuffelstraße 12 in Kreuzberg. ",
     imageUrl: "/images/tank-a-beautiful-mind.jpg",
@@ -30,7 +30,7 @@ export const mockArtworks: Artwork[] = [
   {
     _id: "3",
     title: "The jungle in my head",
-    author: "Millo",
+    artist: "Millo",
     description:
       "One of the top international street artists: Millo! The wall is finished in May 2018. Step inside the playground to catch the full glory.",
     imageUrl: "/images/millo-the-jungle-in-my-head.jpg",

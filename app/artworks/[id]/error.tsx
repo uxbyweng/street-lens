@@ -1,7 +1,5 @@
 "use client";
 
-import { AppShell } from "@/components/layout/app-shell";
-
 type ErrorPageProps = {
   error: Error & { digest?: string };
   reset: () => void;
@@ -14,7 +12,7 @@ export default function ArtworkDetailErrorPage({
   console.error(error);
 
   return (
-    <AppShell>
+    <>
       <section className="mx-auto max-w-3xl rounded-2xl border p-6">
         <h1 className="text-2xl font-semibold">Artwork details</h1>
         <p
@@ -32,6 +30,6 @@ export default function ArtworkDetailErrorPage({
           Try again
         </button>
       </section>
-    </AppShell>
+    </>
   );
 }

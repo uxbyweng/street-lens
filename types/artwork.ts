@@ -1,12 +1,15 @@
-export type Artwork = {
-  _id: string;
+export type ArtworkBase = {
   title: string;
-  author?: string;
+  artist?: string;
   description: string;
   imageUrl?: string;
   latitude?: number;
   longitude?: number;
   tags?: string[];
+};
+
+export type Artwork = ArtworkBase & {
+  _id: string;
   createdAt?: string;
   updatedAt?: string;
 };

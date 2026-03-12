@@ -28,7 +28,7 @@ export function ArtworkDetail({ artwork }: ArtworkDetailProps) {
       <div className="relative">
         <Image
           src={artwork.imageUrl ?? "/images/artwork-placeholder.jpg"}
-          alt={`${artwork.title}${artwork.author ? ` - ${artwork.author}` : ""}`}
+          alt={`${artwork.title}${artwork.artist ? ` - ${artwork.artist}` : ""}`}
           width={1200}
           height={675}
           className="aspect-video w-full object-cover"
@@ -41,9 +41,9 @@ export function ArtworkDetail({ artwork }: ArtworkDetailProps) {
             {artwork.title}
           </CardTitle>
 
-          {artwork.author ? (
+          {artwork.artist ? (
             <CardDescription className="text-sm sm:text-base">
-              {artwork.author}
+              {artwork.artist}
             </CardDescription>
           ) : null}
         </div>

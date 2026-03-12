@@ -14,14 +14,14 @@
     "format:check": "prettier . --check"
   },
   "engines": {
-    "node": ">=20.9.0"
+    "node": "20.x"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/uxbyweng/street-lens.git"
   },
   "keywords": [],
-  "author": "Karsten Weng",
+  "artist": "Karsten Weng",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/uxbyweng/street-lens/issues"
@@ -29,6 +29,7 @@
   "homepage": "https://github.com/uxbyweng/street-lens#readme",
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
+    "@tabler/icons-react": "^3.40.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "mongoose": "^9.2.4",
