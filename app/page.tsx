@@ -1,5 +1,6 @@
 import { ArtworkList } from "@/components/artworks/artwork-list";
 import { getLatestArtworks } from "@/lib/data/artworks";
+import { TestToastButton } from "@/components/test-toast-button";
 
 export default async function HomePage() {
   const latestArtworks = await getLatestArtworks(3);
@@ -11,6 +12,7 @@ export default async function HomePage() {
         <p className="mt-3 text-sm text-muted-foreground">
           Save artworks with photos, notes, and location.
         </p>
+        <TestToastButton />
       </section>
 
       <section className="mx-auto mt-8 max-w-6xl">

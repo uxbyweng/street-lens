@@ -1,6 +1,7 @@
 import { AppShell } from "@/components/layout/app-shell";
 import "./globals.css";
 import type { Metadata } from "next";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: {
@@ -24,6 +25,7 @@ export default function RootLayout({
     <html lang="de">
       <body>
         <AppShell>{children}</AppShell>
+        <Toaster position="top-center" />
       </body>
     </html>
   );

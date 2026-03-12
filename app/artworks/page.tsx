@@ -7,18 +7,8 @@ export const metadata: Metadata = {
   description: "Browse all saved artworks in STREETLENS.",
 };
 
-type ArtworksPageProps = {
-  searchParams: Promise<{
-    success?: string;
-  }>;
-};
-
-export default async function ArtworksPage({
-  searchParams,
-}: ArtworksPageProps) {
+export default async function ArtworksPage() {
   const artworks = await getArtworks();
-  const params = await searchParams;
-  const showSuccessMessage = params.success === "created";
 
   return (
     <>
@@ -29,12 +19,6 @@ export default async function ArtworksPage({
           artworks.
         </p>
       </section>
-
-      {showSuccessMessage ? (
-        <div className="mt-4 rounded-2xl border border-green-200 bg-green-50 p-4 text-sm text-green-800">
-          Artwork successfully added.
-        </div>
-      ) : null}
 
       <section className="mx-auto mt-8 max-w-6xl">
         <ArtworkList artworks={artworks} />

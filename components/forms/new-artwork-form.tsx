@@ -186,13 +186,17 @@ export function NewArtworkForm() {
         throw new Error("Failed to save artwork.");
       }
 
-      toast.success("Artwork created successfully.");
+      toast.success("Artwork successfully added.", {
+        className: "!bg-green-200 !text-green-700 !border-green-500 mt-15",
+      });
 
       form.reset();
-      router.push("/artworks?success=created");
+      router.push("/artworks");
     } catch (error) {
       console.error(error);
-      toast.error("Artwork could not be created.");
+      toast.error("Artwork could not be created.", {
+        className: "!bg-red-200 !text-red-700 !border-red-500",
+      });
     } finally {
       setIsSubmitting(false);
     }
