@@ -1,5 +1,11 @@
 import { ArtworkList } from "@/components/artworks/artwork-list";
 import { getArtworks } from "@/lib/data/artworks";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Artworks",
+  description: "Browse all saved artworks in STREETLENS.",
+};
 
 type ArtworksPageProps = {
   searchParams: Promise<{
