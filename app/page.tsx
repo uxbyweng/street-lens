@@ -1,4 +1,3 @@
-import { AppShell } from "@/components/layout/app-shell";
 import { ArtworkList } from "@/components/artworks/artwork-list";
 import { getLatestArtworks } from "@/lib/data/artworks";
 
@@ -6,7 +5,7 @@ export default async function HomePage() {
   const latestArtworks = await getLatestArtworks(3);
 
   return (
-    <AppShell>
+    <>
       <section className="mx-auto rounded-2xl border p-6">
         <h1 className="text-3xl font-semibold">Track street art.</h1>
         <p className="mt-3 text-sm text-muted-foreground">
@@ -18,6 +17,6 @@ export default async function HomePage() {
         <h2 className="text-lg font-semibold mb-4">Recently added ...</h2>
         <ArtworkList artworks={latestArtworks} />
       </section>
-    </AppShell>
+    </>
   );
 }

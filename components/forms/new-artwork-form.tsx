@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -36,10 +35,10 @@ const artworkFormSchema = z.object({
     .string()
     .min(2, "Title must be at least 2 characters.")
     .max(100, "Title must be at most 100 characters."),
-  author: z
+  artist: z
     .string()
-    .min(2, "Author must be at least 2 characters.")
-    .max(100, "Author must be at most 100 characters."),
+    .min(2, "Artist must be at least 2 characters.")
+    .max(100, "Artist must be at most 100 characters."),
   description: z
     .string()
     .min(10, "Description must be at least 10 characters.")
@@ -80,7 +79,7 @@ type ArtworkFormValues = z.infer<typeof artworkFormSchema>;
 
 type ArtworkPayload = {
   title: string;
-  author: string;
+  artist: string;
   description: string;
   imageUrl?: string;
   latitude?: number;
@@ -134,7 +133,7 @@ export function NewArtworkForm() {
     resolver: zodResolver(artworkFormSchema),
     defaultValues: {
       title: "",
-      author: "",
+      artist: "",
       description: "",
       imageUrl: "",
       latitude: undefined,
@@ -161,7 +160,7 @@ export function NewArtworkForm() {
 
     const payload: ArtworkPayload = {
       title: values.title,
-      author: values.author,
+      artist: values.artist,
       description: values.description,
       imageUrl: values.imageUrl || undefined,
       latitude: values.latitude ? Number(values.latitude) : undefined,
@@ -202,10 +201,7 @@ export function NewArtworkForm() {
   return (
     <Card className="w-full max-w-2xl">
       <CardHeader>
-        <CardTitle>Add new artwork</CardTitle>
-        <CardDescription>
-          Save a new artwork to your collection.
-        </CardDescription>
+        <CardTitle>Artwork details</CardTitle>
       </CardHeader>
 
       <CardContent>
@@ -223,7 +219,9 @@ export function NewArtworkForm() {
                     aria-invalid={fieldState.invalid}
                     placeholder="e.g. Girl with Balloon"
                   />
-                  <FieldDescription>Enter the artwork title.</FieldDescription>
+                  <FieldDescription>
+                    Give the artwork a clear title.
+                  </FieldDescription>
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
@@ -232,11 +230,11 @@ export function NewArtworkForm() {
             />
 
             <Controller
-              name="author"
+              name="artist"
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor={field.name}>Author</FieldLabel>
+                  <FieldLabel htmlFor={field.name}>Artist</FieldLabel>
                   <Input
                     {...field}
                     id={field.name}
@@ -244,7 +242,7 @@ export function NewArtworkForm() {
                     placeholder="e.g. Banksy"
                   />
                   <FieldDescription>
-                    Enter the artist or creator name.
+                    Enter the name of the artist or creator.
                   </FieldDescription>
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />

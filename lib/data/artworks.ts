@@ -1,5 +1,6 @@
-import { connectDB } from "@/lib/mongodb";
-import { Artwork as ArtworkModel } from "@/models/artwork";
+import { cache } from "react";
+import { connectDB } from "@/lib/db/mongodb";
+import { Artwork as ArtworkModel } from "@/lib/models/artwork";
 import type { Artwork } from "@/types/artwork";
 
 // Hilfsfunktion
@@ -34,7 +35,7 @@ function serializeArtwork(doc: any): Artwork {
   return {
     _id: doc._id.toString(),
     title: doc.title,
-    author: doc.author,
+    artist: doc.artist,
     description: doc.description,
     imageUrl: doc.imageUrl,
     latitude: doc.latitude,
@@ -70,6 +71,51 @@ export async function getLatestArtworks(limit = 3): Promise<Artwork[]> {
     .sort({ createdAt: -1 })
     .limit(limit)
     .lean();
+  //   console.log(
+  //     artworks.map((artwork) => ({
+  //       title: artwork.title,
+  //       createdAt: artwork.createdAt,
+  //     }))
+  //   );
 
   return artworks.map(serializeArtwork);
 }
+
+export const getArtworkById = cache(
+  async (id: string): Promise<Artwork | null> => {
+    await connectDB();
+
+    const artwork = await ArtworkModel.findById(id).lean();
+
+    if (!artwork) {
+      return null;
+    }
+
+    return serializeArtwork(artwork);
+  }
+);
+export const getArtworkMetadataById = cache(
+  async (
+    id: string
+  ): Promise<Pick<
+    Artwork,
+    "_id" | "title" | "artist" | "description"
+  > | null> => {
+    await connectDB();
+
+    const artwork = await ArtworkModel.findById(id)
+      .select("title artist description")
+      .lean();
+
+    if (!artwork) {
+      return null;
+    }
+
+    return {
+      _id: artwork._id.toString(),
+      title: artwork.title,
+      artist: artwork.artist,
+      description: artwork.description,
+    };
+  }
+);
