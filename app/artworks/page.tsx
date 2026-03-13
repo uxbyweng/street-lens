@@ -1,6 +1,7 @@
 import { ArtworkList } from "@/components/artworks/artwork-list";
 import { getArtworks } from "@/lib/data/artworks";
 import type { Metadata } from "next";
+import { PageIntro } from "@/components/layout/page-intro";
 
 export const metadata: Metadata = {
   title: "Artworks",
@@ -12,13 +13,14 @@ export default async function ArtworksPage() {
 
   return (
     <>
-      <section className="mx-auto rounded-2xl border p-6">
-        <h1 className="text-2xl font-semibold">Artwork List</h1>
-        <p className="mt-3 text-sm text-muted-foreground">
-          Overview of all available artworks to quickly discover interesting
-          artworks.
-        </p>
-      </section>
+      <PageIntro
+        title="Artwork List"
+        subtitle="Overview of all available artworks to quickly discover interesting artworks."
+        action={{
+          label: "Add artwork",
+          href: "/artworks/new",
+        }}
+      />
 
       <section className="mx-auto mt-8 max-w-6xl">
         <ArtworkList artworks={artworks} />
