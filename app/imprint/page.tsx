@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PageIntro } from "@/components/layout/page-intro";
 
 export const metadata: Metadata = {
   title: "Imprint",
@@ -7,14 +8,14 @@ export const metadata: Metadata = {
 
 export default function ImprintPage() {
   return (
-    <main className="mx-auto max-w-3xl px-4 py-8">
+    <>
+      <PageIntro
+        title="Imprint"
+        subtitle="Mandatory legal notice pursuant to German law."
+        className="mb-6"
+      />
       <section className="rounded-2xl border bg-card p-6">
-        <h1 className="text-2xl font-semibold">Imprint</h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Mandatory legal notice pursuant to German law.
-        </p>
-
-        <div className="mt-6 space-y-6 text-sm leading-6">
+        <div className="mt-2 space-y-6 text-sm leading-6">
           <section>
             <h2 className="text-base font-semibold">1. Service Provider</h2>
             <p className="mt-2">
@@ -134,6 +135,6 @@ export default function ImprintPage() {
           </section>
         </div>
       </section>
-    </main>
+    </>
   );
 }
