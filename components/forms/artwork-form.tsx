@@ -51,20 +51,22 @@ const artworkFormSchema = z.object({
       const isAbsoluteUrl = /^https?:\/\/.+/i.test(value);
       const isRelativePath = /^\/.+/.test(value);
 
-      return isAbsoluteUrl || isRelativePath;
+      return value === "" || isAbsoluteUrl || isRelativePath;
     }, "Please enter a valid image URL or relative path."),
   latitude: z.string().refine((value) => {
+    if (value === "") return true;
     const number = Number(value);
     return !Number.isNaN(number) && number >= -90 && number <= 90;
   }, "Latitude must be between -90 and 90."),
   longitude: z.string().refine((value) => {
+    if (value === "") return true;
     const number = Number(value);
     return !Number.isNaN(number) && number >= -180 && number <= 180;
   }, "Longitude must be between -180 and 180."),
   tags: z.string().optional(),
 });
 
-type ArtworkFormValues = z.infer<typeof artworkFormSchema>;
+export type ArtworkFormValues = z.infer<typeof artworkFormSchema>;
 
 type ArtworkPayload = {
   title: string;
@@ -74,6 +76,12 @@ type ArtworkPayload = {
   latitude?: number;
   longitude?: number;
   tags: string[];
+};
+
+type ArtworkFormProps = {
+  mode: "create" | "edit";
+  artworkId?: string;
+  initialValues?: Partial<ArtworkFormValues>;
 };
 
 function MapPlaceholder({
@@ -114,21 +122,27 @@ function MapPlaceholder({
   );
 }
 
-export function NewArtworkForm() {
+export function ArtworkForm({
+  mode,
+  artworkId,
+  initialValues,
+}: ArtworkFormProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
+  const defaultValues: ArtworkFormValues = {
+    title: initialValues?.title ?? "",
+    artist: initialValues?.artist ?? "",
+    description: initialValues?.description ?? "",
+    imageUrl: initialValues?.imageUrl ?? "",
+    latitude: initialValues?.latitude ?? "",
+    longitude: initialValues?.longitude ?? "",
+    tags: initialValues?.tags ?? "",
+  };
+
   const form = useForm<ArtworkFormValues>({
     resolver: zodResolver(artworkFormSchema),
-    defaultValues: {
-      title: "",
-      artist: "",
-      description: "",
-      imageUrl: "",
-      latitude: undefined,
-      longitude: undefined,
-      tags: "",
-    },
+    defaultValues,
   });
 
   const watchedLatitudeValue = form.watch("latitude");
@@ -162,28 +176,62 @@ export function NewArtworkForm() {
         : [],
     };
 
+    const endpoint =
+      mode === "edit" && artworkId
+        ? `/api/artworks/${artworkId}`
+        : "/api/artworks";
+
+    const method = mode === "edit" ? "PATCH" : "POST";
+
     try {
-      const response = await fetch("/api/artworks", {
-        method: "POST",
+      const response = await fetch(endpoint, {
+        method,
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
       });
 
+      const result = await response.json().catch(() => null);
+
       if (!response.ok) {
-        throw new Error("Failed to save artwork.");
+        throw new Error(
+          result?.message ||
+            (mode === "edit"
+              ? "Failed to update artwork."
+              : "Failed to save artwork.")
+        );
       }
 
-      toast.success("Artwork successfully added.", {
-        className: "!bg-green-200 !text-green-700 !border-green-500 mt-15",
-      });
+      toast.success(
+        mode === "edit"
+          ? "Artwork successfully updated."
+          : "Artwork successfully added.",
+        {
+          className: "!bg-green-200 !text-green-700 !border-green-500 mt-15",
+        }
+      );
 
-      form.reset();
+      if (mode === "edit" && artworkId) {
+        router.push(`/artworks/${artworkId}`);
+        router.refresh();
+        return;
+      }
+
+      form.reset(defaultValues);
       router.push("/artworks");
+      router.refresh();
     } catch (error) {
       console.error(error);
-      toast.error("Artwork could not be created.", {
+
+      const message =
+        error instanceof Error
+          ? error.message
+          : mode === "edit"
+            ? "Artwork could not be updated."
+            : "Artwork could not be created.";
+
+      toast.error(message, {
         className: "!bg-red-200 !text-red-700 !border-red-500",
       });
     } finally {
@@ -194,11 +242,13 @@ export function NewArtworkForm() {
   return (
     <Card className="w-full max-w-2xl">
       <CardHeader>
-        <CardTitle>Artwork details</CardTitle>
+        <CardTitle>
+          {mode === "edit" ? "Edit artwork details" : "Artwork details"}
+        </CardTitle>
       </CardHeader>
 
       <CardContent>
-        <form id="new-artwork-form" onSubmit={form.handleSubmit(onSubmit)}>
+        <form id="artwork-form" onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>
             <Controller
               name="title"
@@ -391,13 +441,17 @@ export function NewArtworkForm() {
         <Button
           type="button"
           variant="outline"
-          onClick={() => form.reset()}
+          onClick={() => form.reset(defaultValues)}
           disabled={isSubmitting}
         >
           Reset
         </Button>
-        <Button type="submit" form="new-artwork-form" disabled={isSubmitting}>
-          {isSubmitting ? "Saving..." : "Save artwork"}
+        <Button type="submit" form="artwork-form" disabled={isSubmitting}>
+          {isSubmitting
+            ? "Saving..."
+            : mode === "edit"
+              ? "Save changes"
+              : "Save artwork"}
         </Button>
       </CardFooter>
     </Card>
