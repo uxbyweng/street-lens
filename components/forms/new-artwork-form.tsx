@@ -46,32 +46,21 @@ const artworkFormSchema = z.object({
   imageUrl: z
     .string()
     .trim()
-    .optional()
     .or(z.literal(""))
     .refine((value) => {
-      if (!value) return true;
-
       const isAbsoluteUrl = /^https?:\/\/.+/i.test(value);
       const isRelativePath = /^\/.+/.test(value);
 
       return isAbsoluteUrl || isRelativePath;
     }, "Please enter a valid image URL or relative path."),
-  latitude: z
-    .string()
-    .optional()
-    .refine((value) => {
-      if (!value) return true;
-      const number = Number(value);
-      return !Number.isNaN(number) && number >= -90 && number <= 90;
-    }, "Latitude must be between -90 and 90."),
-  longitude: z
-    .string()
-    .optional()
-    .refine((value) => {
-      if (!value) return true;
-      const number = Number(value);
-      return !Number.isNaN(number) && number >= -180 && number <= 180;
-    }, "Longitude must be between -180 and 180."),
+  latitude: z.string().refine((value) => {
+    const number = Number(value);
+    return !Number.isNaN(number) && number >= -90 && number <= 90;
+  }, "Latitude must be between -90 and 90."),
+  longitude: z.string().refine((value) => {
+    const number = Number(value);
+    return !Number.isNaN(number) && number >= -180 && number <= 180;
+  }, "Longitude must be between -180 and 180."),
   tags: z.string().optional(),
 });
 
@@ -186,13 +175,17 @@ export function NewArtworkForm() {
         throw new Error("Failed to save artwork.");
       }
 
-      toast.success("Artwork created successfully.");
+      toast.success("Artwork successfully added.", {
+        className: "!bg-green-200 !text-green-700 !border-green-500 mt-15",
+      });
 
       form.reset();
-      router.push("/artworks?success=created");
+      router.push("/artworks");
     } catch (error) {
       console.error(error);
-      toast.error("Artwork could not be created.");
+      toast.error("Artwork could not be created.", {
+        className: "!bg-red-200 !text-red-700 !border-red-500",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -219,12 +212,12 @@ export function NewArtworkForm() {
                     aria-invalid={fieldState.invalid}
                     placeholder="e.g. Girl with Balloon"
                   />
-                  <FieldDescription>
-                    Give the artwork a clear title.
+                  <FieldDescription
+                    className={fieldState.invalid ? "text-destructive" : ""}
+                  >
+                    {fieldState.error?.message ??
+                      "Give the artwork a clear title."}
                   </FieldDescription>
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
                 </Field>
               )}
             />
@@ -241,12 +234,12 @@ export function NewArtworkForm() {
                     aria-invalid={fieldState.invalid}
                     placeholder="e.g. Banksy"
                   />
-                  <FieldDescription>
-                    Enter the name of the artist or creator.
+                  <FieldDescription
+                    className={fieldState.invalid ? "text-destructive" : ""}
+                  >
+                    {fieldState.error?.message ??
+                      "Enter the name of the artist or creator."}
                   </FieldDescription>
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
                 </Field>
               )}
             />
@@ -272,6 +265,7 @@ export function NewArtworkForm() {
                       </InputGroupText>
                     </InputGroupAddon>
                   </InputGroup>
+
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
@@ -291,12 +285,11 @@ export function NewArtworkForm() {
                     aria-invalid={fieldState.invalid}
                     placeholder="https://example.com/artwork.jpg"
                   />
-                  <FieldDescription>
-                    Optional image URL for the artwork.
+                  <FieldDescription
+                    className={fieldState.invalid ? "text-destructive" : ""}
+                  >
+                    {fieldState.error?.message ?? "Image URL for the artwork."}
                   </FieldDescription>
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
                 </Field>
               )}
             />
@@ -307,9 +300,6 @@ export function NewArtworkForm() {
                 Upload placeholder — file upload and EXIF extraction can be
                 added in a later step.
               </div>
-              <FieldDescription>
-                This is only a placeholder for now.
-              </FieldDescription>
             </Field>
 
             <Controller

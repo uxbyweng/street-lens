@@ -10,7 +10,7 @@ export default function Header() {
             src="/images/logo-streetlens-light.png"
             width={132}
             height={39}
-            alt="Logo"
+            alt="STREETLIST"
             priority
           />
         </Link>

@@ -12,14 +12,16 @@ export default function ArtworkDetailErrorPage({
   console.error(error);
 
   return (
-    <section className="mx-auto max-w-3xl rounded-2xl border p-6">
-      <h1 className="text-2xl font-semibold">Artwork details</h1>
-      <p
-        role="alert"
-        className="mt-4 rounded-2xl border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive"
-      >
-        Error loading artwork. Please try again.
-      </p>
+    <>
+      <section className="mx-auto max-w-3xl rounded-2xl border p-6">
+        <h1 className="text-2xl font-semibold">Artwork details</h1>
+        <p
+          role="alert"
+          className="mt-4 rounded-2xl border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive"
+        >
+          Something went wrong while loading the artwork details. Please try
+          again.
+        </p>
 
       <button
         type="button"
