@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { ArtworkDetail } from "@/components/artworks/artwork-detail";
 import type { Metadata } from "next";
-import { getArtworks } from "@/lib/data/artworks";
+import { getArtworkById, getArtworkMetadataById } from "@/lib/data/artworks";
 
 type ArtworkDetailPageProps = {
   params: Promise<{
@@ -13,8 +13,7 @@ export async function generateMetadata({
   params,
 }: ArtworkDetailPageProps): Promise<Metadata> {
   const { id } = await params;
-  const artworks = await getArtworks();
-  const artwork = artworks.find((item) => item._id === id);
+  const artwork = await getArtworkMetadataById(id);
 
   if (!artwork) {
     return {
@@ -39,12 +38,10 @@ export default async function ArtworkDetailPage({
   params,
 }: ArtworkDetailPageProps) {
   const { id } = await params;
+  const artwork = await getArtworkById(id);
 
   // Throw 'Error', um 'Error' state zu testen
   // throw new Error("Test error for artwork detail page");
-
-  const artworks = await getArtworks();
-  const artwork = artworks.find((item) => item._id === id);
 
   if (!artwork) {
     notFound();

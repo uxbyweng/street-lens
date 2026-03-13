@@ -15,7 +15,7 @@ export default function Footer() {
             WENG.EU
           </TextLink>
         </span>
-        <TextLink href="/impressum">Impressum</TextLink>
+        <TextLink href="/imprint">Imprint</TextLink>
         <TextLink
           href="https://github.com/uxbyweng/street-lens"
           target="_blank"

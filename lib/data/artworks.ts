@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { connectDB } from "@/lib/db/mongodb";
 import { Artwork as ArtworkModel } from "@/lib/models/artwork";
 import type { Artwork } from "@/types/artwork";
@@ -79,3 +80,42 @@ export async function getLatestArtworks(limit = 3): Promise<Artwork[]> {
 
   return artworks.map(serializeArtwork);
 }
+
+export const getArtworkById = cache(
+  async (id: string): Promise<Artwork | null> => {
+    await connectDB();
+
+    const artwork = await ArtworkModel.findById(id).lean();
+
+    if (!artwork) {
+      return null;
+    }
+
+    return serializeArtwork(artwork);
+  }
+);
+export const getArtworkMetadataById = cache(
+  async (
+    id: string
+  ): Promise<Pick<
+    Artwork,
+    "_id" | "title" | "artist" | "description"
+  > | null> => {
+    await connectDB();
+
+    const artwork = await ArtworkModel.findById(id)
+      .select("title artist description")
+      .lean();
+
+    if (!artwork) {
+      return null;
+    }
+
+    return {
+      _id: artwork._id.toString(),
+      title: artwork.title,
+      artist: artwork.artist,
+      description: artwork.description,
+    };
+  }
+);
