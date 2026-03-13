@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { connectDB } from "@/lib/db/mongodb";
 import { Artwork as ArtworkModel } from "@/lib/models/artwork";
 import type { Artwork } from "@/types/artwork";
@@ -79,3 +80,17 @@ export async function getLatestArtworks(limit = 3): Promise<Artwork[]> {
 
   return artworks.map(serializeArtwork);
 }
+
+export const getArtworkById = cache(
+  async (id: string): Promise<Artwork | null> => {
+    await connectDB();
+
+    const artwork = await ArtworkModel.findById(id).lean();
+
+    if (!artwork) {
+      return null;
+    }
+
+    return serializeArtwork(artwork);
+  }
+);
