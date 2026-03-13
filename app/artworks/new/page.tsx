@@ -1,4 +1,4 @@
-import { NewArtworkForm } from "@/components/forms/new-artwork-form";
+import { ArtworkForm } from "@/components/forms/artwork-form";
 import { PageIntro } from "@/components/layout/page-intro";
 import type { Metadata } from "next";
 
@@ -17,7 +17,7 @@ export default function NewArtworkPage() {
       />
 
       <section className="mx-auto mt-8 max-w-6xl">
-        <NewArtworkForm />
+        <ArtworkForm mode="create" />
       </section>
     </>
   );
