@@ -1,7 +1,24 @@
-import { AppShell } from "@/components/layout/app-shell";
-import "./globals.css";
 import type { Metadata } from "next";
+import { AppShell } from "@/components/layout/app-shell";
+import { Geist, Geist_Mono, Roboto } from "next/font/google";
+import "./globals.css";
+import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
+
+const roboto = Roboto({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: {
@@ -22,8 +39,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="de">
-      <body>
+    <html lang="de" className={cn("font-sans", roboto.variable)}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
         <AppShell>{children}</AppShell>
         <Toaster position="top-center" />
       </body>
