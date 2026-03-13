@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { v2 as cloudinary } from "cloudinary";
+import { v2 as cloudinary, type UploadApiResponse } from "cloudinary";
 
 export const runtime = "nodejs";
 
@@ -16,8 +16,8 @@ function uploadBufferToCloudinary(
     public_id?: string;
     resource_type?: "image" | "video" | "raw" | "auto";
   }
-) {
-  return new Promise((resolve, reject) => {
+): Promise<UploadApiResponse> {
+  return new Promise<UploadApiResponse>((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
       {
         folder: options?.folder,
@@ -29,6 +29,12 @@ function uploadBufferToCloudinary(
           reject(error);
           return;
         }
+
+        if (!result) {
+          reject(new Error("Cloudinary upload returned no result."));
+          return;
+        }
+
         resolve(result);
       }
     );
@@ -73,7 +79,11 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         ok: true,
-        data: result,
+        data: {
+          secureUrl: result.secure_url,
+          publicId: result.public_id,
+          originalFilename: result.original_filename,
+        },
       },
       { status: 200 }
     );
