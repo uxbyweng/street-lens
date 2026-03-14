@@ -3,6 +3,8 @@ import { getArtworks } from "@/lib/data/artworks";
 import type { Metadata } from "next";
 import { PageIntro } from "@/components/layout/page-intro";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Artworks",
   description: "Browse all saved artworks in STREETLENS.",

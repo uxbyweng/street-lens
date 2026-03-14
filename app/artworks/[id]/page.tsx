@@ -3,6 +3,8 @@ import { ArtworkDetail } from "@/components/artworks/artwork-detail";
 import type { Metadata } from "next";
 import { getArtworkById, getArtworkMetadataById } from "@/lib/data/artworks";
 
+export const dynamic = "force-dynamic";
+
 type ArtworkDetailPageProps = {
   params: Promise<{
     id: string;
