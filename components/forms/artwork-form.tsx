@@ -228,15 +228,21 @@ export function ArtworkForm({
         }
       );
 
+      const createdArtworkId = result?.data?._id;
+
       if (mode === "edit" && artworkId) {
         router.push(`/artworks/${artworkId}`);
-        router.refresh();
         return;
       }
 
       form.reset(defaultValues);
-      router.push("/artworks");
-      router.refresh();
+
+      if (createdArtworkId) {
+        router.push(`/artworks/${createdArtworkId}`);
+        return;
+      }
+
+      router.replace("/artworks");
     } catch (error) {
       console.error(error);
 

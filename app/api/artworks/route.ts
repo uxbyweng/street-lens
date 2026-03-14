@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db/mongodb";
 import { Artwork } from "@/lib/models/artwork";
+import { revalidatePath } from "next/cache";
 
 export async function GET() {
   try {
@@ -33,6 +34,9 @@ export async function POST(request: Request) {
       longitude: body.longitude ?? undefined,
       tags: body.tags ?? [],
     });
+
+    revalidatePath("/");
+    revalidatePath("/artworks");
 
     return NextResponse.json({ ok: true, data: newArtwork }, { status: 201 });
   } catch (error) {

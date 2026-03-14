@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { Types } from "mongoose";
 import { connectDB } from "@/lib/db/mongodb";
 import { Artwork } from "@/lib/models/artwork";
+import { revalidatePath } from "next/cache";
 
 type RouteContext = {
   params: Promise<{
@@ -48,6 +49,10 @@ export async function PATCH(request: Request, { params }: RouteContext) {
       );
     }
 
+    revalidatePath("/");
+    revalidatePath("/artworks");
+    revalidatePath(`/artworks/${id}`);
+
     return NextResponse.json(
       { ok: true, data: updatedArtwork },
       { status: 200 }
@@ -83,6 +88,10 @@ export async function DELETE(_request: Request, { params }: RouteContext) {
         { status: 404 }
       );
     }
+
+    revalidatePath("/");
+    revalidatePath("/artworks");
+    revalidatePath(`/artworks/${id}`);
 
     return NextResponse.json(
       { ok: true, message: "Artwork successfully deleted." },
