@@ -137,6 +137,7 @@ export function ArtworkForm({
   const [imagePreviewUrl, setImagePreviewUrl] = React.useState<string | null>(
     initialValues?.imageUrl ?? null
   );
+  const MAX_IMAGE_FILE_SIZE_BYTES = 4 * 1024 * 1024; // 4 MB
 
   const defaultValues: ArtworkFormValues = {
     title: initialValues?.title ?? "",
@@ -342,6 +343,21 @@ export function ArtworkForm({
                       return;
                     }
 
+                    if (file.size > MAX_IMAGE_FILE_SIZE_BYTES) {
+                      toast.error(
+                        "Image is too large. Please upload an image smaller than 4 MB.",
+                        {
+                          className:
+                            "!bg-red-200 !text-red-700 !border-red-500",
+                        }
+                      );
+
+                      setSelectedFileName(null);
+                      setImagePreviewUrl(initialValues?.imageUrl ?? null);
+                      event.target.value = "";
+                      return;
+                    }
+
                     setSelectedFileName(file.name);
 
                     const localPreviewUrl = URL.createObjectURL(file);
@@ -371,7 +387,7 @@ export function ArtworkForm({
                     </div>
                   </div>
                 ) : (
-                  <div className="flex aspect-video items-center justify-center rounded-xl border border-dashed bg-muted/40 text-sm text-muted-foreground">
+                  <div className="flex aspect-video items-center justify-center rounded-xl border border-dashed bg-muted/90 text-sm text-muted-foreground">
                     No image uploaded yet.
                   </div>
                 )}
@@ -380,7 +396,11 @@ export function ArtworkForm({
                   <p className="text-sm text-muted-foreground">
                     Selected file: {selectedFileName}
                   </p>
-                ) : null}
+                ) : (
+                  <p className="text-xs text-muted-foreground">
+                    Supported image uploads up to 4 MB.
+                  </p>
+                )}
 
                 {isUploadingImage ? (
                   <p className="text-sm text-muted-foreground">
