@@ -137,6 +137,7 @@ export function ArtworkForm({
   const [imagePreviewUrl, setImagePreviewUrl] = React.useState<string | null>(
     initialValues?.imageUrl ?? null
   );
+  const MAX_IMAGE_FILE_SIZE_BYTES = 4.5 * 1024 * 1024; // 4 MB
 
   const defaultValues: ArtworkFormValues = {
     title: initialValues?.title ?? "",
@@ -317,8 +318,23 @@ export function ArtworkForm({
   return (
     <Card className="w-full max-w-2xl">
       <CardHeader>
-        <CardTitle className="text-red-700">
-          {mode === "edit" ? "Edit artwork details" : "Artwork details"}
+        <CardTitle>
+          {imagePreviewUrl ? (
+            <div className="overflow-hidden rounded-xl border bg-muted">
+              <div className="relative aspect-video w-full">
+                <Image
+                  src={imagePreviewUrl}
+                  alt="Artwork preview"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="flex aspect-video items-center justify-center rounded-xl border border-dashed bg-muted/90 text-sm text-muted-foreground">
+              No image uploaded yet.
+            </div>
+          )}
         </CardTitle>
       </CardHeader>
 
@@ -327,9 +343,11 @@ export function ArtworkForm({
           <FieldGroup>
             {/* Image Upload */}
             <Field>
-              <FieldLabel htmlFor="artwork-image-upload">Image</FieldLabel>
+              <FieldLabel htmlFor="artwork-image-upload">
+                {mode === "edit" ? "Update Image" : "Upload Image"}
+              </FieldLabel>
 
-              <div className="space-y-3 rounded-xl  p-0">
+              <div className="space-y-2 rounded-xl p-0">
                 <Input
                   id="artwork-image-upload"
                   type="file"
@@ -339,6 +357,26 @@ export function ArtworkForm({
                     const file = event.target.files?.[0];
 
                     if (!file) {
+                      return;
+                    }
+
+                    if (file.size > MAX_IMAGE_FILE_SIZE_BYTES) {
+                      const id = toast.error(
+                        "Image is too large. Please upload an image smaller than 4.5 MB.",
+                        {
+                          duration: Infinity,
+                          action: {
+                            label: "Dismiss",
+                            onClick: () => toast.dismiss(id),
+                          },
+                          className:
+                            "!bg-red-200 !text-red-700 !border-red-500",
+                        }
+                      );
+
+                      setSelectedFileName(null);
+                      setImagePreviewUrl(initialValues?.imageUrl ?? null);
+                      event.target.value = "";
                       return;
                     }
 
@@ -359,40 +397,21 @@ export function ArtworkForm({
                   }}
                 />
 
-                {imagePreviewUrl ? (
-                  <div className="overflow-hidden rounded-xl border bg-muted">
-                    <div className="relative aspect-video w-full">
-                      <Image
-                        src={imagePreviewUrl}
-                        alt="Artwork preview"
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex aspect-video items-center justify-center rounded-xl border border-dashed bg-muted/40 text-sm text-muted-foreground">
-                    No image uploaded yet.
-                  </div>
-                )}
-
                 {selectedFileName ? (
                   <p className="text-sm text-muted-foreground">
                     Selected file: {selectedFileName}
                   </p>
-                ) : null}
+                ) : (
+                  <p className="text-xs text-muted-foreground">
+                    Supported image upload up to 4.5 MB.
+                  </p>
+                )}
 
                 {isUploadingImage ? (
                   <p className="text-sm text-muted-foreground">
                     Uploading image...
                   </p>
                 ) : null}
-
-                {/* {form.watch("imageUrl") ? (
-                  <p className="text-sm text-muted-foreground break-all">
-                    Current image URL: {form.watch("imageUrl")}
-                  </p>
-                ) : null} */}
               </div>
             </Field>
 
@@ -419,8 +438,7 @@ export function ArtworkForm({
                   <FieldDescription
                     className={fieldState.invalid ? "text-destructive" : ""}
                   >
-                    {fieldState.error?.message ??
-                      "Give the artwork a clear title."}
+                    {fieldState.error?.message}
                   </FieldDescription>
                 </Field>
               )}
@@ -442,8 +460,7 @@ export function ArtworkForm({
                   <FieldDescription
                     className={fieldState.invalid ? "text-destructive" : ""}
                   >
-                    {fieldState.error?.message ??
-                      "Enter the name of the artist or creator."}
+                    {fieldState.error?.message}
                   </FieldDescription>
                 </Field>
               )}
@@ -489,7 +506,7 @@ export function ArtworkForm({
                   <Input
                     {...field}
                     id={field.name}
-                    type="number"
+                    type="text"
                     step="any"
                     value={field.value ?? ""}
                     aria-invalid={fieldState.invalid}
@@ -512,7 +529,7 @@ export function ArtworkForm({
                   <Input
                     {...field}
                     id={field.name}
-                    type="number"
+                    type="text"
                     step="any"
                     value={field.value ?? ""}
                     aria-invalid={fieldState.invalid}
