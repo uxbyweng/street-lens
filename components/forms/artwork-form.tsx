@@ -105,6 +105,9 @@ export function ArtworkForm({
   const [imageStatusVariant, setImageStatusVariant] = React.useState<
     "default" | "success" | "warning"
   >("default");
+  const [areCoordinatesEditable, setAreCoordinatesEditable] = React.useState(
+    !initialValues?.latitude || !initialValues?.longitude
+  );
   const MAX_IMAGE_FILE_SIZE_BYTES = 4.5 * 1024 * 1024; // 4 MB
 
   const defaultValues: ArtworkFormValues = {
@@ -358,6 +361,7 @@ export function ArtworkForm({
           shouldValidate: true,
           shouldDirty: true,
         });
+        setAreCoordinatesEditable(false);
         setImageStatusMessage("Image uploaded and geo coordinates extracted.");
         setImageStatusVariant("success");
 
@@ -374,6 +378,8 @@ export function ArtworkForm({
           shouldValidate: true,
           shouldDirty: true,
         });
+
+        setAreCoordinatesEditable(true);
         setImageStatusMessage(
           "No geo coordinates found. Please enter them manually."
         );
@@ -419,6 +425,9 @@ export function ArtworkForm({
     setImagePreviewUrl(initialValues?.imageUrl ?? null);
     setImageStatusMessage(null);
     setImageStatusVariant("default");
+    setAreCoordinatesEditable(
+      !initialValues?.latitude || !initialValues?.longitude
+    );
   }
 
   return (
@@ -535,10 +544,10 @@ export function ArtworkForm({
                     {...field}
                     id={field.name}
                     type="text"
-                    step="any"
                     value={field.value ?? ""}
                     aria-invalid={fieldState.invalid}
                     placeholder="e.g. 52.520008"
+                    disabled={!areCoordinatesEditable}
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -558,10 +567,10 @@ export function ArtworkForm({
                     {...field}
                     id={field.name}
                     type="text"
-                    step="any"
                     value={field.value ?? ""}
                     aria-invalid={fieldState.invalid}
                     placeholder="e.g. 13.404954"
+                    disabled={!areCoordinatesEditable}
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -569,6 +578,12 @@ export function ArtworkForm({
                 </Field>
               )}
             />
+            {!areCoordinatesEditable ? (
+              <p className="text-xs text-muted-foreground">
+                Geo coordinates were extracted automatically from the uploaded
+                image.
+              </p>
+            ) : null}
 
             {(watchedLatitude === undefined ||
               watchedLongitude === undefined) && (
