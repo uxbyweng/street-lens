@@ -6,16 +6,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
+import { ArtworkImageUpload } from "@/components/forms/artwork-image-upload";
 
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import {
   Field,
   FieldDescription,
@@ -54,16 +48,22 @@ const artworkFormSchema = z.object({
 
       return value === "" || isAbsoluteUrl || isRelativePath;
     }, "Please enter a valid image URL or relative path."),
-  latitude: z.string().refine((value) => {
-    if (value === "") return true;
-    const number = Number(value);
-    return !Number.isNaN(number) && number >= -90 && number <= 90;
-  }, "Latitude must be between -90 and 90."),
-  longitude: z.string().refine((value) => {
-    if (value === "") return true;
-    const number = Number(value);
-    return !Number.isNaN(number) && number >= -180 && number <= 180;
-  }, "Longitude must be between -180 and 180."),
+  latitude: z
+    .string()
+    .trim()
+    .min(1, "Latitude is required.")
+    .refine((value) => {
+      const number = Number(value);
+      return !Number.isNaN(number) && number >= -90 && number <= 90;
+    }, "Latitude must be between -90 and 90."),
+  longitude: z
+    .string()
+    .trim()
+    .min(1, "Longitude is required.")
+    .refine((value) => {
+      const number = Number(value);
+      return !Number.isNaN(number) && number >= -180 && number <= 180;
+    }, "Longitude must be between -180 and 180."),
   tags: z.string().optional(),
 });
 
@@ -85,44 +85,6 @@ type ArtworkFormProps = {
   initialValues?: Partial<ArtworkFormValues>;
 };
 
-function MapPlaceholder({
-  latitude,
-  longitude,
-  onPickLocation,
-}: {
-  latitude?: number;
-  longitude?: number;
-  onPickLocation: (lat: number, lng: number) => void;
-}) {
-  const handleFakePick = () => {
-    onPickLocation(52.520008, 13.404954);
-  };
-
-  return (
-    <div className="space-y-3 rounded-xl border p-4">
-      <div className="text-sm font-medium">Map placeholder</div>
-      <p className="text-sm text-muted-foreground">
-        Later, show a Google Map here if the uploaded image has no EXIF/GEO
-        data. For now, this is a placeholder for manual location selection.
-      </p>
-
-      <div className="flex min-h-48 items-center justify-center rounded-lg border border-dashed bg-muted/40 text-sm text-muted-foreground">
-        Google Maps placeholder
-      </div>
-
-      <Button type="button" variant="outline" onClick={handleFakePick}>
-        Set demo coordinates
-      </Button>
-
-      {(latitude !== undefined || longitude !== undefined) && (
-        <p className="text-sm text-muted-foreground">
-          Current selection: {latitude ?? "—"}, {longitude ?? "—"}
-        </p>
-      )}
-    </div>
-  );
-}
-
 export function ArtworkForm({
   mode,
   artworkId,
@@ -136,6 +98,15 @@ export function ArtworkForm({
   );
   const [imagePreviewUrl, setImagePreviewUrl] = React.useState<string | null>(
     initialValues?.imageUrl ?? null
+  );
+  const [imageStatusMessage, setImageStatusMessage] = React.useState<
+    string | null
+  >(null);
+  const [imageStatusVariant, setImageStatusVariant] = React.useState<
+    "default" | "success" | "warning"
+  >("default");
+  const [areCoordinatesEditable, setAreCoordinatesEditable] = React.useState(
+    !initialValues?.latitude || !initialValues?.longitude
   );
   const MAX_IMAGE_FILE_SIZE_BYTES = 4.5 * 1024 * 1024; // 4 MB
 
@@ -175,6 +146,45 @@ export function ArtworkForm({
       ? Number(watchedLongitudeValue)
       : undefined;
 
+  // map placeholder function
+  function MapPlaceholder({
+    latitude,
+    longitude,
+    onPickLocation,
+  }: {
+    latitude?: number;
+    longitude?: number;
+    onPickLocation: (lat: number, lng: number) => void;
+  }) {
+    const handleFakePick = () => {
+      onPickLocation(52.520008, 13.404954);
+    };
+
+    return (
+      <div className="space-y-3 rounded-xl border p-4">
+        <div className="text-sm font-medium">Map placeholder</div>
+        <p className="text-sm text-muted-foreground">
+          Show a Google Map here if the uploaded image has no EXIF/GEO data.
+        </p>
+
+        <div className="flex min-h-48 items-center justify-center rounded-lg border border-dashed bg-muted/40 text-sm text-muted-foreground">
+          Google Maps placeholder
+        </div>
+
+        <Button type="button" variant="outline" onClick={handleFakePick}>
+          Set demo coordinates
+        </Button>
+
+        {(latitude !== undefined || longitude !== undefined) && (
+          <p className="text-sm text-muted-foreground">
+            Current selection: {latitude ?? "—"}, {longitude ?? "—"}
+          </p>
+        )}
+      </div>
+    );
+  }
+
+  // submit functiom
   async function onSubmit(values: ArtworkFormValues) {
     setIsSubmitting(true);
 
@@ -262,6 +272,47 @@ export function ArtworkForm({
     }
   }
 
+  // check (selected) image function
+  async function handleSelectedFile(file: File) {
+    setImageStatusMessage(null);
+    setImageStatusVariant("default");
+    if (file.size > MAX_IMAGE_FILE_SIZE_BYTES) {
+      setImageStatusMessage(
+        "Image is too large. Please choose a file smaller than 4 MB."
+      );
+      setImageStatusVariant("warning");
+      const id = toast.error(
+        "Image is too large. Please upload an image smaller than 4 MB.",
+        {
+          duration: Infinity,
+          action: {
+            label: "Dismiss",
+            onClick: () => toast.dismiss(id),
+          },
+          className: "!bg-red-200 !text-red-700 !border-red-500",
+        }
+      );
+
+      setSelectedFileName(null);
+      setImagePreviewUrl(initialValues?.imageUrl ?? null);
+      return;
+    }
+
+    setSelectedFileName(file.name);
+
+    const localPreviewUrl = URL.createObjectURL(file);
+
+    setImagePreviewUrl((current) => {
+      if (current?.startsWith("blob:")) {
+        URL.revokeObjectURL(current);
+      }
+      return localPreviewUrl;
+    });
+
+    await handleImageUpload(file);
+  }
+
+  // image upload function
   async function handleImageUpload(file: File) {
     setIsUploadingImage(true);
 
@@ -277,10 +328,14 @@ export function ArtworkForm({
       const result = await response.json().catch(() => null);
 
       if (!response.ok) {
+        setImageStatusMessage("Image upload failed. Please try again.");
+        setImageStatusVariant("warning");
         throw new Error(result?.message || "Image upload failed.");
       }
 
       const secureUrl = result?.data?.secureUrl;
+      const extractedLatitude = result?.data?.latitude;
+      const extractedLongitude = result?.data?.longitude;
 
       if (!secureUrl) {
         throw new Error("No uploaded image URL returned.");
@@ -291,15 +346,62 @@ export function ArtworkForm({
         shouldDirty: true,
       });
 
+      const hasExtractedCoordinates =
+        typeof extractedLatitude === "number" &&
+        typeof extractedLongitude === "number";
+
+      if (hasExtractedCoordinates) {
+        form.setValue("latitude", String(extractedLatitude), {
+          shouldValidate: true,
+          shouldDirty: true,
+        });
+
+        form.setValue("longitude", String(extractedLongitude), {
+          shouldValidate: true,
+          shouldDirty: true,
+        });
+        setAreCoordinatesEditable(false);
+        setImageStatusMessage("Image uploaded and geo coordinates extracted.");
+        setImageStatusVariant("success");
+
+        toast.success("Image uploaded and geo coordinates extracted.", {
+          className: "!bg-green-200 !text-green-700 !border-green-500 mt-15",
+        });
+      } else {
+        form.setValue("latitude", "", {
+          shouldValidate: true,
+          shouldDirty: true,
+        });
+
+        form.setValue("longitude", "", {
+          shouldValidate: true,
+          shouldDirty: true,
+        });
+
+        setAreCoordinatesEditable(true);
+        setImageStatusMessage(
+          "No geo coordinates found. Please enter them manually."
+        );
+        setImageStatusVariant("warning");
+
+        const id = toast.error(
+          "Could not extract geo coordinates. Please enter them manually.",
+          {
+            duration: Infinity,
+            action: {
+              label: "Dismiss",
+              onClick: () => toast.dismiss(id),
+            },
+            className: "!bg-red-200 !text-red-700 !border-red-500",
+          }
+        );
+      }
+
       setImagePreviewUrl((current) => {
         if (current?.startsWith("blob:")) {
           URL.revokeObjectURL(current);
         }
         return secureUrl;
-      });
-
-      toast.success("Image uploaded successfully.", {
-        className: "!bg-green-200 !text-green-700 !border-green-500 mt-15",
       });
     } catch (error) {
       console.error(error);
@@ -315,104 +417,38 @@ export function ArtworkForm({
     }
   }
 
+  // reset function
+  function handleReset() {
+    form.reset(defaultValues);
+    setSelectedFileName(null);
+    setImagePreviewUrl(initialValues?.imageUrl ?? null);
+    setImageStatusMessage(null);
+    setImageStatusVariant("default");
+    setAreCoordinatesEditable(
+      !initialValues?.latitude || !initialValues?.longitude
+    );
+  }
+
   return (
     <Card className="w-full max-w-2xl">
-      <CardHeader>
-        <CardTitle>
-          {imagePreviewUrl ? (
-            <div className="overflow-hidden rounded-xl border bg-muted">
-              <div className="relative aspect-video w-full">
-                <Image
-                  src={imagePreviewUrl}
-                  alt="Artwork preview"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            </div>
-          ) : (
-            <div className="flex aspect-video items-center justify-center rounded-xl border border-dashed bg-muted/90 text-sm text-muted-foreground">
-              No image uploaded yet.
-            </div>
-          )}
-        </CardTitle>
-      </CardHeader>
-
       <CardContent>
         <form id="artwork-form" onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>
             {/* Image Upload */}
             <Field>
-              <FieldLabel htmlFor="artwork-image-upload">
+              <FieldLabel>
                 {mode === "edit" ? "Update Image" : "Upload Image"}
               </FieldLabel>
 
-              <div className="space-y-2 rounded-xl p-0">
-                <Input
-                  id="artwork-image-upload"
-                  type="file"
-                  accept="image/*"
-                  disabled={isUploadingImage || isSubmitting}
-                  onChange={async (event) => {
-                    const file = event.target.files?.[0];
-
-                    if (!file) {
-                      return;
-                    }
-
-                    if (file.size > MAX_IMAGE_FILE_SIZE_BYTES) {
-                      const id = toast.error(
-                        "Image is too large. Please upload an image smaller than 4.5 MB.",
-                        {
-                          duration: Infinity,
-                          action: {
-                            label: "Dismiss",
-                            onClick: () => toast.dismiss(id),
-                          },
-                          className:
-                            "!bg-red-200 !text-red-700 !border-red-500",
-                        }
-                      );
-
-                      setSelectedFileName(null);
-                      setImagePreviewUrl(initialValues?.imageUrl ?? null);
-                      event.target.value = "";
-                      return;
-                    }
-
-                    setSelectedFileName(file.name);
-
-                    const localPreviewUrl = URL.createObjectURL(file);
-
-                    setImagePreviewUrl((current) => {
-                      if (current?.startsWith("blob:")) {
-                        URL.revokeObjectURL(current);
-                      }
-                      return localPreviewUrl;
-                    });
-
-                    await handleImageUpload(file);
-
-                    event.target.value = "";
-                  }}
-                />
-
-                {selectedFileName ? (
-                  <p className="text-sm text-muted-foreground">
-                    Selected file: {selectedFileName}
-                  </p>
-                ) : (
-                  <p className="text-xs text-muted-foreground">
-                    Supported image upload up to 4.5 MB.
-                  </p>
-                )}
-
-                {isUploadingImage ? (
-                  <p className="text-sm text-muted-foreground">
-                    Uploading image...
-                  </p>
-                ) : null}
-              </div>
+              <ArtworkImageUpload
+                imagePreviewUrl={imagePreviewUrl}
+                isUploadingImage={isUploadingImage}
+                isSubmitting={isSubmitting}
+                selectedFileName={selectedFileName}
+                onFileSelect={handleSelectedFile}
+                statusMessage={imageStatusMessage}
+                statusVariant={imageStatusVariant}
+              />
             </Field>
 
             {/* Image URL */}
@@ -496,51 +532,78 @@ export function ArtworkForm({
               )}
             />
 
-            {/* latitude */}
-            <Controller
-              name="latitude"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor={field.name}>Latitude</FieldLabel>
-                  <Input
-                    {...field}
-                    id={field.name}
-                    type="text"
-                    step="any"
-                    value={field.value ?? ""}
-                    aria-invalid={fieldState.invalid}
-                    placeholder="e.g. 52.520008"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
+            {/* location */}
+            <Field>
+              <FieldLabel>Location</FieldLabel>
 
-            {/* longitude */}
-            <Controller
-              name="longitude"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor={field.name}>Longitude</FieldLabel>
-                  <Input
-                    {...field}
-                    id={field.name}
-                    type="text"
-                    step="any"
-                    value={field.value ?? ""}
-                    aria-invalid={fieldState.invalid}
-                    placeholder="e.g. 13.404954"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
+              <div className="grid grid-cols-2 gap-3">
+                <Controller
+                  name="latitude"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <div className="space-y-2">
+                      <FieldLabel
+                        htmlFor={field.name}
+                        className="text-xs text-muted-foreground"
+                      >
+                        Lat.
+                      </FieldLabel>
+                      <Input
+                        {...field}
+                        id={field.name}
+                        type="text"
+                        value={field.value ?? ""}
+                        aria-invalid={fieldState.invalid}
+                        placeholder="e.g. 52.520008"
+                        disabled={!areCoordinatesEditable}
+                      />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </div>
                   )}
-                </Field>
+                />
+
+                <Controller
+                  name="longitude"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <div className="space-y-2">
+                      <FieldLabel
+                        htmlFor={field.name}
+                        className="text-xs text-muted-foreground"
+                      >
+                        Long.
+                      </FieldLabel>
+                      <Input
+                        {...field}
+                        id={field.name}
+                        type="text"
+                        value={field.value ?? ""}
+                        aria-invalid={fieldState.invalid}
+                        placeholder="e.g. 13.404954"
+                        disabled={!areCoordinatesEditable}
+                      />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </div>
+                  )}
+                />
+              </div>
+
+              {!areCoordinatesEditable ? (
+                <FieldDescription className="text-xs">
+                  Geo coordinates were extracted automatically from the uploaded
+                  image.
+                </FieldDescription>
+              ) : (
+                <FieldDescription className="text-xs">
+                  Enter latitude and longitude manually if no geo data could be
+                  extracted.
+                </FieldDescription>
               )}
-            />
+            </Field>
 
             {(watchedLatitude === undefined ||
               watchedLongitude === undefined) && (
@@ -570,7 +633,7 @@ export function ArtworkForm({
                     aria-invalid={fieldState.invalid}
                     placeholder="street art, berlin, mural"
                   />
-                  <FieldDescription>
+                  <FieldDescription className="text-xs mt-0 pt-0">
                     Separate tags with commas.
                   </FieldDescription>
                   {fieldState.invalid && (
@@ -580,26 +643,26 @@ export function ArtworkForm({
               )}
             />
           </FieldGroup>
+          <div className="flex items-center justify-between gap-3 pt-8">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleReset}
+              disabled={isSubmitting}
+            >
+              Reset
+            </Button>
+
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting
+                ? "Saving..."
+                : mode === "edit"
+                  ? "Save changes"
+                  : "Save artwork"}
+            </Button>
+          </div>
         </form>
       </CardContent>
-
-      <CardFooter className="flex justify-between gap-3">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => form.reset(defaultValues)}
-          disabled={isSubmitting}
-        >
-          Reset
-        </Button>
-        <Button type="submit" form="artwork-form" disabled={isSubmitting}>
-          {isSubmitting
-            ? "Saving..."
-            : mode === "edit"
-              ? "Save changes"
-              : "Save artwork"}
-        </Button>
-      </CardFooter>
     </Card>
   );
 }

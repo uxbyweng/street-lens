@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { v2 as cloudinary, type UploadApiResponse } from "cloudinary";
+import exifr from "exifr";
 
 export const runtime = "nodejs";
 
@@ -70,6 +71,24 @@ export async function POST(request: Request) {
       .toLowerCase()
       .replace(/[^a-z0-9-_]/g, "-");
 
+    let latitude: number | null = null;
+    let longitude: number | null = null;
+
+    try {
+      const gpsData = await exifr.gps(buffer);
+
+      if (gpsData && typeof gpsData.latitude === "number") {
+        latitude = Number(gpsData.latitude.toFixed(6));
+      }
+
+      if (gpsData && typeof gpsData.longitude === "number") {
+        longitude = Number(gpsData.longitude.toFixed(6));
+      }
+    } catch (exifError) {
+      console.error("EXIF GPS extraction failed:", exifError);
+      // Upload soll trotzdem weiterlaufen
+    }
+
     const result = await uploadBufferToCloudinary(buffer, {
       folder: "street-lens",
       public_id: safePublicId,
@@ -83,6 +102,8 @@ export async function POST(request: Request) {
           secureUrl: result.secure_url,
           publicId: result.public_id,
           originalFilename: result.original_filename,
+          latitude,
+          longitude,
         },
       },
       { status: 200 }
@@ -90,9 +111,9 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("POST /api/upload error:", error);
 
-    // const message =
-    //   error instanceof Error ? error.message : "Image upload failed.";
+    const message =
+      error instanceof Error ? error.message : "Image upload failed.";
 
-    // return NextResponse.json({ ok: false, message }, { status: 500 });
+    return NextResponse.json({ ok: false, message }, { status: 500 });
   }
 }
