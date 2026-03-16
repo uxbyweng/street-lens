@@ -1,3 +1,5 @@
+// components\forms\artwork-form.tsx
+
 "use client";
 
 import * as React from "react";
@@ -6,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
+import { ArtworkImageUpload } from "@/components/forms/artwork-image-upload";
 
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -268,6 +271,148 @@ export function ArtworkForm({
     }
   }
 
+  async function handleSelectedFile(file: File) {
+    if (file.size > MAX_IMAGE_FILE_SIZE_BYTES) {
+      const id = toast.error(
+        "Image is too large. Please upload an image smaller than 4 MB.",
+        {
+          duration: Infinity,
+          action: {
+            label: "Dismiss",
+            onClick: () => toast.dismiss(id),
+          },
+          className: "!bg-red-200 !text-red-700 !border-red-500",
+        }
+      );
+
+      setSelectedFileName(null);
+      setImagePreviewUrl(initialValues?.imageUrl ?? null);
+      return;
+    }
+
+    setSelectedFileName(file.name);
+
+    const localPreviewUrl = URL.createObjectURL(file);
+
+    setImagePreviewUrl((current) => {
+      if (current?.startsWith("blob:")) {
+        URL.revokeObjectURL(current);
+      }
+      return localPreviewUrl;
+    });
+
+    await handleImageUpload(file);
+  }
+
+  //   async function handleImageUpload(file: File) {
+  //     setIsUploadingImage(true);
+
+  //     try {
+  //       const uploadFormData = new FormData();
+  //       uploadFormData.append("image", file);
+
+  //       const response = await fetch("/api/upload", {
+  //         method: "POST",
+  //         body: uploadFormData,
+  //       });
+
+  //       const result = await response.json().catch(() => null);
+
+  //       if (!response.ok) {
+  //         throw new Error(result?.message || "Image upload failed.");
+  //       }
+
+  //       const secureUrl = result?.data?.secureUrl;
+  //       const extractedLatitude = result?.data?.latitude;
+  //       const extractedLongitude = result?.data?.longitude;
+  //       const hasExtractedCoordinates =
+  //         typeof extractedLatitude === "number" &&
+  //         typeof extractedLongitude === "number";
+
+  //       if (hasExtractedCoordinates) {
+  //         form.setValue("latitude", String(extractedLatitude), {
+  //           shouldValidate: true,
+  //           shouldDirty: true,
+  //         });
+
+  //         form.setValue("longitude", String(extractedLongitude), {
+  //           shouldValidate: true,
+  //           shouldDirty: true,
+  //         });
+
+  //         toast.success("Image uploaded and geo coordinates extracted.", {
+  //           className: "!bg-green-200 !text-green-700 !border-green-500 mt-15",
+  //         });
+  //       } else {
+  //         form.setValue("latitude", "", {
+  //           shouldValidate: true,
+  //           shouldDirty: true,
+  //         });
+
+  //         form.setValue("longitude", "", {
+  //           shouldValidate: true,
+  //           shouldDirty: true,
+  //         });
+
+  //         toast.error(
+  //           "Could not extract geo coordinates. Please enter them manually.",
+  //           {
+  //             duration: Infinity,
+  //             action: {
+  //               label: "Dismiss",
+  //               onClick: () => toast.dismiss(),
+  //             },
+  //             className: "!bg-red-200 !text-red-700 !border-red-500",
+  //           }
+  //         );
+  //       }
+
+  //       if (!secureUrl) {
+  //         throw new Error("No uploaded image URL returned.");
+  //       }
+
+  //       form.setValue("imageUrl", secureUrl, {
+  //         shouldValidate: true,
+  //         shouldDirty: true,
+  //       });
+
+  //       if (typeof extractedLatitude === "number") {
+  //         form.setValue("latitude", String(extractedLatitude), {
+  //           shouldValidate: true,
+  //           shouldDirty: true,
+  //         });
+  //       }
+
+  //       if (typeof extractedLongitude === "number") {
+  //         form.setValue("longitude", String(extractedLongitude), {
+  //           shouldValidate: true,
+  //           shouldDirty: true,
+  //         });
+  //       }
+
+  //       setImagePreviewUrl((current) => {
+  //         if (current?.startsWith("blob:")) {
+  //           URL.revokeObjectURL(current);
+  //         }
+  //         return secureUrl;
+  //       });
+
+  //       toast.success("Image uploaded successfully.", {
+  //         className: "!bg-green-200 !text-green-700 !border-green-500 mt-15",
+  //       });
+  //     } catch (error) {
+  //       console.error(error);
+
+  //       const message =
+  //         error instanceof Error ? error.message : "Image upload failed.";
+
+  //       toast.error(message, {
+  //         className: "!bg-red-200 !text-red-700 !border-red-500",
+  //       });
+  //     } finally {
+  //       setIsUploadingImage(false);
+  //     }
+  //   }
   async function handleImageUpload(file: File) {
     setIsUploadingImage(true);
 
@@ -299,18 +444,46 @@ export function ArtworkForm({
         shouldDirty: true,
       });
 
-      if (typeof extractedLatitude === "number") {
+      const hasExtractedCoordinates =
+        typeof extractedLatitude === "number" &&
+        typeof extractedLongitude === "number";
+
+      if (hasExtractedCoordinates) {
         form.setValue("latitude", String(extractedLatitude), {
           shouldValidate: true,
           shouldDirty: true,
         });
-      }
 
-      if (typeof extractedLongitude === "number") {
         form.setValue("longitude", String(extractedLongitude), {
           shouldValidate: true,
           shouldDirty: true,
         });
+
+        toast.success("Image uploaded and geo coordinates extracted.", {
+          className: "!bg-green-200 !text-green-700 !border-green-500 mt-15",
+        });
+      } else {
+        form.setValue("latitude", "", {
+          shouldValidate: true,
+          shouldDirty: true,
+        });
+
+        form.setValue("longitude", "", {
+          shouldValidate: true,
+          shouldDirty: true,
+        });
+
+        const id = toast.error(
+          "Could not extract geo coordinates. Please enter them manually.",
+          {
+            duration: Infinity,
+            action: {
+              label: "Dismiss",
+              onClick: () => toast.dismiss(id),
+            },
+            className: "!bg-red-200 !text-red-700 !border-red-500",
+          }
+        );
       }
 
       setImagePreviewUrl((current) => {
@@ -318,10 +491,6 @@ export function ArtworkForm({
           URL.revokeObjectURL(current);
         }
         return secureUrl;
-      });
-
-      toast.success("Image uploaded successfully.", {
-        className: "!bg-green-200 !text-green-700 !border-green-500 mt-15",
       });
     } catch (error) {
       console.error(error);
@@ -339,7 +508,7 @@ export function ArtworkForm({
 
   return (
     <Card className="w-full max-w-2xl">
-      <CardHeader>
+      {/* <CardHeader>
         <CardTitle>
           {imagePreviewUrl ? (
             <div className="overflow-hidden rounded-xl border bg-muted">
@@ -358,83 +527,24 @@ export function ArtworkForm({
             </div>
           )}
         </CardTitle>
-      </CardHeader>
+      </CardHeader> */}
 
       <CardContent>
         <form id="artwork-form" onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>
             {/* Image Upload */}
             <Field>
-              <FieldLabel htmlFor="artwork-image-upload">
+              <FieldLabel>
                 {mode === "edit" ? "Update Image" : "Upload Image"}
               </FieldLabel>
 
-              <div className="space-y-2 rounded-xl p-0">
-                <Input
-                  id="artwork-image-upload"
-                  type="file"
-                  accept="image/*"
-                  disabled={isUploadingImage || isSubmitting}
-                  onChange={async (event) => {
-                    const file = event.target.files?.[0];
-
-                    if (!file) {
-                      return;
-                    }
-
-                    if (file.size > MAX_IMAGE_FILE_SIZE_BYTES) {
-                      const id = toast.error(
-                        "Image is too large. Please upload an image smaller than 4.5 MB.",
-                        {
-                          duration: Infinity,
-                          action: {
-                            label: "Dismiss",
-                            onClick: () => toast.dismiss(id),
-                          },
-                          className:
-                            "!bg-red-200 !text-red-700 !border-red-500",
-                        }
-                      );
-
-                      setSelectedFileName(null);
-                      setImagePreviewUrl(initialValues?.imageUrl ?? null);
-                      event.target.value = "";
-                      return;
-                    }
-
-                    setSelectedFileName(file.name);
-
-                    const localPreviewUrl = URL.createObjectURL(file);
-
-                    setImagePreviewUrl((current) => {
-                      if (current?.startsWith("blob:")) {
-                        URL.revokeObjectURL(current);
-                      }
-                      return localPreviewUrl;
-                    });
-
-                    await handleImageUpload(file);
-
-                    event.target.value = "";
-                  }}
-                />
-
-                {selectedFileName ? (
-                  <p className="text-sm text-muted-foreground">
-                    Selected file: {selectedFileName}
-                  </p>
-                ) : (
-                  <p className="text-xs text-muted-foreground">
-                    Supported image upload up to 4.5 MB.
-                  </p>
-                )}
-
-                {isUploadingImage ? (
-                  <p className="text-sm text-muted-foreground">
-                    Uploading image...
-                  </p>
-                ) : null}
-              </div>
+              <ArtworkImageUpload
+                imagePreviewUrl={imagePreviewUrl}
+                isUploadingImage={isUploadingImage}
+                isSubmitting={isSubmitting}
+                selectedFileName={selectedFileName}
+                onFileSelect={handleSelectedFile}
+              />
             </Field>
 
             {/* Image URL */}
