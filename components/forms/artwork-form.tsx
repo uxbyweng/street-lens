@@ -1,5 +1,6 @@
 "use client";
 
+/* IMPORTS */
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,6 +27,7 @@ import {
   InputGroupTextarea,
 } from "@/components/ui/input-group";
 
+/* SCHEMA */
 const artworkFormSchema = z.object({
   title: z
     .string()
@@ -59,8 +61,10 @@ const artworkFormSchema = z.object({
   tags: z.string().optional(),
 });
 
+/* EXPORT TYPES */
 export type ArtworkFormValues = z.infer<typeof artworkFormSchema>;
 
+/* LOCAL TYPES */
 type ArtworkPayload = {
   title: string;
   artist: string;
@@ -77,6 +81,40 @@ type ArtworkFormProps = {
   initialValues?: Partial<ArtworkFormValues>;
 };
 
+/* HELPER FUNCTIONS */
+
+function parseCoordinate(value?: string): number | undefined {
+  if (!value) return undefined;
+
+  const parsedValue = Number(value);
+  return Number.isNaN(parsedValue) ? undefined : parsedValue;
+}
+
+function parseTags(value?: string): string[] {
+  if (!value) return [];
+
+  return value
+    .split(",")
+    .map((tag) => tag.trim())
+    .filter(Boolean);
+}
+
+function buildArtworkPayload(values: ArtworkFormValues): ArtworkPayload {
+  return {
+    title: values.title,
+    artist: values.artist,
+    description: values.description,
+    imageUrl: values.imageUrl || undefined,
+    latitude: parseCoordinate(values.latitude),
+    longitude: parseCoordinate(values.longitude),
+    tags: parseTags(values.tags),
+  };
+}
+
+// MAXIMALE BILDGRÖSSE
+const MAX_IMAGE_FILE_SIZE_BYTES = 4.5 * 1024 * 1024; // 4.5 MB
+
+// Save Artwork / API-Kommunikation
 async function saveArtwork(
   payload: ArtworkPayload,
   options: {
@@ -118,6 +156,7 @@ export function ArtworkForm({
   artworkId,
   initialValues,
 }: ArtworkFormProps) {
+  /* HOOKS */
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isUploadingImage, setIsUploadingImage] = React.useState(false);
@@ -136,8 +175,8 @@ export function ArtworkForm({
   const [areCoordinatesEditable, setAreCoordinatesEditable] = React.useState(
     !initialValues?.latitude || !initialValues?.longitude
   );
-  const MAX_IMAGE_FILE_SIZE_BYTES = 4.5 * 1024 * 1024; // 4.5 MB
 
+  // DEFAULT VALUES
   const defaultValues: ArtworkFormValues = {
     title: initialValues?.title ?? "",
     artist: initialValues?.artist ?? "",
@@ -148,20 +187,13 @@ export function ArtworkForm({
     tags: initialValues?.tags ?? "",
   };
 
-  React.useEffect(() => {
-    return () => {
-      if (imagePreviewUrl?.startsWith("blob:")) {
-        URL.revokeObjectURL(imagePreviewUrl);
-      }
-    };
-  }, [imagePreviewUrl]);
-
+  // USEFORM
   const form = useForm<ArtworkFormValues>({
     resolver: zodResolver(artworkFormSchema),
     defaultValues,
   });
 
-  // Check if there are Geo Cordinates
+  // WATCHED VALUES
   const watchedLatitudeValue = form.watch("latitude");
   const watchedLongitudeValue = form.watch("longitude");
   const watchedLatitude =
@@ -173,20 +205,18 @@ export function ArtworkForm({
       ? Number(watchedLongitudeValue)
       : undefined;
 
-  // Build Payload
-  function buildArtworkPayload(values: ArtworkFormValues): ArtworkPayload {
-    return {
-      title: values.title,
-      artist: values.artist,
-      description: values.description,
-      imageUrl: values.imageUrl || undefined,
-      latitude: parseCoordinate(values.latitude),
-      longitude: parseCoordinate(values.longitude),
-      tags: parseTags(values.tags),
+  // USEEFFECT
+  React.useEffect(() => {
+    return () => {
+      if (imagePreviewUrl?.startsWith("blob:")) {
+        URL.revokeObjectURL(imagePreviewUrl);
+      }
     };
-  }
+  }, [imagePreviewUrl]);
 
-  // submit functiom
+  /* HANDLERS */
+
+  // Submit form
   async function onSubmit(values: ArtworkFormValues) {
     setIsSubmitting(true);
 
@@ -240,8 +270,8 @@ export function ArtworkForm({
     }
   }
 
-  // check (selected) image function
-  async function handleSelectedFile(file: File) {
+  // Handle image selection
+  async function handleImageSelection(file: File) {
     setImageStatusMessage(null);
     setImageStatusVariant("default");
     if (file.size > MAX_IMAGE_FILE_SIZE_BYTES) {
@@ -280,7 +310,7 @@ export function ArtworkForm({
     await handleImageUpload(file);
   }
 
-  // image upload function
+  // Upload image
   async function handleImageUpload(file: File) {
     setIsUploadingImage(true);
 
@@ -385,25 +415,7 @@ export function ArtworkForm({
     }
   }
 
-  // parse coordinates
-  function parseCoordinate(value?: string): number | undefined {
-    if (!value) return undefined;
-
-    const parsedValue = Number(value);
-    return Number.isNaN(parsedValue) ? undefined : parsedValue;
-  }
-
-  // parse tags
-  function parseTags(value?: string): string[] {
-    if (!value) return [];
-
-    return value
-      .split(",")
-      .map((tag) => tag.trim())
-      .filter(Boolean);
-  }
-
-  // reset function
+  // Reset form state
   function handleReset() {
     form.reset(defaultValues);
     setSelectedFileName(null);
@@ -431,7 +443,7 @@ export function ArtworkForm({
                 isUploadingImage={isUploadingImage}
                 isSubmitting={isSubmitting}
                 selectedFileName={selectedFileName}
-                onFileSelect={handleSelectedFile}
+                onFileSelect={handleImageSelection}
                 statusMessage={imageStatusMessage}
                 statusVariant={imageStatusVariant}
               />
