@@ -77,6 +77,42 @@ type ArtworkFormProps = {
   initialValues?: Partial<ArtworkFormValues>;
 };
 
+async function saveArtwork(
+  payload: ArtworkPayload,
+  options: {
+    mode: "create" | "edit";
+    artworkId?: string;
+  }
+) {
+  const endpoint =
+    options.mode === "edit" && options.artworkId
+      ? `/api/artworks/${options.artworkId}`
+      : "/api/artworks";
+
+  const method = options.mode === "edit" ? "PATCH" : "POST";
+
+  const response = await fetch(endpoint, {
+    method,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const result = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(
+      result?.message ||
+        (options.mode === "edit"
+          ? "Failed to update artwork."
+          : "Failed to save artwork.")
+    );
+  }
+
+  return result;
+}
+
 export function ArtworkForm({
   mode,
   artworkId,
@@ -156,32 +192,11 @@ export function ArtworkForm({
 
     const payload = buildArtworkPayload(values);
 
-    const endpoint =
-      mode === "edit" && artworkId
-        ? `/api/artworks/${artworkId}`
-        : "/api/artworks";
-
-    const method = mode === "edit" ? "PATCH" : "POST";
-
     try {
-      const response = await fetch(endpoint, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
+      const result = await saveArtwork(payload, {
+        mode,
+        artworkId,
       });
-
-      const result = await response.json().catch(() => null);
-
-      if (!response.ok) {
-        throw new Error(
-          result?.message ||
-            (mode === "edit"
-              ? "Failed to update artwork."
-              : "Failed to save artwork.")
-        );
-      }
 
       toast.success(
         mode === "edit"
