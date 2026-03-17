@@ -1,6 +1,8 @@
+// app\page.tsx
+
 import { ArtworkList } from "@/components/artworks/artwork-list";
 import { getLatestArtworks } from "@/lib/data/artworks";
-// import { TestToastButton } from "@/components/test-toast-button";
+
 import { PageIntro } from "@/components/layout/page-intro";
 
 export const dynamic = "force-dynamic";

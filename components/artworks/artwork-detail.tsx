@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { MapPicker } from "@/components/map/map-picker";
 import { TextLink } from "@/components/ui/text-link";
 import { DeleteArtworkButton } from "@/components/artworks/delete-artwork-button";
 
@@ -76,15 +77,14 @@ export function ArtworkDetail({ artwork }: ArtworkDetailProps) {
               </TextLink>
             </div>
 
-            <div className="overflow-hidden rounded-xl border bg-muted">
-              <div className="flex aspect-video w-full flex-col items-center justify-center gap-2 text-sm text-muted-foreground">
-                <span className="text-base font-medium text-foreground">
-                  Map preview
-                </span>
-                <span>
-                  {artwork.latitude.toFixed(4)}, {artwork.longitude.toFixed(4)}
-                </span>
-              </div>
+            <div className="overflow-hidden rounded-xl border">
+              <MapPicker
+                latitude={artwork.latitude}
+                longitude={artwork.longitude}
+                disabled={true}
+                showControls={false}
+                className="aspect-video"
+              />
             </div>
           </div>
         ) : null}

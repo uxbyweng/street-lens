@@ -31,19 +31,11 @@ export async function generateMetadata({
   };
 }
 
-// Delay, um 'Loading' state zu testen
-// function delay(ms: number) {
-//   return new Promise((resolve) => setTimeout(resolve, ms));
-// }
-
 export default async function ArtworkDetailPage({
   params,
 }: ArtworkDetailPageProps) {
   const { id } = await params;
   const artwork = await getArtworkById(id);
-
-  // Throw 'Error', um 'Error' state zu testen
-  // throw new Error("Test error for artwork detail page");
 
   if (!artwork) {
     notFound();
