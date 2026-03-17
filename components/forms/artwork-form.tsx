@@ -8,7 +8,7 @@ import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 import { ArtworkImageUpload } from "@/components/forms/artwork-image-upload";
-import { MapPlaceholder } from "@/components/map/map-placeholder";
+import { MapPicker } from "@/components/map/map-picker";
 import { FormTextField } from "@/components/forms/form-text-field";
 import { FormTextareaField } from "@/components/forms/form-textarea-field";
 import { Button } from "@/components/ui/button";
@@ -547,9 +547,33 @@ export function ArtworkForm({
               )}
             </Field>
 
-            {/* Map Placeholder */}
-            {(watchedLatitude === undefined ||
-              watchedLongitude === undefined) && <MapPlaceholder />}
+            {/* Map  */}
+            <Field>
+              <FieldLabel>Map</FieldLabel>
+
+              <MapPicker
+                latitude={watchedLatitude}
+                longitude={watchedLongitude}
+                disabled={!areCoordinatesEditable}
+                onChange={({ lat, lng }) => {
+                  form.setValue("latitude", String(lat), {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  });
+
+                  form.setValue("longitude", String(lng), {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  });
+                }}
+              />
+
+              <FieldDescription className="text-xs">
+                {areCoordinatesEditable
+                  ? "Tap or click on the map to select a location."
+                  : "Map location is currently locked because coordinates were extracted automatically from the image."}
+              </FieldDescription>
+            </Field>
 
             {/* Tags */}
             <FormTextField
