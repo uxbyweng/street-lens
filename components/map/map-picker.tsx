@@ -2,14 +2,20 @@
 
 "use client";
 
-import { useEffect, useRef } from "react";
-import maplibregl, { Map } from "maplibre-gl";
-import "maplibre-gl/dist/maplibre-gl.css";
+import * as React from "react";
+import {
+  Map,
+  MapControls,
+  MapMarker,
+  MarkerContent,
+  useMap,
+} from "@/components/ui/map";
 
 type MapPickerProps = {
   latitude?: number;
   longitude?: number;
   onChange?: (coords: { lat: number; lng: number }) => void;
+  disabled?: boolean;
 };
 
 const DEFAULT_LOCATION = {
@@ -17,67 +23,108 @@ const DEFAULT_LOCATION = {
   lng: 13.405,
 };
 
-export function MapPicker({ latitude, longitude, onChange }: MapPickerProps) {
-  const mapContainerRef = useRef<HTMLDivElement | null>(null);
-  const mapRef = useRef<Map | null>(null);
-  const markerRef = useRef<maplibregl.Marker | null>(null);
+const MAP_STYLES = {
+  openstreetmap_dark: "https://tiles.openfreemap.org/styles/dark",
+  openstreetmap_bright: "https://tiles.openfreemap.org/styles/bright",
+  light: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
+  dark: "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
+};
 
+function MapClickHandler({
+  disabled,
+  onChange,
+}: {
+  disabled: boolean;
+  onChange?: (coords: { lat: number; lng: number }) => void;
+}) {
+  const { map, isLoaded } = useMap();
+
+  React.useEffect(() => {
+    if (!map || !isLoaded || disabled) return;
+
+    const handleClick = (event: { lngLat: { lat: number; lng: number } }) => {
+      onChange?.({
+        lat: event.lngLat.lat,
+        lng: event.lngLat.lng,
+      });
+    };
+
+    map.on("click", handleClick);
+
+    return () => {
+      map.off("click", handleClick);
+    };
+  }, [map, isLoaded, disabled, onChange]);
+
+  return null;
+}
+
+function MapViewportSync({
+  latitude,
+  longitude,
+}: {
+  latitude: number;
+  longitude: number;
+}) {
+  const { map, isLoaded } = useMap();
+  const isFirstRender = React.useRef(true);
+
+  React.useEffect(() => {
+    if (!map || !isLoaded) return;
+
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      map.jumpTo({
+        center: [longitude, latitude],
+        zoom: 13,
+      });
+      return;
+    }
+
+    map.flyTo({
+      center: [longitude, latitude],
+      duration: 800,
+      essential: true,
+    });
+  }, [map, isLoaded, latitude, longitude]);
+
+  return null;
+}
+
+export function MapPicker({
+  latitude,
+  longitude,
+  onChange,
+  disabled = false,
+}: MapPickerProps) {
   const lat = latitude ?? DEFAULT_LOCATION.lat;
   const lng = longitude ?? DEFAULT_LOCATION.lng;
 
-  // Init map (ONLY once)
-  useEffect(() => {
-    if (!mapContainerRef.current) return;
-    if (mapRef.current) return;
-
-    const map = new maplibregl.Map({
-      container: mapContainerRef.current,
-      style: "https://demotiles.maplibre.org/style.json",
-      center: [lng, lat],
-      zoom: 13,
-    });
-
-    mapRef.current = map;
-
-    // Click handler
-    map.on("click", (e) => {
-      const coords = {
-        lat: e.lngLat.lat,
-        lng: e.lngLat.lng,
-      };
-
-      if (onChange) onChange(coords);
-    });
-
-    return () => {
-      map.remove();
-    };
-  }, []);
-
-  // Update marker + center when coords change
-  useEffect(() => {
-    if (!mapRef.current) return;
-
-    const map = mapRef.current;
-
-    map.flyTo({
-      center: [lng, lat],
-      duration: 500,
-    });
-
-    if (!markerRef.current) {
-      markerRef.current = new maplibregl.Marker()
-        .setLngLat([lng, lat])
-        .addTo(map);
-    } else {
-      markerRef.current.setLngLat([lng, lat]);
-    }
-  }, [lat, lng]);
-
   return (
-    <div
-      ref={mapContainerRef}
-      className="w-full h-[300px] rounded-xl overflow-hidden"
-    />
+    <div className="overflow-hidden rounded-xl border">
+      <Map
+        className="h-50 w-full"
+        viewport={{
+          center: [lng, lat],
+          zoom: 13,
+        }}
+        styles={MAP_STYLES}
+      >
+        <MapControls
+          position="bottom-right"
+          showZoom
+          showCompass={false}
+          showLocate={false}
+          showFullscreen={false}
+        />
+
+        <MapClickHandler disabled={disabled} onChange={onChange} />
+        <MapViewportSync latitude={lat} longitude={lng} />
+
+        <MapMarker longitude={lng} latitude={lat}>
+          <MarkerContent />
+        </MapMarker>
+      </Map>
+    </div>
   );
 }
