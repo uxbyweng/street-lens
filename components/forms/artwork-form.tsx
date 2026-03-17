@@ -137,19 +137,24 @@ export function ArtworkForm({
       ? Number(watchedLongitudeValue)
       : undefined;
 
-  // submit functiom
-  async function onSubmit(values: ArtworkFormValues) {
-    setIsSubmitting(true);
-
-    const payload: ArtworkPayload = {
+  // Build Payload
+  function buildArtworkPayload(values: ArtworkFormValues): ArtworkPayload {
+    return {
       title: values.title,
       artist: values.artist,
       description: values.description,
       imageUrl: values.imageUrl || undefined,
-      latitude: values.latitude ? Number(values.latitude) : undefined,
-      longitude: values.longitude ? Number(values.longitude) : undefined,
+      latitude: parseCoordinate(values.latitude),
+      longitude: parseCoordinate(values.longitude),
       tags: parseTags(values.tags),
     };
+  }
+
+  // submit functiom
+  async function onSubmit(values: ArtworkFormValues) {
+    setIsSubmitting(true);
+
+    const payload = buildArtworkPayload(values);
 
     const endpoint =
       mode === "edit" && artworkId
@@ -363,6 +368,14 @@ export function ArtworkForm({
     } finally {
       setIsUploadingImage(false);
     }
+  }
+
+  // parse coordinates
+  function parseCoordinate(value?: string): number | undefined {
+    if (!value) return undefined;
+
+    const parsedValue = Number(value);
+    return Number.isNaN(parsedValue) ? undefined : parsedValue;
   }
 
   // parse tags
