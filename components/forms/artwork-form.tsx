@@ -548,6 +548,7 @@ export function ArtworkForm({
               label="Tags"
               control={form.control}
               placeholder="street art, berlin, mural"
+              description="Separate tags with commas."
             />
           </FieldGroup>
           <div className="flex items-center justify-between gap-3 pt-8">

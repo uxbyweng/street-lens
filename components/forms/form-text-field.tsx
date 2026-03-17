@@ -7,6 +7,7 @@ type FormTextFieldProps<TFormValues extends Record<string, any>> = {
   label: string;
   control: Control<TFormValues>;
   placeholder?: string;
+  description?: string;
 };
 
 export function FormTextField<TFormValues extends Record<string, any>>({
@@ -14,6 +15,7 @@ export function FormTextField<TFormValues extends Record<string, any>>({
   label,
   control,
   placeholder,
+  description,
 }: FormTextFieldProps<TFormValues>) {
   return (
     <Controller
@@ -31,7 +33,7 @@ export function FormTextField<TFormValues extends Record<string, any>>({
           <FieldDescription
             className={fieldState.invalid ? "text-destructive" : ""}
           >
-            {fieldState.error?.message}
+            {fieldState.error?.message ?? description}
           </FieldDescription>
         </Field>
       )}
