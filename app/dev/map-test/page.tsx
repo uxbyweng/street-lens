@@ -1,29 +1,27 @@
-// app/dev/map-test/page.tsx
-
 /* MAP-PICKER TEST */
-"use client";
+// "use client";
 
-import { MapPicker } from "@/components/map/map-picker";
-import { useState } from "react";
+// import { MapPicker } from "@/components/map/map-picker";
+// import { useState } from "react";
 
-export default function MapTestPage() {
-  const [coords, setCoords] = useState<{
-    lat: number;
-    lng: number;
-  } | null>(null);
+// export default function MapTestPage() {
+//   const [coords, setCoords] = useState<{
+//     lat: number;
+//     lng: number;
+//   } | null>(null);
 
-  return (
-    <div className="space-y-4 p-4">
-      <MapPicker
-        latitude={coords?.lat}
-        longitude={coords?.lng}
-        onChange={(nextCoords) => setCoords(nextCoords)}
-      />
+//   return (
+//     <div className="space-y-4 p-4">
+//       <MapPicker
+//         latitude={coords?.lat}
+//         longitude={coords?.lng}
+//         onChange={(nextCoords) => setCoords(nextCoords)}
+//       />
 
-      <pre>{JSON.stringify(coords, null, 2)}</pre>
-    </div>
-  );
-}
+//       <pre>{JSON.stringify(coords, null, 2)}</pre>
+//     </div>
+//   );
+// }
 
 /* USERLOCATION TEST */
 // "use client";
