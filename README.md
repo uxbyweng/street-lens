@@ -1,6 +1,6 @@
 # STREETLENS
 
-A mobile-first web application to create, manage, and discover spots in a simple, visual way. Users can add entries with text, images, and location data, browse existing spots, and later explore them on an interactive map.
+A mobile-first web application to create, manage, and discover streetart in a simple, visual way. Users can add entries with text, images, and location data, browse existing artworks, and later explore them on an interactive map.
 
 The project is intentionally scoped around a strong CRUD foundation first. Map features, nearby search, and authentication are planned only after the core product is stable.
 
@@ -16,13 +16,13 @@ The goal of this capstone project is to build a clean, functional, and deployabl
 
 ## MVP Features
 
-- Create a new spot
-- Read and display all spots
-- View spot details
-- Update existing spots
-- Delete spots with confirmation dialog
-- Upload images for a spot
-- Remove uploaded assets when a spot is deleted
+- Create an artwork
+- Read and display all artworks
+- View artwork details
+- Update existing artworks
+- Delete artworks with confirmation dialog
+- Upload images for an artwork
+- Remove uploaded assets when an artwork is deleted
 - Responsive mobile-first interface
 - Deployment on Vercel
 
