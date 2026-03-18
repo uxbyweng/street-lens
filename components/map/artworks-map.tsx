@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/map";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import Link from "next/link";
 import type { Artwork } from "@/types/artwork";
 
 type ArtworksMapProps = {
@@ -75,6 +76,12 @@ export function ArtworksMap({
                       {artwork.artist || "Unknown artist"}
                     </p>
                   </div>
+                  <Link
+                    href={`/artworks/${artwork._id}`}
+                    className="inline-flex text-sm font-medium underline underline-offset-4"
+                  >
+                    View artwork
+                  </Link>
                 </div>
               </div>
             </MarkerPopup>
