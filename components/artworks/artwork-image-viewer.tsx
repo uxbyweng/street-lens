@@ -74,9 +74,9 @@ export function ArtworkImageViewer({ src, alt }: ArtworkImageViewerProps) {
 
           <div className="h-full w-full">
             <TransformWrapper
-              initialScale={1}
+              initialScale={0.7}
               minScale={0.3}
-              maxScale={3}
+              maxScale={2}
               centerOnInit
               centerZoomedOut
               limitToBounds={false}
