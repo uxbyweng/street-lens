@@ -69,6 +69,12 @@ export function ArtworksMap({
                     fill
                     className="object-cover"
                   />
+                  <div className="space-y-1">
+                    <p className="font-medium leading-tight">{artwork.title}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {artwork.artist || "Unknown artist"}
+                    </p>
+                  </div>
                 </div>
               </div>
             </MarkerPopup>
