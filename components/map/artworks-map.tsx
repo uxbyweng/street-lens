@@ -7,6 +7,7 @@ import {
   MapControls,
   MapMarker,
   MarkerContent,
+  MarkerPopup,
 } from "@/components/ui/map";
 import { cn } from "@/lib/utils";
 import type { Artwork } from "@/types/artwork";
@@ -58,6 +59,13 @@ export function ArtworksMap({
             latitude={artwork.latitude}
           >
             <MarkerContent />
+            <MarkerPopup>
+              <div className="w-56 space-y-3">
+                <div className="relative aspect-video overflow-hidden rounded-md bg-muted">
+                  TEST
+                </div>
+              </div>
+            </MarkerPopup>
           </MapMarker>
         ))}
       </Map>
