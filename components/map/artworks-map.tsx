@@ -62,11 +62,13 @@ export function ArtworksMap({
             latitude={artwork.latitude}
           >
             <MarkerContent />
-            <MarkerPopup>
+            <MarkerPopup closeButton={true}>
               <div className="w-56 space-y-3">
                 <div className="space-y-1">
-                  <p className="font-medium leading-tight">{artwork.title}</p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm font-bold leading-tight">
+                    {artwork.title}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
                     {artwork.artist || "Unknown artist"}
                   </p>
                 </div>
