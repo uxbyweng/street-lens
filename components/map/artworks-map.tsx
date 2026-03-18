@@ -1,5 +1,3 @@
-// components\map\artworks-map.tsx
-
 "use client";
 
 import {

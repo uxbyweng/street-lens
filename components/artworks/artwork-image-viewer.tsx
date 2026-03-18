@@ -1,5 +1,3 @@
-// components\artworks\artwork-detail.tsx
-
 "use client";
 
 import * as React from "react";

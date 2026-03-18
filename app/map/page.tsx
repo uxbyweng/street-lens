@@ -1,5 +1,3 @@
-// app\map\page.tsx
-
 import { getArtworks } from "@/lib/data/artworks";
 import type { Metadata } from "next";
 import { PageIntro } from "@/components/layout/page-intro";

@@ -16,7 +16,7 @@ export default function Header() {
           />
         </Link>
 
-        <nav className="flex items-center gap-4 text-sm hidden md:block">
+        <nav className="hidden items-center gap-6 text-sm md:flex">
           <Link href="/" className="hover:underline">
             Home
           </Link>
