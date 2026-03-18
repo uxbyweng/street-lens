@@ -3,6 +3,13 @@ import * as React from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
+const navItems = [
+  { href: "/map", label: "Map View" },
+  { href: "/artworks", label: "Artwork List" },
+  { href: "/artworks/new", label: "Add Artwork" },
+  { href: "/imprint", label: "Impressum" },
+];
+
 export function MobileMenu() {
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -55,51 +62,17 @@ export function MobileMenu() {
         <div className="relative flex h-full flex-col px-6 pb-8 pt-24">
           <nav className="flex flex-2 flex-col">
             <ul className="space-y-5">
-              <li>
-                <Link
-                  href="/"
-                  className="text-2xl font-semibold"
-                  onClick={closeMenu}
-                >
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/map/"
-                  className="text-2xl font-semibold"
-                  onClick={closeMenu}
-                >
-                  Map View
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/artworks/"
-                  className="text-2xl font-semibold"
-                  onClick={closeMenu}
-                >
-                  Artwork List
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/artworks/new/"
-                  className="text-2xl font-semibold"
-                  onClick={closeMenu}
-                >
-                  Add Artwork
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/imprint/"
-                  className="text-2xl font-semibold"
-                  onClick={closeMenu}
-                >
-                  Imprint
-                </Link>
-              </li>
+              {navItems.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    onClick={closeMenu}
+                    className="text-2xl font-semibold"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
               <li>
                 <Button
                   asChild
