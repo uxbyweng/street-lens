@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { MobileMenu } from "@/components/layout/mobile-menu";
 
 export default function Header() {
   return (
@@ -15,8 +16,8 @@ export default function Header() {
           />
         </Link>
 
-        <nav className="flex items-center gap-4 text-sm">
-          <Link href="/" className="hover:underline hidden md:block">
+        <nav className="flex items-center gap-4 text-sm hidden md:block">
+          <Link href="/" className="hover:underline">
             Home
           </Link>
           <Link href="/map" className="hover:underline">
@@ -29,6 +30,7 @@ export default function Header() {
             Add Artwork
           </Link>
         </nav>
+        <MobileMenu />
       </div>
     </header>
   );
