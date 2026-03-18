@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ArtworkImageViewer } from "@/components/artworks/artwork-image-viewer";
 import { MapPicker } from "@/components/map/map-picker";
 import { TextLink } from "@/components/ui/text-link";
 import { DeleteArtworkButton } from "@/components/artworks/delete-artwork-button";
@@ -27,15 +28,10 @@ export function ArtworkDetail({ artwork }: ArtworkDetailProps) {
 
   return (
     <Card className="mx-auto flex w-full max-w-3xl flex-col overflow-hidden pt-0">
-      <div className="relative">
-        <Image
-          src={artwork.imageUrl ?? "/images/artwork-placeholder.jpg"}
-          alt={`${artwork.title}${artwork.artist ? ` - ${artwork.artist}` : ""}`}
-          width={1200}
-          height={675}
-          className="aspect-video w-full object-cover"
-        />
-      </div>
+      <ArtworkImageViewer
+        src={artwork.imageUrl ?? "/images/artwork-placeholder.jpg"}
+        alt={`${artwork.title}${artwork.artist ? ` - ${artwork.artist}` : ""}`}
+      />
 
       <div className="px-6 py-0">
         <DeleteArtworkButton
