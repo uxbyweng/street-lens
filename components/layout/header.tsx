@@ -19,6 +19,9 @@ export default function Header() {
           <Link href="/" className="hover:underline hidden md:block">
             Home
           </Link>
+          <Link href="/map" className="hover:underline">
+            Map
+          </Link>
           <Link href="/artworks" className="hover:underline">
             Artworks
           </Link>
