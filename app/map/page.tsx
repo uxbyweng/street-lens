@@ -23,7 +23,7 @@ export default async function MapPage() {
       />
 
       <section className="mx-auto mt-8 max-w-6xl">
-        <ArtworksMap />
+        <ArtworksMap artworks={artworks} />
       </section>
     </>
   );
