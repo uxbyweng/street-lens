@@ -66,9 +66,15 @@ export function ArtworkDetail({ artwork }: ArtworkDetailProps) {
               disabled={true}
               showControls={false}
             />
-            <Button>
-              Navigate to Artwork
-              <IconLocation className="size-4" />
+            <Button asChild>
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${artwork.latitude},${artwork.longitude}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Navigate to Artwork
+                <IconLocation className="size-4" />
+              </a>
             </Button>
           </div>
         ) : null}
