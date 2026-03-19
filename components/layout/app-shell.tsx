@@ -1,7 +1,6 @@
 "use client";
 
 import Header from "@/components/layout/header";
-import Footer from "@/components/layout/footer";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
@@ -24,7 +23,6 @@ export function AppShell({ children }: AppShellProps) {
       >
         {children}
       </main>
-      <Footer />
     </div>
   );
 }
