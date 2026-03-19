@@ -27,6 +27,10 @@ const artworkSchema = new Schema(
       type: String,
       trim: true,
     },
+    cloudinaryPublicId: {
+      type: String,
+      trim: true,
+    },
     latitude: {
       type: Number,
     },
