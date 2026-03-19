@@ -315,29 +315,10 @@ export function ArtworkForm({
     setIsUploadingImage(true);
 
     try {
-      const uploadFormData = new FormData();
-      uploadFormData.append("image", file);
+      const extractedCoordinates = await extractCoordinatesFromImage(file);
+      const uploadResult = await uploadImageToCloudinary(file);
 
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: uploadFormData,
-      });
-
-      const result = await response.json().catch(() => null);
-
-      if (!response.ok) {
-        setImageStatusMessage("Image upload failed. Please try again.");
-        setImageStatusVariant("warning");
-        throw new Error(result?.message || "Image upload failed.");
-      }
-
-      const secureUrl = result?.data?.secureUrl;
-      const extractedLatitude = result?.data?.latitude;
-      const extractedLongitude = result?.data?.longitude;
-
-      if (!secureUrl) {
-        throw new Error("No uploaded image URL returned.");
-      }
+      const secureUrl = uploadResult.secureUrl;
 
       form.setValue("imageUrl", secureUrl, {
         shouldValidate: true,
@@ -345,19 +326,20 @@ export function ArtworkForm({
       });
 
       const hasExtractedCoordinates =
-        typeof extractedLatitude === "number" &&
-        typeof extractedLongitude === "number";
+        typeof extractedCoordinates?.latitude === "number" &&
+        typeof extractedCoordinates?.longitude === "number";
 
       if (hasExtractedCoordinates) {
-        form.setValue("latitude", String(extractedLatitude), {
+        form.setValue("latitude", String(extractedCoordinates.latitude), {
           shouldValidate: true,
           shouldDirty: true,
         });
 
-        form.setValue("longitude", String(extractedLongitude), {
+        form.setValue("longitude", String(extractedCoordinates.longitude), {
           shouldValidate: true,
           shouldDirty: true,
         });
+
         setAreCoordinatesEditable(false);
         setImageStatusMessage("Image uploaded and geo coordinates extracted.");
         setImageStatusVariant("success");
@@ -406,6 +388,9 @@ export function ArtworkForm({
 
       const message =
         error instanceof Error ? error.message : "Image upload failed.";
+
+      setImageStatusMessage("Image upload failed. Please try again.");
+      setImageStatusVariant("warning");
 
       toast.error(message, {
         className: "!bg-red-200 !text-red-700 !border-red-500",
