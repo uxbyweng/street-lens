@@ -621,14 +621,26 @@ export function ArtworkForm({
             />
           </FieldGroup>
           <div className="flex items-center justify-between gap-3 pt-8">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleReset}
-              disabled={isSubmitting}
-            >
-              Reset
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => router.back()}
+                disabled={isSubmitting}
+              >
+                Cancel
+              </Button>
+
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleReset}
+                disabled={isSubmitting}
+              >
+                Reset
+              </Button>
+            </div>
+
             <Button type="submit" disabled={isSubmitting}>
               {isSubmitting
                 ? "Saving..."

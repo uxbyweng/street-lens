@@ -17,6 +17,7 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { X, Minus, Plus, Locate, Maximize, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 import { cn } from "@/lib/utils";
 
@@ -792,27 +793,45 @@ function MapControls({
 
   const handleLocate = useCallback(() => {
     setWaitingForLocation(true);
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const coords = {
-            longitude: pos.coords.longitude,
-            latitude: pos.coords.latitude,
-          };
-          map?.flyTo({
-            center: [coords.longitude, coords.latitude],
-            zoom: 14,
-            duration: 1500,
-          });
-          onLocate?.(coords);
-          setWaitingForLocation(false);
-        },
-        (error) => {
-          console.error("Error getting location:", error);
-          setWaitingForLocation(false);
-        }
-      );
+
+    if (!("geolocation" in navigator)) {
+      console.info("Geolocation is not supported on this device.");
+      setWaitingForLocation(false);
+      return;
     }
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const coords = {
+          longitude: pos.coords.longitude,
+          latitude: pos.coords.latitude,
+        };
+
+        map?.flyTo({
+          center: [coords.longitude, coords.latitude],
+          zoom: 14,
+          duration: 1500,
+        });
+
+        onLocate?.(coords);
+        setWaitingForLocation(false);
+      },
+      (error) => {
+        if (error.code === error.PERMISSION_DENIED) {
+          toast.message(
+            "Location access is not available because permission was denied."
+          );
+        } else if (error.code === error.POSITION_UNAVAILABLE) {
+          toast.message("Location is currently unavailable.");
+        } else if (error.code === error.TIMEOUT) {
+          toast.message("Location request timed out.");
+        } else {
+          toast.message("Could not retrieve your location.");
+        }
+
+        setWaitingForLocation(false);
+      }
+    );
   }, [map, onLocate]);
 
   const handleFullscreen = useCallback(() => {

@@ -9,8 +9,10 @@ type AppShellProps = {
 };
 
 export function AppShell({ children }: AppShellProps) {
+  // URL-PFad auslesen und in 'pathname' speichern
   const pathname = usePathname();
 
+  // wenn URL '/map' ist setze 'isFullBleedPage' auf true
   const isFullBleedPage = pathname === "/map";
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">

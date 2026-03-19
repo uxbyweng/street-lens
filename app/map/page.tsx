@@ -14,7 +14,7 @@ export default async function MapPage() {
 
   return (
     <>
-      <section className="h-[calc(100vh-56px)]">
+      <section className="h-[calc(100vh-var(--header-height))]">
         <ArtworksMap artworks={artworks} className="h-full" />
       </section>
     </>
