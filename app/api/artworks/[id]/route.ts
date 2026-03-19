@@ -3,12 +3,19 @@ import { Types } from "mongoose";
 import { connectDB } from "@/lib/db/mongodb";
 import { Artwork } from "@/lib/models/artwork";
 import { revalidatePath } from "next/cache";
+import { v2 as cloudinary } from "cloudinary";
 
 type RouteContext = {
   params: Promise<{
     id: string;
   }>;
 };
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_SECRET,
+});
 
 export async function PATCH(request: Request, { params }: RouteContext) {
   try {
@@ -32,6 +39,7 @@ export async function PATCH(request: Request, { params }: RouteContext) {
         artist: body.artist,
         description: body.description,
         imageUrl: body.imageUrl ?? "",
+        cloudinaryPublicId: body.cloudinaryPublicId ?? "",
         latitude: body.latitude ?? undefined,
         longitude: body.longitude ?? undefined,
         tags: body.tags ?? [],
@@ -80,18 +88,32 @@ export async function DELETE(_request: Request, { params }: RouteContext) {
       );
     }
 
-    const deletedArtwork = await Artwork.findByIdAndDelete(id);
+    const artwork = await Artwork.findById(id);
 
-    if (!deletedArtwork) {
+    if (!artwork) {
       return NextResponse.json(
         { ok: false, message: "Artwork not found." },
         { status: 404 }
       );
     }
 
+    if (artwork.cloudinaryPublicId) {
+      try {
+        await cloudinary.uploader.destroy(artwork.cloudinaryPublicId, {
+          resource_type: "image",
+          invalidate: true,
+        });
+      } catch (cloudinaryError) {
+        console.error("Cloudinary image deletion failed:", cloudinaryError);
+      }
+    }
+
+    await Artwork.findByIdAndDelete(id);
+
     revalidatePath("/");
     revalidatePath("/artworks");
     revalidatePath(`/artworks/${id}`);
+    revalidatePath("/map");
 
     return NextResponse.json(
       { ok: true, message: "Artwork successfully deleted." },
