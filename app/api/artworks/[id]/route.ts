@@ -75,59 +75,6 @@ export async function PATCH(request: Request, { params }: RouteContext) {
   }
 }
 
-// export async function DELETE(_request: Request, { params }: RouteContext) {
-//   try {
-//     await connectDB();
-
-//     const { id } = await params;
-
-//     if (!Types.ObjectId.isValid(id)) {
-//       return NextResponse.json(
-//         { ok: false, message: "Invalid artwork ID." },
-//         { status: 400 }
-//       );
-//     }
-
-//     const artwork = await Artwork.findById(id);
-
-//     if (!artwork) {
-//       return NextResponse.json(
-//         { ok: false, message: "Artwork not found." },
-//         { status: 404 }
-//       );
-//     }
-
-//     if (artwork.cloudinaryPublicId) {
-//       try {
-//         await cloudinary.uploader.destroy(artwork.cloudinaryPublicId, {
-//           resource_type: "image",
-//           invalidate: true,
-//         });
-//       } catch (cloudinaryError) {
-//         console.error("Cloudinary image deletion failed:", cloudinaryError);
-//       }
-//     }
-
-//     await Artwork.findByIdAndDelete(id);
-
-//     revalidatePath("/");
-//     revalidatePath("/artworks");
-//     revalidatePath(`/artworks/${id}`);
-//     revalidatePath("/map");
-
-//     return NextResponse.json(
-//       { ok: true, message: "Artwork successfully deleted." },
-//       { status: 200 }
-//     );
-//   } catch (error) {
-//     console.error("DELETE /api/artworks/[id] error:", error);
-
-//     return NextResponse.json(
-//       { ok: false, message: "Failed to delete artwork." },
-//       { status: 500 }
-//     );
-//   }
-// }
 export async function DELETE(_request: Request, { params }: RouteContext) {
   try {
     await connectDB();
