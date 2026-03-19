@@ -110,7 +110,7 @@ function buildArtworkPayload(values: ArtworkFormValues): ArtworkPayload {
   };
 }
 
-const MAX_IMAGE_FILE_SIZE_BYTES = 4.5 * 1024 * 1024; // 4.5 MB
+const MAX_IMAGE_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
 
 // Save Artwork / API-Kommunikation
 async function saveArtwork(
