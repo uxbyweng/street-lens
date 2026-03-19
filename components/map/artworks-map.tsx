@@ -12,6 +12,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import type { Artwork } from "@/types/artwork";
+import { useUserLocation } from "@/lib/hooks/use-user-location";
 
 type ArtworksMapProps = {
   artworks: Artwork[];
@@ -34,13 +35,20 @@ export function ArtworksMap({
   showControls = true,
   className,
 }: ArtworksMapProps) {
+  const { location } = useUserLocation();
+
+  const initialCenter: [number, number] = location
+    ? [location.lng, location.lat]
+    : [DEFAULT_LOCATION.lng, DEFAULT_LOCATION.lat];
+
   return (
     <div className={cn("h-full overflow-hidden", className)}>
       <Map
+        key={`${initialCenter[0]}-${initialCenter[1]}`}
         className="h-full w-full"
         viewport={{
-          center: [DEFAULT_LOCATION.lng, DEFAULT_LOCATION.lat],
-          zoom: 11,
+          center: initialCenter,
+          zoom: 14,
         }}
         styles={MAP_STYLES}
       >
