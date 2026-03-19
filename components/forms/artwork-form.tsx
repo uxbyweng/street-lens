@@ -41,6 +41,7 @@ const artworkFormSchema = z.object({
     .min(10, "Description must be at least 10 characters.")
     .max(1000, "Description must be at most 1000 characters."),
   imageUrl: z.string().trim().optional(),
+  cloudinaryPublicId: z.string().trim().optional(),
   latitude: z
     .string()
     .trim()
