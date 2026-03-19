@@ -131,9 +131,11 @@ export function ArtworkImageUpload({
         <IconUpload className="size-6" />
         <div className="space-y-1">
           <p className="text-sm font-medium text-foreground">
-            {isDragActive
-              ? "Drop image here"
-              : "Drag an image here or choose one"}
+            <span className="hidden md:inline">
+              {isDragActive
+                ? "Drop image here"
+                : "Drag an image here or choose one"}
+            </span>
           </p>
         </div>
 

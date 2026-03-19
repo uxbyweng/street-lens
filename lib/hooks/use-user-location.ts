@@ -1,5 +1,3 @@
-// lib\hooks\use-user-location.ts
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -23,13 +21,16 @@ export function useUserLocation(): UseUserLocationReturn {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // 1. Check localStorage first
     const stored = localStorage.getItem(STORAGE_KEY);
 
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
-        if (parsed?.lat && parsed?.lng) {
+
+        if (
+          typeof parsed?.lat === "number" &&
+          typeof parsed?.lng === "number"
+        ) {
           setLocation(parsed);
           setIsLoading(false);
           return;
@@ -39,14 +40,12 @@ export function useUserLocation(): UseUserLocationReturn {
       }
     }
 
-    // 2. Check if geolocation is available
     if (!navigator.geolocation) {
       setError("Geolocation is not supported.");
       setIsLoading(false);
       return;
     }
 
-    // 3. Request location
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const coords = {
@@ -59,11 +58,16 @@ export function useUserLocation(): UseUserLocationReturn {
         setIsLoading(false);
       },
       (err) => {
-        console.error("Geolocation error:", err);
-
         if (err.code === err.PERMISSION_DENIED) {
           setError("Location permission denied.");
+        } else if (err.code === err.POSITION_UNAVAILABLE) {
+          console.warn("Geolocation unavailable.");
+          setError("Location unavailable.");
+        } else if (err.code === err.TIMEOUT) {
+          console.warn("Geolocation request timed out.");
+          setError("Location request timed out.");
         } else {
+          console.warn("Unknown geolocation error.");
           setError("Could not retrieve location.");
         }
 

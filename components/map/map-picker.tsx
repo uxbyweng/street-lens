@@ -104,9 +104,9 @@ export function MapPicker({
   const lng = longitude ?? DEFAULT_LOCATION.lng;
 
   return (
-    <div className={cn("overflow-hidden rounded-xl border", className)}>
+    <div className={cn("h-75 overflow-hidden rounded-xl border", className)}>
       <Map
-        className="h-50 w-full"
+        className="h-full w-full"
         viewport={{
           center: [lng, lat],
           zoom: 13,

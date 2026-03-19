@@ -16,6 +16,7 @@ import { MapPicker } from "@/components/map/map-picker";
 import { FormTextField } from "@/components/forms/form-text-field";
 import { FormTextareaField } from "@/components/forms/form-textarea-field";
 import { Button } from "@/components/ui/button";
+import { IconPencil } from "@tabler/icons-react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Field,
@@ -176,6 +177,10 @@ export function ArtworkForm({
   const [areCoordinatesEditable, setAreCoordinatesEditable] = React.useState(
     !initialValues?.latitude || !initialValues?.longitude
   );
+  const [hasAutoExtractedCoordinates, setHasAutoExtractedCoordinates] =
+    React.useState(
+      Boolean(initialValues?.latitude && initialValues?.longitude)
+    );
 
   // DEFAULT VALUES
   const defaultValues: ArtworkFormValues = {
@@ -337,11 +342,6 @@ export function ArtworkForm({
         shouldDirty: true,
       });
 
-      form.setValue("imageUrl", secureUrl, {
-        shouldValidate: true,
-        shouldDirty: true,
-      });
-
       const hasExtractedCoordinates =
         typeof extractedCoordinates?.latitude === "number" &&
         typeof extractedCoordinates?.longitude === "number";
@@ -357,9 +357,10 @@ export function ArtworkForm({
           shouldDirty: true,
         });
 
-        setAreCoordinatesEditable(false);
         setImageStatusMessage("Image uploaded and geo coordinates extracted.");
         setImageStatusVariant("success");
+        setHasAutoExtractedCoordinates(true);
+        setAreCoordinatesEditable(false);
 
         toast.success("Image uploaded and geo coordinates extracted.", {
           className: "!bg-green-200 !text-green-700 !border-green-500 mt-15",
@@ -374,7 +375,7 @@ export function ArtworkForm({
           shouldValidate: true,
           shouldDirty: true,
         });
-
+        setHasAutoExtractedCoordinates(false);
         setAreCoordinatesEditable(true);
         setImageStatusMessage(
           "No geo coordinates found. Please enter them manually."
@@ -426,6 +427,9 @@ export function ArtworkForm({
     setImageStatusVariant("default");
     setAreCoordinatesEditable(
       !initialValues?.latitude || !initialValues?.longitude
+    );
+    setHasAutoExtractedCoordinates(
+      Boolean(initialValues?.latitude && initialValues?.longitude)
     );
   }
 
@@ -492,7 +496,23 @@ export function ArtworkForm({
 
             {/* location */}
             <Field>
-              <FieldLabel>Location</FieldLabel>
+              <div className="flex items-center justify-between gap-3">
+                <FieldLabel>Location</FieldLabel>
+
+                {!areCoordinatesEditable && hasAutoExtractedCoordinates ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-8 px-2"
+                    onClick={() => setAreCoordinatesEditable(true)}
+                  >
+                    <IconPencil className="h-4 w-4" />
+                    <span className="ml-1 text-xs">Edit</span>
+                  </Button>
+                ) : null}
+              </div>
+
               <div className="grid grid-cols-2 gap-3">
                 <Controller
                   name="latitude"
@@ -501,9 +521,9 @@ export function ArtworkForm({
                     <div className="space-y-2">
                       <FieldLabel
                         htmlFor={field.name}
-                        className="text-xs text-muted-foreground"
+                        className="text-xs text-muted-foreground hidden"
                       >
-                        Lat.
+                        Latitude
                       </FieldLabel>
                       <Input
                         {...field}
@@ -511,7 +531,7 @@ export function ArtworkForm({
                         type="text"
                         value={field.value ?? ""}
                         aria-invalid={fieldState.invalid}
-                        placeholder="e.g. 52.520008"
+                        placeholder="Lat. e.g. 52.520008"
                         disabled={!areCoordinatesEditable}
                       />
                       {fieldState.invalid && (
@@ -528,9 +548,9 @@ export function ArtworkForm({
                     <div className="space-y-2">
                       <FieldLabel
                         htmlFor={field.name}
-                        className="text-xs text-muted-foreground"
+                        className="text-xs text-muted-foreground hidden"
                       >
-                        Long.
+                        Longitude
                       </FieldLabel>
                       <Input
                         {...field}
@@ -538,7 +558,7 @@ export function ArtworkForm({
                         type="text"
                         value={field.value ?? ""}
                         aria-invalid={fieldState.invalid}
-                        placeholder="e.g. 13.404954"
+                        placeholder="Long. e.g. 13.404954"
                         disabled={!areCoordinatesEditable}
                       />
                       {fieldState.invalid && (
@@ -549,15 +569,16 @@ export function ArtworkForm({
                 />
               </div>
 
-              {!areCoordinatesEditable ? (
+              {!areCoordinatesEditable && hasAutoExtractedCoordinates ? (
                 <FieldDescription className="text-xs">
                   Geo coordinates were extracted automatically from the uploaded
-                  image.
+                  image. You can unlock them if you want to adjust the location
+                  manually.
                 </FieldDescription>
               ) : (
                 <FieldDescription className="text-xs">
-                  Enter latitude and longitude manually if no geo data could be
-                  extracted.
+                  Enter latitude and longitude manually or select a position on
+                  the map.
                 </FieldDescription>
               )}
             </Field>
@@ -571,12 +592,12 @@ export function ArtworkForm({
                 longitude={watchedLongitude}
                 disabled={!areCoordinatesEditable}
                 onChange={({ lat, lng }) => {
-                  form.setValue("latitude", String(lat), {
+                  form.setValue("latitude", lat.toFixed(6), {
                     shouldValidate: true,
                     shouldDirty: true,
                   });
 
-                  form.setValue("longitude", String(lng), {
+                  form.setValue("longitude", lng.toFixed(6), {
                     shouldValidate: true,
                     shouldDirty: true,
                   });
@@ -600,14 +621,26 @@ export function ArtworkForm({
             />
           </FieldGroup>
           <div className="flex items-center justify-between gap-3 pt-8">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleReset}
-              disabled={isSubmitting}
-            >
-              Reset
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => router.back()}
+                disabled={isSubmitting}
+              >
+                Cancel
+              </Button>
+
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleReset}
+                disabled={isSubmitting}
+              >
+                Reset
+              </Button>
+            </div>
+
             <Button type="submit" disabled={isSubmitting}>
               {isSubmitting
                 ? "Saving..."
