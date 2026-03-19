@@ -70,6 +70,7 @@ type ArtworkPayload = {
   artist: string;
   description: string;
   imageUrl?: string;
+  cloudinaryPublicId?: string;
   latitude?: number;
   longitude?: number;
   tags: string[];
@@ -105,6 +106,7 @@ function buildArtworkPayload(values: ArtworkFormValues): ArtworkPayload {
     artist: values.artist,
     description: values.description,
     imageUrl: values.imageUrl || undefined,
+    cloudinaryPublicId: values.cloudinaryPublicId || undefined,
     latitude: parseCoordinate(values.latitude),
     longitude: parseCoordinate(values.longitude),
     tags: parseTags(values.tags),
@@ -181,6 +183,7 @@ export function ArtworkForm({
     artist: initialValues?.artist ?? "",
     description: initialValues?.description ?? "",
     imageUrl: initialValues?.imageUrl ?? "",
+    cloudinaryPublicId: initialValues?.cloudinaryPublicId ?? "",
     latitude: initialValues?.latitude ?? "",
     longitude: initialValues?.longitude ?? "",
     tags: initialValues?.tags ?? "",
