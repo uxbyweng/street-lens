@@ -8,6 +8,10 @@ import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 import { ArtworkImageUpload } from "@/components/forms/artwork-image-upload";
+import {
+  extractCoordinatesFromImage,
+  uploadImageToCloudinary,
+} from "@/lib/cloudinary/client-upload";
 import { MapPicker } from "@/components/map/map-picker";
 import { FormTextField } from "@/components/forms/form-text-field";
 import { FormTextareaField } from "@/components/forms/form-textarea-field";
@@ -168,12 +172,6 @@ export function ArtworkForm({
   >("default");
   const [areCoordinatesEditable, setAreCoordinatesEditable] = React.useState(
     !initialValues?.latitude || !initialValues?.longitude
-  );
-
-  console.log("cloud name:", process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME);
-  console.log(
-    "upload preset:",
-    process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
   );
 
   // DEFAULT VALUES
