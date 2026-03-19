@@ -592,12 +592,12 @@ export function ArtworkForm({
                 longitude={watchedLongitude}
                 disabled={!areCoordinatesEditable}
                 onChange={({ lat, lng }) => {
-                  form.setValue("latitude", String(lat), {
+                  form.setValue("latitude", lat.toFixed(6), {
                     shouldValidate: true,
                     shouldDirty: true,
                   });
 
-                  form.setValue("longitude", String(lng), {
+                  form.setValue("longitude", lng.toFixed(6), {
                     shouldValidate: true,
                     shouldDirty: true,
                   });
