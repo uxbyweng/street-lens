@@ -325,6 +325,18 @@ export function ArtworkForm({
 
       const secureUrl = uploadResult.secureUrl;
 
+      const publicId = uploadResult.publicId;
+
+      form.setValue("imageUrl", secureUrl, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+
+      form.setValue("cloudinaryPublicId", publicId, {
+        shouldValidate: false,
+        shouldDirty: true,
+      });
+
       form.setValue("imageUrl", secureUrl, {
         shouldValidate: true,
         shouldDirty: true,
