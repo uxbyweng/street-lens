@@ -47,7 +47,7 @@ export function ArtworkImageViewer({ src, alt }: ArtworkImageViewerProps) {
           type="button"
           size="icon"
           variant="secondary"
-          className="absolute right-3 top-3 z-10"
+          className="absolute right-3 top-3 z-10 cursor-pointer"
           onClick={() => setIsFullscreenOpen(true)}
           aria-label="Open image in fullscreen"
         >
@@ -62,7 +62,7 @@ export function ArtworkImageViewer({ src, alt }: ArtworkImageViewerProps) {
               type="button"
               size="icon"
               variant="secondary"
-              className="bg-background/75"
+              className="bg-background/75 cursor-pointer"
               onClick={() => setIsFullscreenOpen(false)}
               aria-label="Close fullscreen image"
             >
