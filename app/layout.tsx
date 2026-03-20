@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { AppShell } from "@/components/layout/app-shell";
 import { Geist, Geist_Mono, Roboto } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
@@ -43,7 +42,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AppShell>{children}</AppShell>
+        {children}
         <Toaster position="top-center" />
       </body>
     </html>
