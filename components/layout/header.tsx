@@ -13,6 +13,7 @@ export default function Header() {
             height={39}
             alt="STREETLIST"
             priority
+            sizes="132px"
           />
         </Link>
 

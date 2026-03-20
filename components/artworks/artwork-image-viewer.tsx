@@ -40,6 +40,7 @@ export function ArtworkImageViewer({ src, alt }: ArtworkImageViewerProps) {
           alt={alt}
           width={1200}
           height={675}
+          sizes="(max-width: 768px) 100vw, 1024px"
           className="aspect-video w-full object-cover"
         />
 
@@ -90,8 +91,8 @@ export function ArtworkImageViewer({ src, alt }: ArtworkImageViewerProps) {
                     alt={alt}
                     width={1600}
                     height={1200}
+                    sizes="100vw"
                     className="h-auto max-h-full w-auto max-w-none object-contain"
-                    priority
                   />
                 </div>
               </TransformComponent>

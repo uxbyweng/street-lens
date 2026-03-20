@@ -22,6 +22,7 @@ export function ArtworkCard({ artwork, href }: ArtworkCardProps) {
             alt={`${artwork.title}${artwork.artist ? ` - ${artwork.artist}` : ""}`}
             width={800}
             height={450}
+            sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
             className="aspect-video w-full object-cover"
           />
 

@@ -90,6 +90,7 @@ export function ArtworksMap({
                     src={artwork.imageUrl ?? "/images/artwork-placeholder.jpg"}
                     alt={artwork.title}
                     fill
+                    sizes="224px"
                     className="object-cover"
                   />
                 </div>
