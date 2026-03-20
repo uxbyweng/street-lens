@@ -1,12 +1,12 @@
-"use client";
+"use client"; // Sagt Next.js: Dies ist ein interaktives Bauteil für den Browser
 
 /* IMPORTS */
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
-import { toast } from "sonner";
-import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod"; // Verbindet Formular mit Validierung
+import { Controller, useForm } from "react-hook-form"; // Das Hauptwerkzeug für Formulare
+import { toast } from "sonner"; // Fehlermeldungen (Popups)
+import * as z from "zod"; // Werkzeug, um Regeln für Eingabefelder festzulegen
 import { ArtworkImageUpload } from "@/components/forms/artwork-image-upload";
 import {
   extractCoordinatesFromImage,
@@ -28,6 +28,7 @@ import {
 import { Input } from "@/components/ui/input";
 
 /* SCHEMA */
+// Definition, was "richtig" ausgefüllt bedeutet.
 const artworkFormSchema = z.object({
   title: z
     .string()
@@ -84,7 +85,7 @@ type ArtworkFormProps = {
 };
 
 /* HELPER FUNCTIONS */
-
+// Text in Zahl umwandeln, falls möglich
 function parseCoordinate(value?: string): number | undefined {
   if (!value) return undefined;
 
@@ -92,6 +93,7 @@ function parseCoordinate(value?: string): number | undefined {
   return Number.isNaN(parsedValue) ? undefined : parsedValue;
 }
 
+//  Text (anhand von Komma) in Array umwandeln
 function parseTags(value?: string): string[] {
   if (!value) return [];
 
@@ -101,6 +103,7 @@ function parseTags(value?: string): string[] {
     .filter(Boolean);
 }
 
+// Formular-Werte in Objekt für Datenbank bündeln
 function buildArtworkPayload(values: ArtworkFormValues): ArtworkPayload {
   return {
     title: values.title,
@@ -116,11 +119,11 @@ function buildArtworkPayload(values: ArtworkFormValues): ArtworkPayload {
 
 const MAX_IMAGE_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
 
-// Save Artwork / API-Kommunikation
+// --- API-FUNKTION: DATEN SPEICHERN ---
 async function saveArtwork(
   payload: ArtworkPayload,
   options: {
-    mode: "create" | "edit";
+    mode: "create" | "edit"; //  neu erstellen (POST) oder editieren (PATCH)
     artworkId?: string;
   }
 ) {
@@ -153,13 +156,14 @@ async function saveArtwork(
   return result;
 }
 
+// --- HAUPT-KOMPONENTE ---
 export function ArtworkForm({
   mode,
   artworkId,
   initialValues,
 }: ArtworkFormProps) {
-  /* HOOKS */
-  const router = useRouter();
+  // STATUS-VARIABLEN (States)
+  const router = useRouter(); // Um User nach dem Speichern weiterzuleiten
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isUploadingImage, setIsUploadingImage] = React.useState(false);
   const [selectedFileName, setSelectedFileName] = React.useState<string | null>(
@@ -194,10 +198,10 @@ export function ArtworkForm({
     tags: initialValues?.tags ?? "",
   };
 
-  // USEFORM
+  // FORMULAR-INITIALISIERUNG
   const form = useForm<ArtworkFormValues>({
     resolver: zodResolver(artworkFormSchema),
-    defaultValues,
+    defaultValues, // Startwerte setzen
   });
 
   // WATCHED VALUES
@@ -259,7 +263,7 @@ export function ArtworkForm({
         return;
       }
 
-      router.replace("/artworks");
+      router.replace("/artworks"); // Zurück zur Übersicht
     } catch (error) {
       console.error(error);
 
@@ -279,6 +283,7 @@ export function ArtworkForm({
   }
 
   // Handle image selection
+  // Wenn User eine Bilddatei auswählt ...
   async function handleImageSelection(file: File) {
     setImageStatusMessage(null);
     setImageStatusVariant("default");
@@ -307,7 +312,7 @@ export function ArtworkForm({
     }
 
     setSelectedFileName(file.name);
-
+    // Vorschau im Browser erstellen
     const localPreviewUrl = URL.createObjectURL(file);
 
     setImagePreviewUrl((current) => {
@@ -316,21 +321,22 @@ export function ArtworkForm({
       }
       return localPreviewUrl;
     });
-
+    // Upload starten
     await handleImageUpload(file);
   }
 
-  // Upload image
+  // Bild  hochladen und GPS-Daten klauen
   async function handleImageUpload(file: File) {
     setIsUploadingImage(true);
 
     try {
-      // 1. versuchen ccordinaten auszulesen
+      // Koordinaten aus dem Bild lesen (falls vorhanden)
       const extractedCoordinates = await extractCoordinatesFromImage(file);
 
-      // 2. Bild zu Cloudinary hochladen
+      // Bild zu Cloudinary schicken
       const uploadResult = await uploadImageToCloudinary(file);
 
+      // SecureURL speichern
       const secureUrl = uploadResult.secureUrl;
 
       const publicId = uploadResult.publicId;
@@ -363,7 +369,7 @@ export function ArtworkForm({
         setImageStatusMessage("Image uploaded and geo coordinates extracted.");
         setImageStatusVariant("success");
         setHasAutoExtractedCoordinates(true);
-        setAreCoordinatesEditable(false);
+        setAreCoordinatesEditable(false); // GPS gefunden? Dann Felder sperren
 
         toast.success("Image uploaded and geo coordinates extracted.", {
           className: "!bg-green-200 !text-green-700 !border-green-500 mt-15",
@@ -378,6 +384,7 @@ export function ArtworkForm({
           shouldValidate: true,
           shouldDirty: true,
         });
+
         setHasAutoExtractedCoordinates(false);
         setAreCoordinatesEditable(true);
         setImageStatusMessage(
@@ -436,6 +443,7 @@ export function ArtworkForm({
     );
   }
 
+  // --- (JSX) ---
   return (
     <Card className="w-full max-w-2xl">
       <CardContent>
@@ -497,8 +505,9 @@ export function ArtworkForm({
               placeholder="Describe the artwork, context, or why it is interesting."
             />
 
-            {/* location */}
+            {/* location Edit Button*/}
             <Field>
+              {/* Edit Button*/}
               <div className="flex items-center justify-between gap-3">
                 <FieldLabel>Location</FieldLabel>
 
@@ -516,6 +525,7 @@ export function ArtworkForm({
                 ) : null}
               </div>
 
+              {/* Koordinaten Felder (Latitude, Longitude) */}
               <div className="grid grid-cols-2 gap-3">
                 <Controller
                   name="latitude"
@@ -572,11 +582,11 @@ export function ArtworkForm({
                 />
               </div>
 
+              {/* Hinweis zum Editieren der Koordinaten  */}
               {!areCoordinatesEditable && hasAutoExtractedCoordinates ? (
                 <FieldDescription className="text-xs">
                   Geo coordinates were extracted automatically from the uploaded
-                  image. You can unlock them if you want to adjust the location
-                  manually.
+                  image. Click Edit to adjust the location manually.
                 </FieldDescription>
               ) : (
                 <FieldDescription className="text-xs">
