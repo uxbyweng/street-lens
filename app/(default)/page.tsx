@@ -1,5 +1,3 @@
-// app\page.tsx
-
 import { ArtworkList } from "@/components/artworks/artwork-list";
 import { getLatestArtworks } from "@/lib/data/artworks";
 
