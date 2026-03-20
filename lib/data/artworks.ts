@@ -19,7 +19,7 @@ function toIsoString(value: unknown): string | undefined {
   }
 
   // Wenn Wert String oder Zahl,
-  // versuche wir darau ein Date-Objekt zu bauen.
+  // versuche daraus ein Date-Objekt zu bauen.
   if (typeof value === "string" || typeof value === "number") {
     const date = new Date(value);
 

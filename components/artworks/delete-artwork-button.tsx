@@ -7,6 +7,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { IconPencil, IconTrash } from "@tabler/icons-react";
 
+// Mitteilen, was die Komponente von außen wissen muss
+// -> ID und den Namen des Kunstwerks
 type DeleteArtworkButtonProps = {
   artworkId: string;
   artworkTitle: string;
@@ -18,7 +20,7 @@ export function DeleteArtworkButton({ artworkId }: DeleteArtworkButtonProps) {
   const [isDeleting, setIsDeleting] = React.useState(false);
 
   async function handleDelete() {
-    setIsDeleting(true);
+    setIsDeleting(true); // Button sperren und "Lösche..." anzeigen
 
     try {
       const response = await fetch(`/api/artworks/${artworkId}`, {
