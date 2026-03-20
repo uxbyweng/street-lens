@@ -12,7 +12,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import type { Artwork } from "@/types/artwork";
-import { useUserLocation } from "@/lib/hooks/use-user-location";
+import { getStoredUserLocation } from "@/lib/location/storage";
+import { useState } from "react";
 
 type ArtworksMapProps = {
   artworks: Artwork[];
@@ -30,21 +31,26 @@ const MAP_STYLES = {
   dark: "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
 };
 
+function getInitialCenter(): [number, number] {
+  const stored = getStoredUserLocation();
+
+  if (stored) {
+    return [stored.lng, stored.lat];
+  }
+
+  return [DEFAULT_LOCATION.lng, DEFAULT_LOCATION.lat];
+}
+
 export function ArtworksMap({
   artworks,
   showControls = true,
   className,
 }: ArtworksMapProps) {
-  const { location } = useUserLocation();
-
-  const initialCenter: [number, number] = location
-    ? [location.lng, location.lat]
-    : [DEFAULT_LOCATION.lng, DEFAULT_LOCATION.lat];
+  const [initialCenter] = useState<[number, number]>(() => getInitialCenter());
 
   return (
     <div className={cn("h-full overflow-hidden", className)}>
       <Map
-        key={`${initialCenter[0]}-${initialCenter[1]}`}
         className="h-full w-full"
         viewport={{
           center: initialCenter,
@@ -84,6 +90,7 @@ export function ArtworksMap({
                     src={artwork.imageUrl ?? "/images/artwork-placeholder.jpg"}
                     alt={artwork.title}
                     fill
+                    sizes="224px"
                     className="object-cover"
                   />
                 </div>

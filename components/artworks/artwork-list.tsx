@@ -20,12 +20,12 @@ export function ArtworkList({ artworks = [] }: ArtworkListProps) {
 
   return (
     <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {artworks.map((artwork) => (
+      {artworks.map((artwork, index) => (
         <li key={artwork._id}>
           <ArtworkCard
-            key={artwork._id}
             artwork={artwork}
             href={`/artworks/${artwork._id}`}
+            index={index}
           />
         </li>
       ))}

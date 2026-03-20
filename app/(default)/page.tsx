@@ -1,5 +1,3 @@
-// app\page.tsx
-
 import { ArtworkList } from "@/components/artworks/artwork-list";
 import { getLatestArtworks } from "@/lib/data/artworks";
 
@@ -21,9 +19,7 @@ export default async function HomePage() {
         }}
       />
 
-      {/* <TestToastButton /> */}
-
-      <section className="mx-auto mt-8 max-w-6xl">
+      <section className="mt-8">
         <h2 className="text-lg font-semibold mb-4">Recently added ...</h2>
         <ArtworkList artworks={latestArtworks} />
       </section>

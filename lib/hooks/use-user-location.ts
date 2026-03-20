@@ -1,6 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import {
+  getStoredUserLocation,
+  setStoredUserLocation,
+} from "@/lib/location/storage";
+import { toast } from "sonner";
 
 type Coordinates = {
   lat: number;
@@ -9,42 +14,33 @@ type Coordinates = {
 
 type UseUserLocationReturn = {
   location: Coordinates | null;
-  isLoading: boolean;
+  isRequesting: boolean;
   error: string | null;
 };
 
-const STORAGE_KEY = "userLocation";
-
 export function useUserLocation(): UseUserLocationReturn {
   const [location, setLocation] = useState<Coordinates | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isRequesting, setIsRequesting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const hasRequestedRef = useRef(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
+    const stored = getStoredUserLocation();
 
     if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-
-        if (
-          typeof parsed?.lat === "number" &&
-          typeof parsed?.lng === "number"
-        ) {
-          setLocation(parsed);
-          setIsLoading(false);
-          return;
-        }
-      } catch {
-        // ignore broken storage
-      }
-    }
-
-    if (!navigator.geolocation) {
-      setError("Geolocation is not supported.");
-      setIsLoading(false);
+      setLocation({ lat: stored.lat, lng: stored.lng });
       return;
     }
+
+    if (hasRequestedRef.current) return;
+    hasRequestedRef.current = true;
+
+    if (!navigator.geolocation) {
+      toast.message("Geolocation is not supported on this device.");
+      return;
+    }
+
+    setIsRequesting(true);
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -54,27 +50,30 @@ export function useUserLocation(): UseUserLocationReturn {
         };
 
         setLocation(coords);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(coords));
-        setIsLoading(false);
+        setStoredUserLocation(coords);
+        setError(null);
+        setIsRequesting(false);
       },
       (err) => {
         if (err.code === err.PERMISSION_DENIED) {
           setError("Location permission denied.");
         } else if (err.code === err.POSITION_UNAVAILABLE) {
-          console.warn("Geolocation unavailable.");
           setError("Location unavailable.");
         } else if (err.code === err.TIMEOUT) {
-          console.warn("Geolocation request timed out.");
           setError("Location request timed out.");
         } else {
-          console.warn("Unknown geolocation error.");
           setError("Could not retrieve location.");
         }
 
-        setIsLoading(false);
+        setIsRequesting(false);
+      },
+      {
+        enableHighAccuracy: false,
+        timeout: 8000,
+        maximumAge: 5 * 60 * 1000,
       }
     );
   }, []);
 
-  return { location, isLoading, error };
+  return { location, isRequesting, error };
 }

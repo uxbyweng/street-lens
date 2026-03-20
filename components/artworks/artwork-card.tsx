@@ -7,9 +7,12 @@ import type { Artwork } from "@/types/artwork";
 type ArtworkCardProps = {
   artwork: Artwork;
   href: string;
+  index: number;
 };
 
-export function ArtworkCard({ artwork, href }: ArtworkCardProps) {
+export function ArtworkCard({ artwork, href, index }: ArtworkCardProps) {
+  const shouldPreload = index < 3;
+
   return (
     <Card className="mx-auto flex h-full w-full max-w-sm flex-col overflow-hidden py-0 transition hover:shadow-md">
       <Link
@@ -22,6 +25,8 @@ export function ArtworkCard({ artwork, href }: ArtworkCardProps) {
             alt={`${artwork.title}${artwork.artist ? ` - ${artwork.artist}` : ""}`}
             width={800}
             height={450}
+            sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
+            preload={shouldPreload}
             className="aspect-video w-full object-cover"
           />
 

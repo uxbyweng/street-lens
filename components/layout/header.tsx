@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { MobileMenu } from "@/components/layout/mobile-menu";
+import { PrefetchingLink } from "@/components/navigation/prefetching-link";
 
 export default function Header() {
   return (
@@ -13,6 +14,7 @@ export default function Header() {
             height={39}
             alt="STREETLIST"
             priority
+            sizes="132px"
           />
         </Link>
 
@@ -20,9 +22,9 @@ export default function Header() {
           <Link href="/" className="hover:underline">
             Home
           </Link>
-          <Link href="/map" className="hover:underline">
+          <PrefetchingLink href="/map" className="hover:underline">
             Map
-          </Link>
+          </PrefetchingLink>
           <Link href="/artworks" className="hover:underline">
             Artworks
           </Link>
