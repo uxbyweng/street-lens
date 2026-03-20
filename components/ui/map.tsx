@@ -17,6 +17,7 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { X, Minus, Plus, Locate, Maximize, Loader2 } from "lucide-react";
+import { setStoredUserLocation } from "@/lib/location/storage";
 import { toast } from "sonner";
 
 import { cn } from "@/lib/utils";
@@ -806,6 +807,10 @@ function MapControls({
           longitude: pos.coords.longitude,
           latitude: pos.coords.latitude,
         };
+        setStoredUserLocation({
+          lat: coords.latitude,
+          lng: coords.longitude,
+        });
 
         map?.flyTo({
           center: [coords.longitude, coords.latitude],
