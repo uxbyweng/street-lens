@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Roboto } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { UserLocationBootstrap } from "@/components/location/user-location-bootstrap";
 import { Toaster } from "@/components/ui/sonner";
 
 const roboto = Roboto({
@@ -42,6 +43,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <UserLocationBootstrap />
         {children}
         <Toaster position="top-center" />
       </body>

@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   getStoredUserLocation,
   setStoredUserLocation,
 } from "@/lib/location/storage";
+import { toast } from "sonner";
 
 type Coordinates = {
   lat: number;
@@ -21,6 +22,7 @@ export function useUserLocation(): UseUserLocationReturn {
   const [location, setLocation] = useState<Coordinates | null>(null);
   const [isRequesting, setIsRequesting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const hasRequestedRef = useRef(false);
 
   useEffect(() => {
     const stored = getStoredUserLocation();
@@ -30,8 +32,11 @@ export function useUserLocation(): UseUserLocationReturn {
       return;
     }
 
+    if (hasRequestedRef.current) return;
+    hasRequestedRef.current = true;
+
     if (!navigator.geolocation) {
-      setError("Geolocation is not supported.");
+      toast.message("Geolocation is not supported on this device.");
       return;
     }
 

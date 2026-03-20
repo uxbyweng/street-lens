@@ -12,7 +12,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import type { Artwork } from "@/types/artwork";
-import { useUserLocation } from "@/lib/hooks/use-user-location";
 import { getStoredUserLocation } from "@/lib/location/storage";
 import { useState } from "react";
 
@@ -48,8 +47,6 @@ export function ArtworksMap({
   className,
 }: ArtworksMapProps) {
   const [initialCenter] = useState<[number, number]>(() => getInitialCenter());
-
-  useUserLocation();
 
   return (
     <div className={cn("h-full overflow-hidden", className)}>
