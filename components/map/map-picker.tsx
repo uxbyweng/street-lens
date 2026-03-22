@@ -118,7 +118,7 @@ export function MapPicker({
             position="bottom-right"
             showZoom
             showCompass={false}
-            showLocate={false}
+            showLocate={true}
             showFullscreen={false}
           />
         ) : null}

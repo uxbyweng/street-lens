@@ -14,7 +14,7 @@ export default function ImprintPage() {
         subtitle="Mandatory legal notice pursuant to German law."
         className="mb-6"
       />
-      <section className="rounded-2xl border bg-card p-6">
+      <section className="p-6">
         <div className="mt-2 space-y-6 text-sm leading-6">
           <section>
             <h2 className="text-base font-semibold">1. Service Provider</h2>

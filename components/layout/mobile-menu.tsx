@@ -12,8 +12,8 @@ import {
 
 const navItems = [
   { href: "/", label: "Home" },
-  { href: "/map", label: "Map View" },
-  { href: "/artworks", label: "Artwork List" },
+  { href: "/map", label: "Map" },
+  { href: "/artworks", label: "Artworks" },
   { href: "/artworks/new", label: "Add Artwork" },
   { href: "/imprint", label: "Imprint" },
 ];

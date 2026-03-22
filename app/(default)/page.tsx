@@ -13,14 +13,6 @@ export default async function HomePage() {
       <div className="relative w-full h-[calc(100vh-5rem)] md:h-[calc(100vh-5rem)] overflow-hidden">
         <HeroSlider />
       </div>
-      {/* <PageIntro
-        title="Track street art."
-        subtitle="Save artworks with photos, notes, and location."
-        action={{
-          label: "Add artwork",
-          href: "/artworks/new",
-        }}
-      /> */}
 
       <section className="mx-auto max-w-6xl my-8 px-4">
         <h2 className="text-lg font-semibold mb-4">Recently added ...</h2>

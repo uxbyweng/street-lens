@@ -22,9 +22,10 @@ export default async function ArtworksPage() {
           label: "Add artwork",
           href: "/artworks/new",
         }}
+        className="max-w-6xl"
       />
 
-      <section className="mx-auto mt-8 max-w-6xl">
+      <section className="mx-auto max-w-6xl my-8 px-4">
         <ArtworkList artworks={artworks} />
       </section>
     </>
