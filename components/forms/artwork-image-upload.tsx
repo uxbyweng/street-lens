@@ -145,7 +145,7 @@ export function ArtworkImageUpload({
 
         <div className="space-y-1">
           <p className="text-xs text-muted-foreground">
-            Max. 4.5 MB · JPG, PNG, WebP
+            Max. 10 MB · JPG, PNG, WebP
           </p>
 
           {selectedFileName ? (

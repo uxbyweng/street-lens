@@ -143,4 +143,7 @@
   .link-primary {
     @apply text-sky-400 underline underline-offset-2 transition-colors hover:text-sky-800;
   }
+  .bg-primary {
+    background-color: var(--color-sky-600);
+  }
 }
