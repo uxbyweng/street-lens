@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { TextLink } from "@/components/ui/text-link";
 import {
@@ -12,14 +13,15 @@ import {
 
 const navItems = [
   { href: "/", label: "Home" },
-  { href: "/map", label: "Map View" },
-  { href: "/artworks", label: "Artwork List" },
-  { href: "/artworks/new", label: "Add Artwork" },
+  { href: "/map", label: "Map" },
+  { href: "/artworks", label: "Artworks" },
+  //   { href: "/artworks/new", label: "Add Artwork" },
   { href: "/imprint", label: "Imprint" },
 ];
 
 export function MobileMenu() {
   const [isOpen, setIsOpen] = React.useState(false);
+  const pathname = usePathname();
 
   React.useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
@@ -31,6 +33,11 @@ export function MobileMenu() {
 
   function closeMenu() {
     setIsOpen(false);
+  }
+
+  function isActive(href: string) {
+    if (href === "/") return pathname === "/";
+    return pathname === href;
   }
 
   return (
@@ -82,14 +89,16 @@ export function MobileMenu() {
                   <Link
                     href={item.href}
                     onClick={closeMenu}
-                    className="text-xl font-semibold"
+                    className={`text-2xl font-fjalla uppercase transition-colors ${
+                      isActive(item.href) ? "text-pink-500" : "text-foreground"
+                    }`}
                   >
                     {item.label}
                   </Link>
                 </li>
               ))}
 
-              <li>
+              {/* <li>
                 <Button
                   asChild
                   type="button"
@@ -101,35 +110,47 @@ export function MobileMenu() {
                     Login
                   </Link>
                 </Button>
-              </li>
+              </li> */}
             </ul>
           </nav>
 
           <div className="mt-8 space-y-3">
-            <p className="text-sm font-medium text-muted-foreground">
+            <p className="text-lg font-medium text-muted-foreground">
               Get in touch
             </p>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
               <TextLink
                 href="https://github.com/uxbyweng/street-lens"
                 target="_blank"
               >
-                <IconBrandGithub size={20} stroke={1.8} />
+                <IconBrandGithub
+                  size={40}
+                  stroke={1.8}
+                  className="text-sky-600"
+                />
               </TextLink>
 
               <TextLink
                 href="https://www.linkedin.com/in/kweng/"
                 target="_blank"
               >
-                <IconBrandLinkedin size={20} stroke={1.8} />
+                <IconBrandLinkedin
+                  size={40}
+                  stroke={1.8}
+                  className="text-sky-600"
+                />
               </TextLink>
 
               <TextLink
                 href="https://www.instagram.com/blnstreetview/"
                 target="_blank"
               >
-                <IconBrandInstagram size={20} stroke={1.8} />
+                <IconBrandInstagram
+                  size={40}
+                  stroke={1.8}
+                  className="text-sky-600"
+                />
               </TextLink>
             </div>
           </div>

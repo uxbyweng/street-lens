@@ -55,6 +55,8 @@ export function ArtworksMap({
         viewport={{
           center: initialCenter,
           zoom: 14,
+          pitch: 60,
+          bearing: -20,
         }}
         styles={MAP_STYLES}
       >

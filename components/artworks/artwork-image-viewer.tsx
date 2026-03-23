@@ -114,7 +114,7 @@ export function ArtworkImageViewer({ src, alt }: ArtworkImageViewerProps) {
           width={1200}
           height={675}
           sizes="(max-width: 768px) 100vw, 1024px"
-          className="aspect-video w-full object-cover"
+          className="aspect-video lg:aspect-auto lg:max-h-120 w-full object-cover top-0"
         />
 
         <Button

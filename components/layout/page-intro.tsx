@@ -19,9 +19,9 @@ export function PageIntro({
   className,
 }: PageIntroProps) {
   return (
-    <section className={cn("mx-auto rounded-2xl p-2", className)}>
-      <h1 className="text-2xl font-semibold">{title}</h1>
-      <p className="mt-3 text-sm text-muted-foreground">{subtitle}</p>
+    <section className={cn("mx-auto rounded-2xl px-5 py-8", className)}>
+      <h1 className="font-fjalla text-4xl font-semibold uppercase">{title}</h1>
+      <p className="mt-3 text-pink-500 text-lg mb-2">{subtitle}</p>
 
       {action ? (
         <Button asChild className="mt-4">

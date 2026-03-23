@@ -445,7 +445,7 @@ export function ArtworkForm({
 
   // --- (JSX) ---
   return (
-    <Card className="w-full max-w-2xl">
+    <Card className="w-full bg-background border-0">
       <CardContent>
         <form id="artwork-form" onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>

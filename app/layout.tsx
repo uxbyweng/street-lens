@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Roboto } from "next/font/google";
+import { Geist, Geist_Mono, Roboto, Fjalla_One } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { UserLocationBootstrap } from "@/components/location/user-location-bootstrap";
-import { MapRoutePrefetch } from "@/components/navigation/map-route-prefetch";
+// import { MapRoutePrefetch } from "@/components/navigation/map-route-prefetch";
 import { Toaster } from "@/components/ui/sonner";
+
+const fjallaOne = Fjalla_One({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-fjalla-one",
+});
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -40,12 +46,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="de" className={cn("font-sans", roboto.variable)}>
+    <html
+      lang="de"
+      className={cn("dark font-sans", roboto.variable, fjallaOne.variable)}
+    >
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={cn(geistSans.variable, geistMono.variable, "antialiased")}
       >
         <UserLocationBootstrap />
-        <MapRoutePrefetch />
+        {/* <MapRoutePrefetch /> */}
         {children}
         <Toaster position="top-center" />
       </body>

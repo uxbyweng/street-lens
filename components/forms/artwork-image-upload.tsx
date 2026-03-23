@@ -64,7 +64,7 @@ export function ArtworkImageUpload({
   if (imagePreviewUrl) {
     return (
       <div className="space-y-3">
-        <div className="overflow-hidden rounded-xl border bg-muted">
+        <div className="overflow-hidden rounded-xl border">
           <div className="relative aspect-video w-full">
             <Image
               src={imagePreviewUrl}

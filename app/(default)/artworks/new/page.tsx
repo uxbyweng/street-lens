@@ -16,7 +16,7 @@ export default function NewArtworkPage() {
         className="max-w-6xl"
       />
 
-      <section className="mx-auto mt-8 max-w-6xl">
+      <section className="mx-auto max-w-4xl my-8 px-4">
         <ArtworkForm mode="create" />
       </section>
     </>
