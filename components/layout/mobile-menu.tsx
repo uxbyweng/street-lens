@@ -15,7 +15,7 @@ const navItems = [
   { href: "/", label: "Home" },
   { href: "/map", label: "Map" },
   { href: "/artworks", label: "Artworks" },
-  { href: "/artworks/new", label: "Add Artwork" },
+  //   { href: "/artworks/new", label: "Add Artwork" },
   { href: "/imprint", label: "Imprint" },
 ];
 
@@ -98,7 +98,7 @@ export function MobileMenu() {
                 </li>
               ))}
 
-              <li>
+              {/* <li>
                 <Button
                   asChild
                   type="button"
@@ -110,7 +110,7 @@ export function MobileMenu() {
                     Login
                   </Link>
                 </Button>
-              </li>
+              </li> */}
             </ul>
           </nav>
 

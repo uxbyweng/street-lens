@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -14,6 +15,7 @@ interface Slide {
   title: string;
   subtitle: string;
   cta?: string;
+  href?: string;
   imagePositionX?: string;
 }
 
@@ -24,6 +26,7 @@ const slides: Slide[] = [
     title: "EXPLORE STREET ART IN BERLIN",
     subtitle: "Capture murals, tags, and locations as you explore the city",
     cta: "START EXPLORING",
+    href: "/artworks",
     imagePositionX: "80%",
   },
   {
@@ -33,6 +36,7 @@ const slides: Slide[] = [
     subtitle:
       "Find striking murals and iconic walls across the urban landscape.",
     cta: "VIEW ARTWORKS",
+    href: "/artworks",
     imagePositionX: "70%",
   },
   {
@@ -41,6 +45,7 @@ const slides: Slide[] = [
     title: "FIND COLORFUL MURALS",
     subtitle: "Explore hidden spots and uncover vibrant walls across the city.",
     cta: "OPEN MAP",
+    href: "/map",
     imagePositionX: "40%",
   },
   {
@@ -49,6 +54,7 @@ const slides: Slide[] = [
     title: "MEET THE ARTISTS",
     subtitle: "Discover the names, styles, and stories behind urban artworks.",
     cta: "VIEW ARTISTS",
+    href: "/artists",
     imagePositionX: "90%",
   },
   {
@@ -58,6 +64,7 @@ const slides: Slide[] = [
     subtitle:
       "Find new spots, revisit favorites, and explore urban art routes.",
     cta: "START EXPLORING",
+    href: "/artworks",
     imagePositionX: "75%",
   },
 ];
@@ -120,13 +127,23 @@ export function HeroSlider() {
                       <h2 className="text-pink-600 text-xl mb-2">
                         {slide.subtitle}
                       </h2>
-                      <button className="inline-flex items-center gap-2 text-pink-600 hover:text-white border-1 border-pink-600 hover:border-white p-4 font-medium text-sm hover:text-pink-500 transition-colors group">
-                        <span>{slide.cta}</span>
-                        <ChevronRight
-                          size={20}
-                          className="group-hover:translate-x-1 transition-transform"
-                        />
-                      </button>
+                      {slide.cta && slide.href ? (
+                        <div className="mt-8">
+                          <h2 className="mb-2 text-xl text-pink-600">
+                            {slide.subtitle}
+                          </h2>
+                          <Link
+                            href={slide.href}
+                            className="group inline-flex items-center gap-2 border border-pink-600 p-4 text-sm font-medium text-pink-600 transition-colors hover:border-white hover:text-white"
+                          >
+                            <span>{slide.cta}</span>
+                            <ChevronRight
+                              size={20}
+                              className="transition-transform group-hover:translate-x-1"
+                            />
+                          </Link>
+                        </div>
+                      ) : null}
                     </div>
                   )}
                 </div>
