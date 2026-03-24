@@ -3,25 +3,31 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { TextLink } from "@/components/ui/text-link";
+import { AuthDropdown } from "@/components/auth/auth-dropdown";
 import {
   IconBrandGithub,
   IconBrandLinkedin,
   IconBrandInstagram,
 } from "@tabler/icons-react";
 
-const navItems = [
-  { href: "/", label: "Home" },
-  { href: "/map", label: "Map" },
-  { href: "/artworks", label: "Artworks" },
-  //   { href: "/artworks/new", label: "Add Artwork" },
-  { href: "/imprint", label: "Imprint" },
-];
-
 export function MobileMenu() {
   const [isOpen, setIsOpen] = React.useState(false);
   const pathname = usePathname();
+  const { data: session, status } = useSession();
+
+  const isAdmin = session?.user?.role === "admin";
+
+  const navItems = [
+    { href: "/", label: "Home" },
+    { href: "/map", label: "Map" },
+    { href: "/artworks", label: "Artworks" },
+    ...(isAdmin ? [{ href: "/artworks/new", label: "Add Artwork" }] : []),
+    { href: "/imprint", label: "Imprint" },
+    ...(session?.user ? [{ href: "/profile", label: "Profile" }] : []),
+  ];
 
   React.useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
@@ -43,6 +49,8 @@ export function MobileMenu() {
   return (
     <>
       <div className="flex items-center gap-3 md:hidden">
+        {session?.user ? <AuthDropdown /> : null}
+
         <button
           type="button"
           aria-label="Open menu"
@@ -73,7 +81,7 @@ export function MobileMenu() {
       </div>
 
       <div
-        className={`fixed inset-0 z-40 md:hidden transition-opacity duration-400 ${
+        className={`fixed inset-0 z-40 transition-opacity duration-400 md:hidden ${
           isOpen
             ? "pointer-events-auto opacity-100"
             : "pointer-events-none opacity-0"
@@ -98,19 +106,36 @@ export function MobileMenu() {
                 </li>
               ))}
 
-              {/* <li>
-                <Button
-                  asChild
-                  type="button"
-                  variant="default"
-                  size="lg"
-                  className="mt-5 w-30"
-                >
-                  <Link href="#" onClick={closeMenu}>
-                    Login
-                  </Link>
-                </Button>
-              </li> */}
+              <li className="pt-4">
+                {status === "loading" ? (
+                  <span className="text-sm">Loading...</span>
+                ) : !session?.user ? (
+                  <Button
+                    type="button"
+                    variant="default"
+                    size="lg"
+                    className="mt-2 w-32"
+                    onClick={() => {
+                      closeMenu();
+                      signIn("github");
+                    }}
+                  >
+                    Sign in
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="justify-start"
+                    onClick={() => {
+                      closeMenu();
+                      signOut({ callbackUrl: "/" });
+                    }}
+                  >
+                    Sign out
+                  </Button>
+                )}
+              </li>
             </ul>
           </nav>
 
