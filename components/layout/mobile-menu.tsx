@@ -84,7 +84,7 @@ export function MobileMenu() {
             : "pointer-events-none opacity-0"
         }`}
       >
-        <div className="absolute inset-0 bg-background/99 backdrop-blur-sm" />
+        <div className="absolute inset-0 bg-background/99  backdrop-blur-sm" />
 
         <div className="relative flex h-full flex-col px-6 pb-8 pt-24">
           <nav className="flex flex-1 flex-col">
@@ -103,7 +103,7 @@ export function MobileMenu() {
                 </li>
               ))}
 
-              <li className="pt-4">
+              <li className="pb-3">
                 {status === "loading" ? (
                   <span className="text-sm">Loading...</span>
                 ) : !session?.user ? (
@@ -121,7 +121,7 @@ export function MobileMenu() {
                 ) : (
                   <Button
                     type="button"
-                    variant="outline"
+                    variant="default"
                     className="justify-start"
                     onClick={() => {
                       closeMenu();
