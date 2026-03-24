@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import { Types } from "mongoose";
-import { connectDB } from "@/lib/db/mongodb";
-import { Artwork } from "@/lib/models/artwork";
 import { revalidatePath } from "next/cache";
 import { v2 as cloudinary } from "cloudinary";
+import { auth } from "@/auth";
+import { connectDB } from "@/lib/db/mongodb";
+import { Artwork } from "@/lib/models/artwork";
 
 type RouteContext = {
   params: Promise<{
@@ -17,8 +18,35 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_SECRET,
 });
 
+async function requireAdmin() {
+  const session = await auth();
+
+  if (!session?.user) {
+    return {
+      error: NextResponse.json(
+        { ok: false, message: "Not authorized." },
+        { status: 401 }
+      ),
+    };
+  }
+
+  if (session.user.role !== "admin") {
+    return {
+      error: NextResponse.json(
+        { ok: false, message: "Forbidden." },
+        { status: 403 }
+      ),
+    };
+  }
+
+  return { session };
+}
+
 export async function PATCH(request: Request, { params }: RouteContext) {
   try {
+    const authResult = await requireAdmin();
+    if ("error" in authResult) return authResult.error;
+
     await connectDB();
 
     const { id } = await params;
@@ -60,6 +88,7 @@ export async function PATCH(request: Request, { params }: RouteContext) {
     revalidatePath("/");
     revalidatePath("/artworks");
     revalidatePath(`/artworks/${id}`);
+    revalidatePath("/map");
 
     return NextResponse.json(
       { ok: true, data: updatedArtwork },
@@ -77,6 +106,9 @@ export async function PATCH(request: Request, { params }: RouteContext) {
 
 export async function DELETE(_request: Request, { params }: RouteContext) {
   try {
+    const authResult = await requireAdmin();
+    if ("error" in authResult) return authResult.error;
+
     await connectDB();
 
     const { id } = await params;
