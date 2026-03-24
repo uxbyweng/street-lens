@@ -52,6 +52,15 @@ export default function LoginPage() {
           Sign in with GitHub
         </Button>
 
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full"
+          onClick={() => signIn("google", { redirectTo: "/" })}
+        >
+          Sign in with Google
+        </Button>
+
         {isPreview ? (
           <form
             onSubmit={handlePreviewLogin}

@@ -8,10 +8,16 @@ import {
 
 const userSchema = new Schema(
   {
-    githubId: {
+    provider: {
+      type: String,
+      enum: ["github", "google", "credentials"],
+      required: true,
+      index: true,
+      trim: true,
+    },
+    providerAccountId: {
       type: String,
       required: true,
-      unique: true,
       index: true,
       trim: true,
     },
@@ -43,6 +49,8 @@ const userSchema = new Schema(
     timestamps: true,
   }
 );
+
+userSchema.index({ provider: 1, providerAccountId: 1 }, { unique: true });
 
 export type UserDocument = InferSchemaType<typeof userSchema>;
 
