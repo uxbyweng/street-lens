@@ -18,14 +18,10 @@ export function MobileMenu() {
   const pathname = usePathname();
   const { data: session, status } = useSession();
 
-  const isAdmin = session?.user?.role === "admin";
-
   const navItems = [
     { href: "/", label: "Home" },
     { href: "/map", label: "Map" },
     { href: "/artworks", label: "Artworks" },
-    ...(isAdmin ? [{ href: "/artworks/new", label: "Add Artwork" }] : []),
-    { href: "/imprint", label: "Imprint" },
     ...(session?.user ? [{ href: "/profile", label: "Profile" }] : []),
   ];
 
@@ -51,6 +47,7 @@ export function MobileMenu() {
       <div className="flex items-center gap-3 md:hidden">
         {session?.user ? <AuthDropdown /> : null}
 
+        {/* Hamburger Menu-Icon */}
         <button
           type="button"
           aria-label="Open menu"
@@ -175,6 +172,18 @@ export function MobileMenu() {
                   stroke={1.8}
                   className="text-sky-600"
                 />
+              </TextLink>
+            </div>
+            <div className="flex items-center gap-2">
+              <p className="text-xs text-muted-foreground">
+                &#169;2016 WENG.EU |{" "}
+              </p>
+              <TextLink
+                href="/imprint"
+                target="_self"
+                className="text-xs text-muted-foreground"
+              >
+                Imprint
               </TextLink>
             </div>
           </div>

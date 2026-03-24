@@ -1,7 +1,6 @@
 import { ArtworkList } from "@/components/artworks/artwork-list";
 import { getLatestArtworks } from "@/lib/data/artworks";
 import { HeroSlider } from "@/components/HeroSlider";
-// import { PageIntro } from "@/components/layout/page-intro";
 
 export const dynamic = "force-dynamic";
 

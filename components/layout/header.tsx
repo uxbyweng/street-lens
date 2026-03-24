@@ -3,21 +3,17 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { MobileMenu } from "@/components/layout/mobile-menu";
 import { PrefetchingLink } from "@/components/navigation/prefetching-link";
 import { AuthDropdown } from "@/components/auth/auth-dropdown";
 
 export default function Header() {
   const pathname = usePathname();
-  const { data: session } = useSession();
 
   function isActive(href: string) {
     if (href === "/") return pathname === "/";
     return pathname === href;
   }
-
-  const isAdmin = session?.user?.role === "admin";
 
   return (
     <header className="sticky top-0 z-50 border-b bg-background">
@@ -61,19 +57,6 @@ export default function Header() {
             >
               Artworks
             </Link>
-
-            {isAdmin ? (
-              <Link
-                href="/artworks/new"
-                className={`transition-colors hover:underline ${
-                  isActive("/artworks/new")
-                    ? "text-pink-500"
-                    : "text-foreground"
-                }`}
-              >
-                Add Artwork
-              </Link>
-            ) : null}
           </nav>
 
           <div className="ml-2">
