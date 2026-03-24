@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { auth } from "@/auth";
 import { ArtworkImageViewer } from "@/components/artworks/artwork-image-viewer";
 import { MapPicker } from "@/components/map/map-picker";
 import { Button } from "@/components/ui/button";
@@ -18,7 +19,10 @@ type ArtworkDetailProps = {
   artwork: Artwork;
 };
 
-export function ArtworkDetail({ artwork }: ArtworkDetailProps) {
+export async function ArtworkDetail({ artwork }: ArtworkDetailProps) {
+  const session = await auth();
+  const isAdmin = session?.user?.role === "admin";
+
   const hasCoordinates = artwork.latitude != null && artwork.longitude != null;
   const hasCreatedAt = artwork.createdAt != null;
   const hasUpdatedAt = artwork.updatedAt != null;
@@ -33,14 +37,14 @@ export function ArtworkDetail({ artwork }: ArtworkDetailProps) {
         src={artwork.imageUrl ?? "/images/placeholder.jpg"}
         alt={`${artwork.title}${artwork.artist ? ` - ${artwork.artist}` : ""}`}
       />
-      <Card className="mx-auto w-full max-w-3xl overflow-hidden pt-8 border-0 rounded-none bg-background">
+      <Card className="mx-auto w-full max-w-3xl overflow-hidden border-0 rounded-none bg-background pt-8">
         <CardHeader className="space-y-2">
           <CardTitle className="font-fjalla text-4xl sm:text-6xl">
             {artwork.title}
           </CardTitle>
 
           {artwork.artist ? (
-            <CardDescription className="font-fjalla text-pink-600 text-2xl sm:text-4xl">
+            <CardDescription className="font-fjalla text-2xl text-pink-600 sm:text-4xl">
               {artwork.artist}
             </CardDescription>
           ) : null}
@@ -86,7 +90,7 @@ export function ArtworkDetail({ artwork }: ArtworkDetailProps) {
                   <Link
                     key={tag}
                     href={`/artworks?tag=${encodeURIComponent(tag)}`}
-                    className="bg-pink-400/30 inline-flex items-center rounded-full border px-3 py-1 text-xs text-muted-foreground transition hover:bg-orange-500/50 hover:text-foreground"
+                    className="inline-flex items-center rounded-full border bg-pink-400/30 px-3 py-1 text-xs text-muted-foreground transition hover:bg-orange-500/50 hover:text-foreground"
                   >
                     #{tag}
                   </Link>
@@ -96,28 +100,30 @@ export function ArtworkDetail({ artwork }: ArtworkDetailProps) {
           ) : null}
         </div>
 
-        {/* SHOW ONLY WHEN LOGGED IN */}
-        <CardFooter className="border-t px-6 py-4">
-          <div className="grid gap-5 sm:grid-cols-4">
-            {hasCreatedAt ? (
-              <div className="space-y-1 text-sm text-muted-foreground">
-                <p className="font-medium text-foreground">Date created</p>
-                <p className="text-xs">{formatDate(artwork.createdAt!)}</p>
-              </div>
-            ) : null}
+        {isAdmin ? (
+          <CardFooter className="border-t px-6 py-4">
+            <div className="grid gap-5 sm:grid-cols-4">
+              {hasCreatedAt ? (
+                <div className="space-y-1 text-sm text-muted-foreground">
+                  <p className="font-medium text-foreground">Date created</p>
+                  <p className="text-xs">{formatDate(artwork.createdAt!)}</p>
+                </div>
+              ) : null}
 
-            {hasUpdatedAt ? (
-              <div className="space-y-1 text-sm text-muted-foreground">
-                <p className="font-medium text-foreground">Last updated</p>
-                <p className="text-xs">{formatDate(artwork.updatedAt!)}</p>
-              </div>
-            ) : null}
-            <DeleteArtworkButton
-              artworkId={artwork._id}
-              artworkTitle={artwork.title}
-            />
-          </div>
-        </CardFooter>
+              {hasUpdatedAt ? (
+                <div className="space-y-1 text-sm text-muted-foreground">
+                  <p className="font-medium text-foreground">Last updated</p>
+                  <p className="text-xs">{formatDate(artwork.updatedAt!)}</p>
+                </div>
+              ) : null}
+
+              <DeleteArtworkButton
+                artworkId={artwork._id}
+                artworkTitle={artwork.title}
+              />
+            </div>
+          </CardFooter>
+        ) : null}
       </Card>
     </>
   );
