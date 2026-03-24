@@ -3,7 +3,7 @@
 import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 
 export function AuthDropdown() {
@@ -40,14 +40,14 @@ export function AuthDropdown() {
 
   if (!session?.user) {
     return (
-      <Button type="button" onClick={() => signIn("github")}>
-        Sign in
+      <Button asChild type="button">
+        <Link href="/login">Sign in</Link>
       </Button>
     );
   }
 
   return (
-    <div className="relative" ref={menuRef}>
+    <div className="relative z-50" ref={menuRef}>
       <button
         type="button"
         aria-label="Open user menu"
@@ -98,7 +98,7 @@ export function AuthDropdown() {
               className="justify-start"
               onClick={() => {
                 setIsOpen(false);
-                signOut();
+                signOut({ redirectTo: "/" });
               }}
             >
               Sign out

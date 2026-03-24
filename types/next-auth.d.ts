@@ -9,6 +9,13 @@ declare module "next-auth" {
       username?: string;
     } & DefaultSession["user"];
   }
+
+  interface User {
+    id: string;
+    githubId: string;
+    role: "admin" | "standard";
+    username?: string;
+  }
 }
 
 declare module "next-auth/jwt" {

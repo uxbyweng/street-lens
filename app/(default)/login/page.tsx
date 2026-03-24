@@ -1,0 +1,91 @@
+"use client";
+
+import * as React from "react";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+
+const isPreview = process.env.NEXT_PUBLIC_VERCEL_ENV === "preview";
+
+export default function LoginPage() {
+  const router = useRouter();
+  const [username, setUsername] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [error, setError] = React.useState("");
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+
+  async function handlePreviewLogin(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError("");
+    setIsSubmitting(true);
+
+    const result = await signIn("credentials", {
+      username,
+      password,
+      redirect: false,
+    });
+
+    if (result?.error) {
+      setError("Invalid username or password.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    router.push("/");
+    router.refresh();
+  }
+
+  return (
+    <section className="mx-auto max-w-md px-4 py-12">
+      <h1 className="text-2xl font-bold">Login</h1>
+      <p className="mt-2 text-sm text-muted-foreground">
+        Sign in to access protected features.
+      </p>
+
+      <div className="mt-6 space-y-4">
+        <Button
+          type="button"
+          className="w-full"
+          onClick={() => signIn("github", { redirectTo: "/" })}
+        >
+          Sign in with GitHub
+        </Button>
+
+        {isPreview ? (
+          <form
+            onSubmit={handlePreviewLogin}
+            className="space-y-3 rounded-xl border p-4"
+          >
+            <p className="text-sm font-medium">Preview test login</p>
+
+            <Input
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(event) => setUsername(event.target.value)}
+            />
+
+            <Input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+            />
+
+            {error ? <p className="text-sm text-red-500">{error}</p> : null}
+
+            <Button
+              type="submit"
+              variant="outline"
+              className="w-full"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Signing in..." : "Sign in with preview user"}
+            </Button>
+          </form>
+        ) : null}
+      </div>
+    </section>
+  );
+}

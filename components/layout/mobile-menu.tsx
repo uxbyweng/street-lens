@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { TextLink } from "@/components/ui/text-link";
 import { AuthDropdown } from "@/components/auth/auth-dropdown";
@@ -111,16 +111,15 @@ export function MobileMenu() {
                   <span className="text-sm">Loading...</span>
                 ) : !session?.user ? (
                   <Button
+                    asChild
                     type="button"
                     variant="default"
                     size="lg"
                     className="mt-2 w-32"
-                    onClick={() => {
-                      closeMenu();
-                      signIn("github");
-                    }}
                   >
-                    Sign in
+                    <Link href="/login" onClick={closeMenu}>
+                      Sign in
+                    </Link>
                   </Button>
                 ) : (
                   <Button
@@ -129,7 +128,7 @@ export function MobileMenu() {
                     className="justify-start"
                     onClick={() => {
                       closeMenu();
-                      signOut({ callbackUrl: "/" });
+                      signOut({ redirectTo: "/" });
                     }}
                   >
                     Sign out
