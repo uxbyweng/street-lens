@@ -11,9 +11,32 @@ type LoginBackgroundMapProps = {
   className?: string;
 };
 
+function createArtworkStyleMarker() {
+  const wrapper = document.createElement("div");
+  wrapper.className = "relative flex items-center justify-center";
+
+  const outer = document.createElement("div");
+  outer.className =
+    "pointer-events-none absolute h-[72px] w-[72px] rounded-full bg-orange-500/15";
+
+  const pulse = document.createElement("div");
+  pulse.className =
+    "pointer-events-none absolute h-12 w-12 rounded-full bg-orange-500/35 animate-ping [animation-duration:3s]";
+
+  const dot = document.createElement("div");
+  dot.className =
+    "relative h-4 w-4 rounded-full bg-pink-500 shadow-lg shadow-pink-500/50";
+
+  wrapper.appendChild(outer);
+  wrapper.appendChild(pulse);
+  wrapper.appendChild(dot);
+
+  return wrapper;
+}
+
 export function BackgroundMap({
-  latitude = 52.520008,
-  longitude = 13.404954,
+  latitude = 52.516273,
+  longitude = 13.377627,
   zoom = 15,
   className = "",
 }: LoginBackgroundMapProps) {
@@ -30,13 +53,17 @@ export function BackgroundMap({
       zoom,
       interactive: false,
       attributionControl: false,
+      pitch: 60,
+      bearing: 0,
     });
 
     mapRef.current = map;
 
+    const markerElement = createArtworkStyleMarker();
+
     new maplibregl.Marker({
-      color: "#38bdf8",
-      scale: 0.9,
+      element: markerElement,
+      anchor: "center",
     })
       .setLngLat([longitude, latitude])
       .addTo(map);
