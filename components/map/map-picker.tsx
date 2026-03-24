@@ -4,7 +4,6 @@ import * as React from "react";
 import {
   Map,
   MapControls,
-  MarkerLabel,
   MapMarker,
   MarkerContent,
   useMap,
@@ -97,7 +96,6 @@ function MapViewportSync({
 export function MapPicker({
   latitude,
   longitude,
-  artist,
   onChange,
   disabled = false,
   showControls = true,
@@ -130,25 +128,12 @@ export function MapPicker({
         <MapViewportSync latitude={lat} longitude={lng} />
 
         <MapMarker longitude={lng} latitude={lat}>
-          {/* <MarkerContent>
-            <div className="relative flex items-center justify-center">
-              <div className="absolute size-18 rounded-full bg-sky-500/30 pointer-events-none"></div>
-              <div className="absolute size-7 rounded-full bg-orange-500/50 hover:bg-pink-500/50 hover:size-10 transition-transform"></div>
-              <div className="bg-pink-500 rounded-full p-1.5"></div>
-            </div>
-          </MarkerContent> */}
           <MarkerContent>
             <div className="relative flex items-center justify-center">
               <div className="pointer-events-none absolute h-18 w-18 rounded-full bg-orange-500/15" />
               <div className="pointer-events-none absolute h-12 w-12 rounded-full bg-orange-500/35 animate-ping animation-duration-[2s]" />
               <div className="relative h-4 w-4 rounded-full bg-pink-500 shadow-lg shadow-pink-500/50" />
             </div>
-            <MarkerLabel
-              position="bottom"
-              className="uppercase text-lg font-fjalla"
-            >
-              {artist}
-            </MarkerLabel>
           </MarkerContent>
         </MapMarker>
       </Map>
