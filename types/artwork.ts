@@ -1,3 +1,10 @@
+export type ArtworkOwner = {
+  _id: string;
+  name?: string;
+  username?: string;
+  role?: "admin" | "standard";
+};
+
 export type ArtworkBase = {
   title: string;
   artist?: string;
@@ -7,6 +14,7 @@ export type ArtworkBase = {
   latitude?: number;
   longitude?: number;
   tags?: string[];
+  owner?: string | ArtworkOwner;
 };
 
 export type Artwork = ArtworkBase & {

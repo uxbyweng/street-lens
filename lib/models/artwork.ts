@@ -41,6 +41,12 @@ const artworkSchema = new Schema(
       type: [String],
       default: [],
     },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
+    },
   },
   {
     timestamps: true,

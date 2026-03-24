@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
+import { auth } from "@/auth";
 import { connectDB } from "@/lib/db/mongodb";
 import { Artwork } from "@/lib/models/artwork";
-import { revalidatePath } from "next/cache";
+import { User } from "@/lib/models/user";
 
 export async function GET() {
   try {
@@ -21,7 +23,32 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    const session = await auth();
+
+    if (!session?.user) {
+      return NextResponse.json(
+        { ok: false, message: "Not authorized." },
+        { status: 401 }
+      );
+    }
+
+    if (session.user.role !== "admin") {
+      return NextResponse.json(
+        { ok: false, message: "Forbidden." },
+        { status: 403 }
+      );
+    }
+
     await connectDB();
+
+    const owner = await User.findById(session.user.id);
+
+    if (!owner) {
+      return NextResponse.json(
+        { ok: false, message: "User not found." },
+        { status: 401 }
+      );
+    }
 
     const body = await request.json();
 
@@ -34,10 +61,12 @@ export async function POST(request: Request) {
       latitude: body.latitude ?? undefined,
       longitude: body.longitude ?? undefined,
       tags: body.tags ?? [],
+      owner: owner._id,
     });
 
     revalidatePath("/");
     revalidatePath("/artworks");
+    revalidatePath("/map");
 
     return NextResponse.json({ ok: true, data: newArtwork }, { status: 201 });
   } catch (error) {
