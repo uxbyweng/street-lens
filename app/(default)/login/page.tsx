@@ -5,6 +5,8 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ProviderSignInButtons } from "@/components/auth/provider-sign-in-buttons";
+import { BackgroundMap } from "@/components/map/background-map";
 
 const isPreview = process.env.NEXT_PUBLIC_VERCEL_ENV === "preview";
 
@@ -37,64 +39,55 @@ export default function LoginPage() {
   }
 
   return (
-    <section className="mx-auto max-w-md px-4 py-12">
-      <h1 className="text-2xl font-bold">Login</h1>
-      <p className="mt-2 text-sm text-muted-foreground">
-        Sign in to access protected features.
-      </p>
+    <div className="relative h-[100svh] overflow-hidden">
+      <BackgroundMap />
 
-      <div className="mt-6 space-y-4">
-        <Button
-          type="button"
-          className="w-full"
-          onClick={() => signIn("github", { redirectTo: "/" })}
-        >
-          Sign in with GitHub
-        </Button>
+      <section className="relative z-10 mx-auto flex `min-h-svh max-w-md items-center px-4 py-12">
+        <div className="w-full rounded-2xl border border-white/10 bg-background/90 p-6 shadow-2xl backdrop-blur-md">
+          <h1 className="text-2xl font-bold">Login</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Sign in to access protected features.
+          </p>
 
-        <Button
-          type="button"
-          variant="outline"
-          className="w-full"
-          onClick={() => signIn("google", { redirectTo: "/" })}
-        >
-          Sign in with Google
-        </Button>
+          <div className="mt-6 space-y-4">
+            <ProviderSignInButtons />
 
-        {isPreview ? (
-          <form
-            onSubmit={handlePreviewLogin}
-            className="space-y-3 rounded-xl border p-4"
-          >
-            <p className="text-sm font-medium">Preview test login</p>
+            {isPreview ? (
+              <form
+                onSubmit={handlePreviewLogin}
+                className="space-y-3 rounded-xl border p-4"
+              >
+                <p className="text-sm font-medium">Preview test login</p>
 
-            <Input
-              type="text"
-              placeholder="Username"
-              value={username}
-              onChange={(event) => setUsername(event.target.value)}
-            />
+                <Input
+                  type="text"
+                  placeholder="Username"
+                  value={username}
+                  onChange={(event) => setUsername(event.target.value)}
+                />
 
-            <Input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-            />
+                <Input
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                />
 
-            {error ? <p className="text-sm text-red-500">{error}</p> : null}
+                {error ? <p className="text-sm text-red-500">{error}</p> : null}
 
-            <Button
-              type="submit"
-              variant="outline"
-              className="w-full"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Signing in..." : "Sign in with preview user"}
-            </Button>
-          </form>
-        ) : null}
-      </div>
-    </section>
+                <Button
+                  type="submit"
+                  variant="outline"
+                  className="w-full"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Signing in..." : "Sign in with preview user"}
+                </Button>
+              </form>
+            ) : null}
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }
