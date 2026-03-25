@@ -28,8 +28,6 @@ export default function LoginPage() {
       redirect: false,
     });
 
-    // console.log("credentials signIn result:", result);
-
     if (result?.error) {
       setError(result.error);
       setIsSubmitting(false);

@@ -103,8 +103,7 @@ const providers = [
               };
             } catch (error) {
               console.error("Credentials authorize error:", error);
-              //   return null;
-              throw error;
+              return null;
             }
           },
         }),
