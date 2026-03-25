@@ -124,8 +124,8 @@ export function ArtworksMap({
                 </MarkerLabel>
               </MarkerContent>
 
-              <MarkerPopup closeButton={true}>
-                <div className="w-56 lg:w-100 space-y-3">
+              <MarkerPopup closeButton={true} className="bg-black px-5 py-3">
+                <div className="w-56 lg:w-90 space-y-3">
                   <div className="space-y-2">
                     <div className="space-y-1">
                       <p className="line-clamp-1 text-sm lg:text-xl font-bold uppercase text-pink-500">
@@ -154,20 +154,24 @@ export function ArtworksMap({
                   </div>
 
                   <div className="relative aspect-video overflow-hidden rounded-md bg-muted">
-                    <Image
-                      src={
-                        artwork.imageUrl ?? "/images/artwork-placeholder.jpg"
-                      }
-                      alt={artwork.title}
-                      fill
-                      sizes="224px"
-                      className="object-cover"
-                    />
+                    <Link href={`/artworks/${artwork._id}`}>
+                      <Image
+                        src={
+                          artwork.imageUrl ?? "/images/artwork-placeholder.jpg"
+                        }
+                        alt={artwork.title}
+                        fill
+                        sizes="224px"
+                        className="object-cover"
+                      />
+                    </Link>
                   </div>
 
-                  <Button asChild size="sm" className="w-full">
-                    <Link href={`/artworks/${artwork._id}`}>More Info</Link>
-                  </Button>
+                  {/* <Button asChild size="sm" className="w-full">
+                    <Link href={`/artworks/${artwork._id}`}>
+                      View Artwork Details
+                    </Link>
+                  </Button> */}
                 </div>
               </MarkerPopup>
             </MapMarker>
