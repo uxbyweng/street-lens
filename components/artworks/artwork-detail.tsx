@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { auth } from "@/auth";
 import { ArtworkImageViewer } from "@/components/artworks/artwork-image-viewer";
-import { LikeButton } from "@/components/artworks/like-button";
+import { LikeToggle } from "@/components/artworks/like-toggle";
 import { MapPicker } from "@/components/map/map-picker";
 import { Button } from "@/components/ui/button";
 import { IconLocation } from "@tabler/icons-react";
@@ -64,11 +64,15 @@ export async function ArtworkDetail({
             <p className="text-xl text-foreground">{artwork.description}</p>
           ) : null}
 
-          <LikeButton
+          <LikeToggle
             artworkId={artwork._id}
             initialLiked={initialLiked}
             initialLikeCount={initialLikeCount}
             isAuthenticated={isAuthenticated}
+            className="flex items-center gap-2 px-1 py-1"
+            likedIconClassName="size-6 fill-current text-pink-500"
+            unlikedIconClassName="size-6 text-foreground"
+            countClassName="text-base font-medium text-foreground"
           />
 
           {hasCoordinates ? (
