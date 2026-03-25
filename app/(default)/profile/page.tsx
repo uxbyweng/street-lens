@@ -1,8 +1,9 @@
-// app\(default)\profile\page.tsx
-
 import Image from "next/image";
 import { BackgroundMap } from "@/components/map/background-map";
 import { auth } from "@/auth";
+import { Like } from "@/lib/models/like";
+import { Artwork } from "@/lib/models/artwork";
+import { LikedArtworks } from "@/components/profile/liked-artworks";
 
 export default async function ProfilePage() {
   const session = await auth();
@@ -11,7 +12,7 @@ export default async function ProfilePage() {
     return (
       <div className="relative h-svh overflow-hidden">
         <BackgroundMap />
-        <section className="relative z-10 mx-auto flex h-svh max-w-md items-center px-4 py-12">
+        <section className="relative z-10 mx-auto flex max-w-md items-center px-4 py-6">
           <div className="w-full rounded-2xl border border-white/10 bg-background/90 p-6 shadow-2xl backdrop-blur-md">
             <h1 className="text-2xl font-bold">Access denied</h1>
             <p className="mt-2 text-muted-foreground">
@@ -22,6 +23,34 @@ export default async function ProfilePage() {
       </div>
     );
   }
+
+  const likes = await Like.find({ userId: session.user.id })
+    .sort({ createdAt: -1 })
+    .lean();
+
+  const artworkIds = likes.map((like) => like.artworkId.toString());
+
+  const artworks = await Artwork.find({
+    _id: { $in: artworkIds },
+  }).lean();
+
+  const likedArtworks = likes
+    .map((like) => {
+      const artwork = artworks.find(
+        (artwork) => artwork._id.toString() === like.artworkId.toString()
+      );
+
+      if (!artwork) return null;
+
+      return {
+        _id: artwork._id.toString(),
+        title: artwork.title,
+        artist: artwork.artist,
+        imageUrl: artwork.imageUrl,
+        createdAt: like.createdAt.toString(),
+      };
+    })
+    .filter(Boolean);
 
   return (
     <div className="relative h-svh overflow-hidden">
@@ -56,6 +85,8 @@ export default async function ProfilePage() {
               </p>
             </div>
           </div>
+
+          <LikedArtworks likedArtworks={likedArtworks} />
         </div>
       </section>
     </div>
