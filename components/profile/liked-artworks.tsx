@@ -58,7 +58,7 @@ export function LikedArtworks({ likedArtworks }: LikedArtworksProps) {
                   {latestThreeLikes.map((artwork) => (
                     <Link
                       key={artwork._id}
-                      href={`/artworks/${artwork.slug ?? artwork._id}`}
+                      href={`/artworks/${artwork._id}`}
                       className="group"
                     >
                       <article className="relative overflow-hidden rounded-xl border border-white/10">
@@ -84,7 +84,7 @@ export function LikedArtworks({ likedArtworks }: LikedArtworksProps) {
                 </div>
 
                 <Link
-                  href="/profile/likes"
+                  href="/artworks?liked=true"
                   className="inline-flex items-center rounded-lg border border-white/15 px-3 py-2 text-sm font-medium transition hover:bg-white/5"
                 >
                   See all likes
