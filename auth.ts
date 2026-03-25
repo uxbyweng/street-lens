@@ -34,8 +34,15 @@ const providers = [
                 vercelEnv: process.env.VERCEL_ENV,
               });
 
-              const username = credentials?.username?.trim();
-              const password = credentials?.password?.trim();
+              const username =
+                typeof credentials?.username === "string"
+                  ? credentials.username.trim()
+                  : "";
+
+              const password =
+                typeof credentials?.password === "string"
+                  ? credentials.password.trim()
+                  : "";
 
               if (username !== "fisch" || password !== "fisch") {
                 console.log("Preview credentials invalid");
