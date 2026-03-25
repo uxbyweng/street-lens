@@ -12,13 +12,13 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { IconHeart } from "@tabler/icons-react";
+import { LikeToggle } from "@/components/artworks/like-toggle";
 import type { Artwork } from "@/types/artwork";
 import { getStoredUserLocation } from "@/lib/location/storage";
 import { useState } from "react";
 
 type ArtworksMapProps = {
-  artworks: (Artwork & { likeCount?: number })[];
+  artworks: (Artwork & { likeCount?: number; isLiked?: boolean })[];
   showControls?: boolean;
   className?: string;
 };
@@ -137,8 +137,19 @@ export function ArtworksMap({
                     </div>
 
                     <div className="flex items-center gap-1 text-xs lg:text-base text-white/80">
-                      <IconHeart className="size-4" />
-                      <span>{artwork.likeCount ?? 0}</span>
+                      <LikeToggle
+                        artworkId={artwork._id}
+                        initialLiked={Boolean(artwork.isLiked)}
+                        initialLikeCount={artwork.likeCount ?? 0}
+                        onClick={(event) => {
+                          event.preventDefault();
+                          event.stopPropagation();
+                        }}
+                        className="inline-flex items-center gap-1.5 rounded-md px-1 py-1 transition disabled:opacity-60"
+                        likedIconClassName="size-5 fill-current text-pink-500"
+                        unlikedIconClassName="size-5 text-white"
+                        countClassName="text-xs text-white/90"
+                      />
                     </div>
                   </div>
 

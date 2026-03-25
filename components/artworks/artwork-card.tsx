@@ -6,7 +6,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { IconMapPinFilled } from "@tabler/icons-react";
 import { LikeToggle } from "@/components/artworks/like-toggle";
-
 import { Card } from "@/components/ui/card";
 import type { Artwork } from "@/types/artwork";
 
