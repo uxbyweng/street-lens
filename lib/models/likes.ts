@@ -1,4 +1,4 @@
-// lib/models/like.ts
+// lib/models/likes.ts
 import {
   Schema,
   model,

@@ -1,3 +1,4 @@
+// app\api\artworks\[id]\like\route.ts
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
@@ -6,13 +7,13 @@ import { Like } from "@/lib/models/likes";
 import { Artwork } from "@/lib/models/artwork";
 
 type RouteContext = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 export async function POST(_request: Request, { params }: RouteContext) {
-  const artworkId = params.id;
+  const { id: artworkId } = await params;
 
   if (!mongoose.Types.ObjectId.isValid(artworkId)) {
     return NextResponse.json(
@@ -53,7 +54,7 @@ export async function POST(_request: Request, { params }: RouteContext) {
       typeof error === "object" &&
       error !== null &&
       "code" in error &&
-      error.code === 11000;
+      (error as { code?: number }).code === 11000;
 
     if (!isDuplicateKeyError) {
       console.error("POST /api/artworks/[id]/like error:", error);
@@ -76,7 +77,7 @@ export async function POST(_request: Request, { params }: RouteContext) {
 }
 
 export async function DELETE(_request: Request, { params }: RouteContext) {
-  const artworkId = params.id;
+  const { id: artworkId } = await params;
 
   if (!mongoose.Types.ObjectId.isValid(artworkId)) {
     return NextResponse.json(
