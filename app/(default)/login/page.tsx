@@ -29,8 +29,7 @@ export default function LoginPage() {
     });
 
     if (result?.error) {
-      setError(result.error);
-      setIsSubmitting(false);
+      setError("Preview login failed. Please check your credentials.");
       return;
     }
 
