@@ -145,7 +145,7 @@ export function ArtworksMap({
                           event.preventDefault();
                           event.stopPropagation();
                         }}
-                        className="inline-flex items-center gap-1.5 rounded-md px-1 py-1 transition disabled:opacity-60"
+                        className="cursor-pointer inline-flex items-center gap-1.5 rounded-md px-1 py-1 transition disabled:opacity-60"
                         likedIconClassName="size-5 fill-current text-pink-500"
                         unlikedIconClassName="size-5 text-white"
                         countClassName="text-xs text-white/90"
