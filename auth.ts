@@ -48,8 +48,17 @@ const providers = [
                 console.log("Preview credentials invalid");
                 return null;
               }
+              console.log("Preview credentials received:", {
+                usernameRaw: credentials?.username,
+                passwordRaw: credentials?.password,
+                usernameType: typeof credentials?.username,
+                passwordType: typeof credentials?.password,
+                vercelEnv: process.env.VERCEL_ENV,
+              });
 
               await connectDB();
+
+              console.log("Preview credentials DB connection ok");
 
               const provider = "credentials";
               const providerAccountId = "preview-fisch-user";
@@ -72,10 +81,11 @@ const providers = [
                 }
               );
 
-              console.log(
-                "Preview user upserted:",
-                previewUser?._id?.toString()
-              );
+              console.log("Preview user upserted:", {
+                id: previewUser?._id?.toString(),
+                provider: previewUser?.provider,
+                providerAccountId: previewUser?.providerAccountId,
+              });
 
               if (!previewUser) {
                 return null;

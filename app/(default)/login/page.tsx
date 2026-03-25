@@ -28,8 +28,6 @@ export default function LoginPage() {
       redirect: false,
     });
 
-    console.log("credentials signIn result:", result);
-
     if (result?.error) {
       setError(result.error);
       setIsSubmitting(false);
@@ -40,32 +38,11 @@ export default function LoginPage() {
     router.refresh();
   }
 
-  //   async function handlePreviewLogin(event: React.FormEvent<HTMLFormElement>) {
-  //     event.preventDefault();
-  //     setError("");
-  //     setIsSubmitting(true);
-
-  //     const result = await signIn("credentials", {
-  //       username,
-  //       password,
-  //       redirect: false,
-  //     });
-
-  //     if (result?.error) {
-  //       setError("Invalid username or password.");
-  //       setIsSubmitting(false);
-  //       return;
-  //     }
-
-  //     router.push("/");
-  //     router.refresh();
-  //   }
-
   return (
-    <div className="relative h-[100svh] overflow-hidden">
+    <div className="relative h-svh overflow-hidden">
       <BackgroundMap />
 
-      <section className="relative z-10 mx-auto flex `min-h-svh max-w-md items-center px-4 py-12">
+      <section className="relative z-10 mx-auto flex h-svh max-w-md items-center px-4 py-12">
         <div className="w-full rounded-2xl border border-white/10 bg-background/90 p-6 shadow-2xl backdrop-blur-md">
           <h1 className="text-2xl font-bold">Login</h1>
           <p className="mt-2 text-sm text-muted-foreground">
