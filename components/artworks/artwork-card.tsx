@@ -2,10 +2,9 @@
 
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { IconHeart, IconMapPinFilled } from "@tabler/icons-react";
+import { IconMapPinFilled } from "@tabler/icons-react";
 import { LikeToggle } from "@/components/artworks/like-toggle";
 
 import { Card } from "@/components/ui/card";
@@ -23,38 +22,6 @@ type ArtworkCardProps = {
 export function ArtworkCard({ artwork, href, index }: ArtworkCardProps) {
   const shouldPreload = index < 3;
   const hasCoordinates = artwork.latitude != null && artwork.longitude != null;
-
-  const [isLiked, setIsLiked] = useState(Boolean(artwork.isLiked));
-  const [likeCount, setLikeCount] = useState(artwork.likeCount ?? 0);
-  const [isPending, setIsPending] = useState(false);
-
-  async function handleLikeClick(event: React.MouseEvent<HTMLButtonElement>) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    if (isPending) return;
-
-    setIsPending(true);
-
-    try {
-      const response = await fetch(`/api/artworks/${artwork._id}/like`, {
-        method: isLiked ? "DELETE" : "POST",
-      });
-
-      if (!response.ok) {
-        throw new Error("Could not update like.");
-      }
-
-      const data: { liked: boolean; likeCount: number } = await response.json();
-
-      setIsLiked(data.liked);
-      setLikeCount(data.likeCount);
-    } catch (error) {
-      console.error("Like toggle failed:", error);
-    } finally {
-      setIsPending(false);
-    }
-  }
 
   return (
     <Card className="mx-auto flex h-full w-full max-w-sm flex-col overflow-hidden py-0 transition hover:shadow-md">
@@ -102,9 +69,8 @@ export function ArtworkCard({ artwork, href, index }: ArtworkCardProps) {
                   event.stopPropagation();
                 }}
                 className="inline-flex items-center gap-1.5 rounded-md px-1 py-1 transition disabled:opacity-60"
-                iconClassName={
-                  artwork.isLiked ? "size-5 text-pink-500" : "size-5 text-white"
-                }
+                likedIconClassName="size-5 fill-current text-pink-500"
+                unlikedIconClassName="size-5 text-white"
                 countClassName="text-xs text-white/90"
               />
 
