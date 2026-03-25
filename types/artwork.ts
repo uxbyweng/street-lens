@@ -14,6 +14,7 @@ export type ArtworkBase = {
   latitude?: number;
   longitude?: number;
   tags?: string[];
+  likeCount?: number;
   owner?: string | ArtworkOwner;
 };
 
