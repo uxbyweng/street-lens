@@ -110,7 +110,7 @@ export function HeroSlider() {
                     objectPosition: `${slide.imagePositionX ?? "50%"} center`,
                   }}
                 />
-                <div className="absolute inset-0 bg-linear-to-t from-black/90 to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-t from-[#000514] via-[#000514]/55 to-transparent" />
               </div>
 
               <div className="relative flex h-full items-center">
