@@ -1,4 +1,11 @@
-import { Schema, model, models, type InferSchemaType } from "mongoose";
+// lib/models/like.ts
+import {
+  Schema,
+  model,
+  models,
+  type InferSchemaType,
+  type Model,
+} from "mongoose";
 
 const likeSchema = new Schema(
   {
@@ -20,11 +27,10 @@ const likeSchema = new Schema(
   }
 );
 
-// unique, um Dopplungen zu vermeiden
 likeSchema.index({ artworkId: 1, userId: 1 }, { unique: true });
 
 export type LikeDocument = InferSchemaType<typeof likeSchema>;
 
-const Like = models.Like || model("Like", likeSchema);
-
-export default Like;
+export const Like =
+  (models.Like as Model<LikeDocument>) ||
+  model<LikeDocument>("Like", likeSchema);
