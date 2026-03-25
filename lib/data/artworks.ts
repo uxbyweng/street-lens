@@ -3,6 +3,7 @@ import { Types } from "mongoose";
 import { connectDB } from "@/lib/db/mongodb";
 import { Artwork as ArtworkModel } from "@/lib/models/artwork";
 import type { Artwork } from "@/types/artwork";
+import { Like } from "@/lib/models/like";
 
 // Hilfsfunktion
 // wandelt Datumswerte in einen ISO-String um,
@@ -32,7 +33,7 @@ function toIsoString(value: unknown): string | undefined {
   return undefined;
 }
 
-function serializeArtwork(doc: any): Artwork {
+function serializeArtwork(doc: any, likeCount = 0): Artwork {
   return {
     _id: doc._id.toString(),
     title: doc.title,
@@ -41,10 +42,10 @@ function serializeArtwork(doc: any): Artwork {
     imageUrl: doc.imageUrl,
     latitude: doc.latitude,
     longitude: doc.longitude,
-    // wenn keine tags vorhanden, verwende leeres Array.
     tags: doc.tags ?? [],
     createdAt: toIsoString(doc.createdAt),
     updatedAt: toIsoString(doc.updatedAt),
+    likeCount,
   };
 }
 
@@ -59,8 +60,23 @@ export async function getArtworks(): Promise<Artwork[]> {
   // statt kompletter Mongoose-Dokumente.
   const artworks = await ArtworkModel.find().sort({ createdAt: -1 }).lean();
 
+  const likeCounts = await Like.aggregate([
+    {
+      $group: {
+        _id: "$artworkId",
+        likeCount: { $sum: 1 },
+      },
+    },
+  ]);
+
+  const likeCountMap = new Map<string, number>(
+    likeCounts.map((entry) => [entry._id.toString(), entry.likeCount])
+  );
+
   // Jedes DB-Dokument in gewünschtes Artwork-Format umwandeln.
-  return artworks.map(serializeArtwork);
+  return artworks.map((artwork) =>
+    serializeArtwork(artwork, likeCountMap.get(artwork._id.toString()) ?? 0)
+  );
 }
 
 // Nur neueste Artworks aus Datenbank laden.

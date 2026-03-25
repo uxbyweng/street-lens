@@ -1,6 +1,10 @@
+import mongoose from "mongoose";
 import { notFound } from "next/navigation";
 import { ArtworkDetail } from "@/components/artworks/artwork-detail";
 import type { Metadata } from "next";
+import { auth } from "@/auth";
+import { connectDB } from "@/lib/db/mongodb";
+import { Like } from "@/lib/models/like";
 import { getArtworkById, getArtworkMetadataById } from "@/lib/data/artworks";
 
 export const dynamic = "force-dynamic";
@@ -41,5 +45,29 @@ export default async function ArtworkDetailPage({
     notFound();
   }
 
-  return <ArtworkDetail artwork={artwork} />;
+  const session = await auth();
+  const userId = session?.user?.id ?? null;
+
+  await connectDB();
+
+  const likeCount = await Like.countDocuments({ artworkId: id });
+
+  const initialLiked =
+    userId && mongoose.Types.ObjectId.isValid(userId)
+      ? Boolean(
+          await Like.exists({
+            artworkId: id,
+            userId,
+          })
+        )
+      : false;
+
+  return (
+    <ArtworkDetail
+      artwork={artwork}
+      initialLikeCount={likeCount}
+      initialLiked={initialLiked}
+      isAuthenticated={Boolean(userId)}
+    />
+  );
 }

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { auth } from "@/auth";
 import { ArtworkImageViewer } from "@/components/artworks/artwork-image-viewer";
+import { LikeButton } from "@/components/artworks/like-button";
 import { MapPicker } from "@/components/map/map-picker";
 import { Button } from "@/components/ui/button";
 import { IconLocation } from "@tabler/icons-react";
@@ -17,9 +18,17 @@ import type { Artwork } from "@/types/artwork";
 
 type ArtworkDetailProps = {
   artwork: Artwork;
+  initialLikeCount: number;
+  initialLiked: boolean;
+  isAuthenticated: boolean;
 };
 
-export async function ArtworkDetail({ artwork }: ArtworkDetailProps) {
+export async function ArtworkDetail({
+  artwork,
+  initialLikeCount,
+  initialLiked,
+  isAuthenticated,
+}: ArtworkDetailProps) {
   const session = await auth();
   const isAdmin = session?.user?.role === "admin";
 
@@ -37,7 +46,7 @@ export async function ArtworkDetail({ artwork }: ArtworkDetailProps) {
         src={artwork.imageUrl ?? "/images/placeholder.jpg"}
         alt={`${artwork.title}${artwork.artist ? ` - ${artwork.artist}` : ""}`}
       />
-      <Card className="mx-auto w-full max-w-3xl overflow-hidden border-0 rounded-none bg-background pt-8">
+      <Card className="mx-auto w-full max-w-3xl overflow-hidden rounded-none border-0 bg-background pt-8">
         <CardHeader className="space-y-2">
           <CardTitle className="font-fjalla text-4xl sm:text-6xl">
             {artwork.title}
@@ -54,6 +63,13 @@ export async function ArtworkDetail({ artwork }: ArtworkDetailProps) {
           {artwork.description ? (
             <p className="text-xl text-foreground">{artwork.description}</p>
           ) : null}
+
+          <LikeButton
+            artworkId={artwork._id}
+            initialLiked={initialLiked}
+            initialLikeCount={initialLikeCount}
+            isAuthenticated={isAuthenticated}
+          />
 
           {hasCoordinates ? (
             <div className="space-y-3">

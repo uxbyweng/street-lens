@@ -12,12 +12,13 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { IconHeart } from "@tabler/icons-react";
 import type { Artwork } from "@/types/artwork";
 import { getStoredUserLocation } from "@/lib/location/storage";
 import { useState } from "react";
 
 type ArtworksMapProps = {
-  artworks: Artwork[];
+  artworks: (Artwork & { likeCount?: number })[];
   showControls?: boolean;
   className?: string;
 };
@@ -124,14 +125,21 @@ export function ArtworksMap({
               </MarkerContent>
 
               <MarkerPopup closeButton={true}>
-                <div className="w-56 space-y-3">
-                  <div className="space-y-1">
-                    <p className="text-sm font-bold leading-tight">
-                      {artwork.title}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {artwork.artist || "Unknown artist"}
-                    </p>
+                <div className="w-56 lg:w-100 space-y-3">
+                  <div className="space-y-2">
+                    <div className="space-y-1">
+                      <p className="line-clamp-1 text-sm lg:text-xl font-bold uppercase text-pink-500">
+                        {artwork.artist || "Unknown artist"}
+                      </p>
+                      <p className="line-clamp-1 text-sm lg:text-xl font-bold">
+                        {artwork.title || "Unknown artwork title"}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-1 text-xs lg:text-base text-white/80">
+                      <IconHeart className="size-4" />
+                      <span>{artwork.likeCount ?? 0}</span>
+                    </div>
                   </div>
 
                   <div className="relative aspect-video overflow-hidden rounded-md bg-muted">
