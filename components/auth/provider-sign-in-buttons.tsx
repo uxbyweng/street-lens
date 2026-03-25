@@ -20,7 +20,7 @@ export function ProviderSignInButtons({
       <Button
         type="button"
         variant="default"
-        className="h-15 w-full justify-start gap-3 border-[#dadce0] bg-white px-3 text-[#3c4043] hover:bg-[#f8f9fa] hover:text-[#3c4043]"
+        className="h-15 w-full justify-start gap-3 border-[#dadce0] bg-white px-3 text-[#3c4043] hover:bg-[#f8f9fa] hover:text-[#3c4043] focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none"
         onClick={() => signIn("google", { redirectTo: "/" })}
       >
         <span className="flex h-7 w-7 items-center justify-center">
@@ -31,7 +31,7 @@ export function ProviderSignInButtons({
 
       <Button
         type="button"
-        className="h-15 w-full justify-start gap-3 bg-[#24292f] px-3 text-white hover:bg-[#1b1f23]"
+        className="h-15 w-full justify-start gap-3 bg-[#24292f] px-3 text-white hover:bg-[#1b1f23] focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none"
         onClick={() => signIn("github", { redirectTo: "/" })}
       >
         <span className="flex h-7 w-7 items-center justify-center">
