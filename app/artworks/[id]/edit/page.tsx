@@ -78,7 +78,8 @@ export default async function EditArtworkPage({
       <PageIntro
         title="Edit artwork"
         subtitle="Update the artwork details below."
-        className="max-w-6xl"
+        bgImage={artwork.imageUrl ?? ""}
+        className="font-fjalla rounded-none h-50 lg:h-80 sm:px-5 md:px-10 lg:px-40 lg:py-15 text-black"
       />
 
       <section className="mx-auto mt-8 max-w-6xl">

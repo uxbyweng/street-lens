@@ -38,10 +38,11 @@ export default async function NewArtworkPage() {
       <PageIntro
         title="Add new artwork"
         subtitle="Fill in the details below to save a new artwork."
-        className="max-w-6xl"
+        bgImage="/images/stage_add-artwork.jpg"
+        className="font-fjalla rounded-none h-50 lg:h-80 sm:px-5 md:px-10 lg:px-40 lg:py-15 text-black"
       />
 
-      <section className="mx-auto my-8 max-w-4xl px-4">
+      <section className="mx-auto mt-8 max-w-6xl">
         <ArtworkForm mode="create" />
       </section>
     </>
