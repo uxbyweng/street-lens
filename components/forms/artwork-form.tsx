@@ -26,31 +26,10 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-
-/* ERLAUBTE TAGS */
-const ALLOWED_TAGS = [
-  "stencil",
-  "mural",
-  "paste-up",
-  "paint",
-  "canvas",
-  "spray-paint",
-  "portrait",
-  "cut-out",
-  "sticker",
-  "roll-on",
-  "urban-knitting",
-  "graffiti",
-  "yarn-bombing",
-  "poster-art",
-  "deccolage",
-  "lego-art",
-  "mosaic-art",
-  "scratch-graffiti",
-  "tape-art",
-  "tiles-art",
-  "installation",
-] as const;
+import {
+  ALLOWED_TAGS,
+  type AllowedArtworkTag,
+} from "@/lib/constants/artwork-tags";
 
 /* SCHEMA */
 // Definition, was "richtig" ausgefüllt bedeutet.
@@ -89,7 +68,8 @@ const artworkFormSchema = z.object({
 });
 
 /* EXPORT TYPES */
-export type ArtworkFormValues = z.infer<typeof artworkFormSchema>;
+export type ArtworkFormInput = z.input<typeof artworkFormSchema>;
+export type ArtworkFormValues = z.output<typeof artworkFormSchema>;
 
 /* LOCAL TYPES */
 type ArtworkPayload = {
@@ -106,7 +86,7 @@ type ArtworkPayload = {
 type ArtworkFormProps = {
   mode: "create" | "edit";
   artworkId?: string;
-  initialValues?: Partial<ArtworkFormValues>;
+  initialValues?: Partial<ArtworkFormInput>;
 };
 
 /* HELPER FUNCTIONS */
@@ -201,8 +181,13 @@ export function ArtworkForm({
       Boolean(initialValues?.latitude && initialValues?.longitude)
     );
 
+  const sanitizedTags: AllowedArtworkTag[] = (initialValues?.tags ?? []).filter(
+    (tag): tag is AllowedArtworkTag =>
+      ALLOWED_TAGS.includes(tag as AllowedArtworkTag)
+  );
+
   // DEFAULT VALUES
-  const defaultValues: ArtworkFormValues = {
+  const defaultValues: ArtworkFormInput = {
     title: initialValues?.title ?? "",
     artist: initialValues?.artist ?? "",
     description: initialValues?.description ?? "",
@@ -210,16 +195,13 @@ export function ArtworkForm({
     cloudinaryPublicId: initialValues?.cloudinaryPublicId ?? "",
     latitude: initialValues?.latitude ?? "",
     longitude: initialValues?.longitude ?? "",
-    tags: initialValues?.tags ?? [],
+    tags: sanitizedTags,
   };
 
-  console.log("defaultValues.tags:", defaultValues.tags);
-  console.log("isArray:", Array.isArray(defaultValues.tags));
-
   // FORMULAR-INITIALISIERUNG
-  const form = useForm<ArtworkFormValues>({
+  const form = useForm<ArtworkFormInput, unknown, ArtworkFormValues>({
     resolver: zodResolver(artworkFormSchema),
-    defaultValues, // Startwerte setzen
+    defaultValues,
   });
 
   // WATCHED VALUES

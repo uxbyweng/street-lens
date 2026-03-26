@@ -2,6 +2,10 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { auth } from "@/auth";
 import { ArtworkForm } from "@/components/forms/artwork-form";
+import {
+  ALLOWED_TAGS,
+  type AllowedArtworkTag,
+} from "@/lib/constants/artwork-tags";
 import { PageIntro } from "@/components/layout/page-intro";
 import { getArtworkById } from "@/lib/data/artworks";
 
@@ -41,6 +45,11 @@ export default async function EditArtworkPage({
   }
 
   const session = await auth();
+
+  const sanitizedTags = (artwork.tags ?? []).filter(
+    (tag): tag is AllowedArtworkTag =>
+      ALLOWED_TAGS.includes(tag as AllowedArtworkTag)
+  );
 
   if (!session?.user) {
     return (
@@ -85,7 +94,7 @@ export default async function EditArtworkPage({
               artwork.latitude !== undefined ? String(artwork.latitude) : "",
             longitude:
               artwork.longitude !== undefined ? String(artwork.longitude) : "",
-            tags: artwork.tags ?? [],
+            tags: sanitizedTags,
           }}
         />
       </section>
