@@ -5,6 +5,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { UserLocationBootstrap } from "@/components/map/user-location-bootstrap";
 import { Toaster } from "@/components/ui/sonner";
+import Header from "@/components/layout/header";
 
 const fjallaOne = Fjalla_One({
   subsets: ["latin"],
@@ -42,10 +43,11 @@ export default function RootLayout({
     >
       <body>
         <AuthSessionProvider>
-          {/* Komponente, die beim Start den 'useUserLocation' Hook lädt,
-            um initial zu versuchen, die Standortdaten des Users zu bekommen  */}
           <UserLocationBootstrap />
-          {children}
+          <div className="flex min-h-screen flex-col bg-background text-foreground">
+            <Header />
+            <main className="flex-1 min-h-0 w-full">{children}</main>
+          </div>
           <Toaster position="top-center" />
         </AuthSessionProvider>
       </body>
