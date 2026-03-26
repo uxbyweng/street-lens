@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-export default function ArtworkListLoading() {
+export default function Loading() {
   return (
     <section className="mx-auto max-w-6xl px-4 py-8">
       <div className="rounded-2xl  bg-black/20 p-6">
