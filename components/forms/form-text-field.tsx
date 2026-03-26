@@ -1,8 +1,13 @@
-import { Controller, type Control, type FieldPath } from "react-hook-form";
+import {
+  Controller,
+  type Control,
+  type FieldPath,
+  type FieldValues,
+} from "react-hook-form";
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
-type FormTextFieldProps<TFormValues extends Record<string, any>> = {
+type FormTextFieldProps<TFormValues extends FieldValues> = {
   name: FieldPath<TFormValues>;
   label: string;
   control: Control<TFormValues>;
@@ -10,7 +15,7 @@ type FormTextFieldProps<TFormValues extends Record<string, any>> = {
   description?: string;
 };
 
-export function FormTextField<TFormValues extends Record<string, any>>({
+export function FormTextField<TFormValues extends FieldValues>({
   name,
   label,
   control,

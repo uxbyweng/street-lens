@@ -15,6 +15,7 @@ import {
 import { MapPicker } from "@/components/map/map-picker";
 import { FormTextField } from "@/components/forms/form-text-field";
 import { FormTextareaField } from "@/components/forms/form-textarea-field";
+import { FormTagPillField } from "@/components/forms/form-tag-pill-field";
 import { Button } from "@/components/ui/button";
 import { IconPencil } from "@tabler/icons-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -26,6 +27,10 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import {
+  ALLOWED_TAGS,
+  type AllowedArtworkTag,
+} from "@/lib/constants/artwork-tags";
 
 /* SCHEMA */
 // Definition, was "richtig" ausgefüllt bedeutet.
@@ -60,11 +65,12 @@ const artworkFormSchema = z.object({
       const number = Number(value);
       return !Number.isNaN(number) && number >= -180 && number <= 180;
     }, "Longitude must be between -180 and 180."),
-  tags: z.string().optional(),
+  tags: z.array(z.enum(ALLOWED_TAGS)).default([]),
 });
 
 /* EXPORT TYPES */
-export type ArtworkFormValues = z.infer<typeof artworkFormSchema>;
+export type ArtworkFormInput = z.input<typeof artworkFormSchema>;
+export type ArtworkFormValues = z.output<typeof artworkFormSchema>;
 
 /* LOCAL TYPES */
 type ArtworkPayload = {
@@ -81,7 +87,7 @@ type ArtworkPayload = {
 type ArtworkFormProps = {
   mode: "create" | "edit";
   artworkId?: string;
-  initialValues?: Partial<ArtworkFormValues>;
+  initialValues?: Partial<ArtworkFormInput>;
 };
 
 /* HELPER FUNCTIONS */
@@ -91,16 +97,6 @@ function parseCoordinate(value?: string): number | undefined {
 
   const parsedValue = Number(value);
   return Number.isNaN(parsedValue) ? undefined : parsedValue;
-}
-
-//  Text (anhand von Komma) in Array umwandeln
-function parseTags(value?: string): string[] {
-  if (!value) return [];
-
-  return value
-    .split(",")
-    .map((tag) => tag.trim())
-    .filter(Boolean);
 }
 
 // Formular-Werte in Objekt für Datenbank bündeln
@@ -113,7 +109,7 @@ function buildArtworkPayload(values: ArtworkFormValues): ArtworkPayload {
     cloudinaryPublicId: values.cloudinaryPublicId || undefined,
     latitude: parseCoordinate(values.latitude),
     longitude: parseCoordinate(values.longitude),
-    tags: parseTags(values.tags),
+    tags: values.tags ?? [],
   };
 }
 
@@ -186,8 +182,13 @@ export function ArtworkForm({
       Boolean(initialValues?.latitude && initialValues?.longitude)
     );
 
+  const sanitizedTags: AllowedArtworkTag[] = (initialValues?.tags ?? []).filter(
+    (tag): tag is AllowedArtworkTag =>
+      ALLOWED_TAGS.includes(tag as AllowedArtworkTag)
+  );
+
   // DEFAULT VALUES
-  const defaultValues: ArtworkFormValues = {
+  const defaultValues: ArtworkFormInput = {
     title: initialValues?.title ?? "",
     artist: initialValues?.artist ?? "",
     description: initialValues?.description ?? "",
@@ -195,13 +196,13 @@ export function ArtworkForm({
     cloudinaryPublicId: initialValues?.cloudinaryPublicId ?? "",
     latitude: initialValues?.latitude ?? "",
     longitude: initialValues?.longitude ?? "",
-    tags: initialValues?.tags ?? "",
+    tags: sanitizedTags,
   };
 
   // FORMULAR-INITIALISIERUNG
-  const form = useForm<ArtworkFormValues>({
+  const form = useForm<ArtworkFormInput, unknown, ArtworkFormValues>({
     resolver: zodResolver(artworkFormSchema),
-    defaultValues, // Startwerte setzen
+    defaultValues,
   });
 
   // WATCHED VALUES
@@ -473,12 +474,11 @@ export function ArtworkForm({
                 placeholder="Describe the artwork, context, or why it is interesting."
               />
 
-              <FormTextField
+              <FormTagPillField
                 name="tags"
                 label="Tags"
                 control={form.control}
-                placeholder="street art, berlin, mural"
-                description="Separate tags with commas."
+                description="Choose from the predefined tags."
               />
             </div>
 
