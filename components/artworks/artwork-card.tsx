@@ -16,9 +16,15 @@ type ArtworkCardProps = {
   };
   href: string;
   index: number;
+  isLikedFilterActive?: boolean;
 };
 
-export function ArtworkCard({ artwork, href, index }: ArtworkCardProps) {
+export function ArtworkCard({
+  artwork,
+  href,
+  index,
+  isLikedFilterActive = false,
+}: ArtworkCardProps) {
   const shouldPreload = index < 3;
   const hasCoordinates = artwork.latitude != null && artwork.longitude != null;
 
@@ -63,11 +69,12 @@ export function ArtworkCard({ artwork, href, index }: ArtworkCardProps) {
                 artworkId={artwork._id}
                 initialLiked={Boolean(artwork.isLiked)}
                 initialLikeCount={artwork.likeCount ?? 0}
+                refreshOnSuccess={isLikedFilterActive}
                 onClick={(event) => {
                   event.preventDefault();
                   event.stopPropagation();
                 }}
-                className="inline-flex items-center gap-1.5 rounded-md px-1 py-1 transition disabled:opacity-60"
+                className="cursor-pointer inline-flex items-center gap-1.5 rounded-md px-1 py-1 transition disabled:opacity-60"
                 likedIconClassName="size-5 fill-current text-pink-500"
                 unlikedIconClassName="size-5 text-white"
                 countClassName="text-xs text-white/90"

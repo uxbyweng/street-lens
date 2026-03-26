@@ -5,6 +5,7 @@
 import { useState } from "react";
 import { IconHeart, IconHeartFilled } from "@tabler/icons-react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 type LikeToggleProps = {
   artworkId: string;
@@ -17,6 +18,7 @@ type LikeToggleProps = {
   showCount?: boolean;
   likedIconClassName?: string;
   unlikedIconClassName?: string;
+  refreshOnSuccess?: boolean;
 };
 
 export function LikeToggle({
@@ -30,10 +32,12 @@ export function LikeToggle({
   showCount = true,
   likedIconClassName = "size-5 fill-current text-pink-500",
   unlikedIconClassName = "size-5 text-white",
+  refreshOnSuccess = false,
 }: LikeToggleProps) {
   const [liked, setLiked] = useState(initialLiked);
   const [likeCount, setLikeCount] = useState(initialLikeCount);
   const [isPending, setIsPending] = useState(false);
+  const router = useRouter();
 
   async function handleLikeClick(event: React.MouseEvent<HTMLButtonElement>) {
     onClick?.(event);
@@ -53,6 +57,9 @@ export function LikeToggle({
       });
 
       const data = await response.json().catch(() => null);
+      if (refreshOnSuccess) {
+        router.refresh();
+      }
 
       if (!response.ok) {
         throw new Error(data?.message ?? "Like request failed.");

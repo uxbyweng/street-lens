@@ -4,9 +4,13 @@ import type { Artwork } from "@/types/artwork";
 
 type ArtworkListProps = {
   artworks?: Artwork[];
+  isLikedFilterActive?: boolean;
 };
 
-export function ArtworkList({ artworks = [] }: ArtworkListProps) {
+export function ArtworkList({
+  artworks = [],
+  isLikedFilterActive = false,
+}: ArtworkListProps) {
   if (artworks.length === 0) {
     return (
       <section className="space-y-3">
@@ -26,6 +30,7 @@ export function ArtworkList({ artworks = [] }: ArtworkListProps) {
             artwork={artwork}
             href={`/artworks/${artwork._id}`}
             index={index}
+            isLikedFilterActive={isLikedFilterActive}
           />
         </li>
       ))}

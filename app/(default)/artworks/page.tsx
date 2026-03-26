@@ -130,7 +130,7 @@ export default async function ArtworksPage({
       </section>
 
       <section className="mx-auto my-8 max-w-6xl px-4">
-        <ArtworkList artworks={artworks} />
+        <ArtworkList artworks={artworks} isLikedFilterActive={liked} />
       </section>
 
       {isAdmin ? (
