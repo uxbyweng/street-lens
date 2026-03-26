@@ -2,7 +2,7 @@ import { getArtworks } from "@/lib/data/artworks";
 import type { Metadata } from "next";
 import { ArtworksMap } from "@/components/map/artworks-map";
 
-// export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Map",

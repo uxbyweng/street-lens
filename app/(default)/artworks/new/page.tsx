@@ -5,7 +5,7 @@ import { PageIntro } from "@/components/layout/page-intro";
 
 export const metadata: Metadata = {
   title: "Add artwork",
-  description: "Add a new artwork to your STREETLENS collection.",
+  description: "Add new artwork to STREETLENS collection.",
 };
 
 export default async function NewArtworkPage() {

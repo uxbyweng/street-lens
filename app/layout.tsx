@@ -1,4 +1,4 @@
-import { AuthSessionProvider } from "@/components/providers/session-provider";
+import { AuthSessionProvider } from "@/components/auth/session-provider";
 import type { Metadata } from "next";
 import { Roboto, Fjalla_One } from "next/font/google";
 import "./globals.css";
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     default: "STREETLENS",
     template: "%s | STREETLENS",
   },
-  description: "Discover and document urban artworks and places.",
+  description: "Explore street art in Berlin.",
   manifest: "/site.webmanifest",
   applicationName: "STREETLENS",
   appleWebApp: {
