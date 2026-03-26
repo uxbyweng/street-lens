@@ -15,6 +15,7 @@ import {
 import { MapPicker } from "@/components/map/map-picker";
 import { FormTextField } from "@/components/forms/form-text-field";
 import { FormTextareaField } from "@/components/forms/form-textarea-field";
+import { FormTagPillField } from "@/components/forms/form-tag-pill-field";
 import { Button } from "@/components/ui/button";
 import { IconPencil } from "@tabler/icons-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -473,65 +474,11 @@ export function ArtworkForm({
                 placeholder="Describe the artwork, context, or why it is interesting."
               />
 
-              <Controller
+              <FormTagPillField
                 name="tags"
+                label="Tags"
                 control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel className="text-xl">Tags</FieldLabel>
-
-                    <div className="flex flex-wrap gap-3">
-                      {ALLOWED_TAGS.map((tag) => {
-                        const selectedTags = field.value ?? [];
-                        const isActive = selectedTags.includes(tag);
-
-                        function handleToggle() {
-                          if (isActive) {
-                            field.onChange(
-                              selectedTags.filter((value) => value !== tag)
-                            );
-                            return;
-                          }
-
-                          field.onChange([...selectedTags, tag]);
-                        }
-
-                        return (
-                          <button
-                            key={tag}
-                            type="button"
-                            onClick={handleToggle}
-                            aria-pressed={isActive}
-                            className={`inline-flex cursor-pointer items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium transition ${
-                              isActive
-                                ? "border-pink-500 bg-pink-500/20 text-foreground"
-                                : "border-border bg-background text-muted-foreground hover:bg-muted hover:text-foreground"
-                            }`}
-                          >
-                            <span>{tag}</span>
-
-                            {isActive ? (
-                              <span
-                                aria-hidden="true"
-                                className="inline-flex h-4 w-4 items-center justify-center rounded-full border border-current text-xs leading-none"
-                              >
-                                ×
-                              </span>
-                            ) : null}
-                          </button>
-                        );
-                      })}
-                    </div>
-
-                    {fieldState.error ? (
-                      <FieldError errors={[fieldState.error]} />
-                    ) : (
-                      <FieldDescription className="text-base">
-                        Choose from the predefined tags.
-                      </FieldDescription>
-                    )}
-                  </Field>
-                )}
+                description="Choose from the predefined tags."
               />
             </div>
 
