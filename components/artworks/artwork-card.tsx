@@ -76,7 +76,7 @@ export function ArtworkCard({
                 }}
                 className="cursor-pointer inline-flex items-center gap-1.5 rounded-md px-1 py-1 transition disabled:opacity-60"
                 likedIconClassName="size-5 fill-current text-pink-500"
-                unlikedIconClassName="size-5 text-white"
+                unlikedIconClassName="size-5 text-white hover:text-pink-500"
                 countClassName="text-xs text-white/90"
               />
 

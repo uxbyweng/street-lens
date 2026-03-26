@@ -69,9 +69,9 @@ export async function ArtworkDetail({
             initialLiked={initialLiked}
             initialLikeCount={initialLikeCount}
             isAuthenticated={isAuthenticated}
-            className="flex items-center gap-2 px-1 py-1"
+            className="cursor-pointer flex items-center gap-2 px-1 py-1"
             likedIconClassName="size-6 fill-current text-pink-500"
-            unlikedIconClassName="size-6 text-foreground"
+            unlikedIconClassName="size-6 text-foreground hover:text-pink-500"
             countClassName="text-base font-medium text-foreground"
           />
 
