@@ -11,6 +11,7 @@ type PageIntroProps = {
     href: string;
   };
   className?: string;
+  contentClassName?: string;
 };
 
 export function PageIntro({
@@ -19,14 +20,10 @@ export function PageIntro({
   bgImage,
   action,
   className,
+  contentClassName,
 }: PageIntroProps) {
   return (
-    <section
-      className={cn(
-        "mx-auto rounded-2xl px-5 py-8 relative overflow-hidden",
-        className
-      )}
-    >
+    <section className={cn("relative overflow-hidden rounded-2xl", className)}>
       {bgImage ? (
         <>
           <div
@@ -37,11 +34,17 @@ export function PageIntro({
         </>
       ) : null}
 
-      <div className="relative z-10">
-        <h1 className="font-fjalla text-6xl md:text-7xl uppercase text-white mt-10 md:mt-5">
+      <div
+        className={cn(
+          "relative z-10 mx-auto max-w-6xl px-5 sm:px-0",
+          contentClassName
+        )}
+      >
+        <h1 className="mt-10 font-fjalla text-6xl uppercase text-white md:mt-5 md:text-7xl">
           {title}
         </h1>
-        <h2 className="font-fjalla text-3xl md:text-4xl w-80 md:w-150 leading-10 md:leading-12 mt-5 md:mt-5 mb-2 font-light text-gray-400">
+
+        <h2 className="mt-5 mb-2 w-80 font-fjalla text-3xl leading-10 font-light text-gray-400 md:w-150 md:text-4xl md:leading-12">
           {subtitle}
         </h2>
 

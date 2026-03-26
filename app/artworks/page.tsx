@@ -109,7 +109,7 @@ export default async function ArtworksPage({
         title="Artworks"
         subtitle="Not every gallery has opening hours. Some just happen to be on your way."
         bgImage="/images/stage_artworks.jpg"
-        className="font-fjalla rounded-none h-70 lg:h-100 sm:px-5 md:px-10 lg:px-40 lg:py-15 text-black"
+        className="font-fjalla rounded-none h-70 lg:h-80 sm:px-5 md:px-10 lg:px-40 lg:py-15 text-black"
       />
 
       <section className="mx-auto mt-6 max-w-6xl px-4">
