@@ -1,6 +1,6 @@
 import { AuthSessionProvider } from "@/components/providers/session-provider";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Roboto, Fjalla_One } from "next/font/google";
+import { Roboto, Fjalla_One } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { UserLocationBootstrap } from "@/components/map/user-location-bootstrap";
@@ -15,16 +15,6 @@ const fjallaOne = Fjalla_One({
 const roboto = Roboto({
   subsets: ["latin"],
   variable: "--font-sans",
-});
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
@@ -50,12 +40,11 @@ export default function RootLayout({
       lang="de"
       className={cn("dark font-sans", roboto.variable, fjallaOne.variable)}
     >
-      <body
-        className={cn(geistSans.variable, geistMono.variable, "antialiased")}
-      >
+      <body>
         <AuthSessionProvider>
+          {/* Komponente, die beim Start den 'useUserLocation' Hook lädt,
+            um initial zu versuchen, die Standortdaten des Users zu bekommen  */}
           <UserLocationBootstrap />
-          {/* <MapRoutePrefetch /> */}
           {children}
           <Toaster position="top-center" />
         </AuthSessionProvider>
