@@ -16,7 +16,14 @@ import {
   type ReactNode,
 } from "react";
 import { createPortal } from "react-dom";
-import { X, Minus, Plus, Locate, Maximize, Loader2 } from "lucide-react";
+import {
+  IconX as X,
+  IconMinus as Minus,
+  IconPlus as Plus,
+  IconCurrentLocation as Locate,
+  IconMaximize as Maximize,
+  IconLoader as Loader2,
+} from "@tabler/icons-react";
 import { setStoredUserLocation } from "@/lib/location/storage";
 import { toast } from "sonner";
 
