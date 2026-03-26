@@ -41,7 +41,7 @@ export function PageIntro({
         <h1 className="font-fjalla text-6xl md:text-7xl uppercase text-white mt-10 md:mt-5">
           {title}
         </h1>
-        <h2 className="font-fjalla text-3xl md:text-4xl uppercase w-80 md:w-150 leading-10 md:leading-12 mt-5 md:mt-5 mb-2 font-light text-gray-400">
+        <h2 className="font-fjalla text-3xl md:text-4xl w-80 md:w-150 leading-10 md:leading-12 mt-5 md:mt-5 mb-2 font-light text-gray-400">
           {subtitle}
         </h2>
 
