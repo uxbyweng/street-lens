@@ -4,7 +4,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod"; // Form Validierung
-import * as z from "zod"; // Formular Schema/Regeln
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { ArtworkImageUpload } from "@/components/forms/artwork-image-upload";
@@ -31,46 +30,11 @@ import {
   ALLOWED_TAGS,
   type AllowedArtworkTag,
 } from "@/lib/constants/artwork-tags";
-
-/* SCHEMA */
-// Definition, was "richtig" ausgefüllt bedeutet.
-const artworkFormSchema = z.object({
-  title: z
-    .string()
-    .min(2, "Title must be at least 2 characters.")
-    .max(100, "Title must be at most 100 characters."),
-  artist: z
-    .string()
-    .min(2, "Artist must be at least 2 characters.")
-    .max(100, "Artist must be at most 100 characters."),
-  description: z
-    .string()
-    .min(10, "Description must be at least 10 characters.")
-    .max(2500, "Description must be at most 2500 characters."),
-  imageUrl: z.string().trim().optional(),
-  cloudinaryPublicId: z.string().trim().optional(),
-  latitude: z
-    .string()
-    .trim()
-    .min(1, "Latitude is required.")
-    .refine((value) => {
-      const number = Number(value);
-      return !Number.isNaN(number) && number >= -90 && number <= 90;
-    }, "Latitude must be between -90 and 90."),
-  longitude: z
-    .string()
-    .trim()
-    .min(1, "Longitude is required.")
-    .refine((value) => {
-      const number = Number(value);
-      return !Number.isNaN(number) && number >= -180 && number <= 180;
-    }, "Longitude must be between -180 and 180."),
-  tags: z.array(z.enum(ALLOWED_TAGS)).default([]),
-});
-
-/* EXPORT TYPES */
-export type ArtworkFormInput = z.input<typeof artworkFormSchema>;
-export type ArtworkFormValues = z.output<typeof artworkFormSchema>;
+import {
+  artworkSchema,
+  type ArtworkInput,
+  type ArtworkValues,
+} from "@/lib/validations/artwork";
 
 /* LOCAL TYPES */
 type ArtworkPayload = {
@@ -87,7 +51,7 @@ type ArtworkPayload = {
 type ArtworkFormProps = {
   mode: "create" | "edit";
   artworkId?: string;
-  initialValues?: Partial<ArtworkFormInput>;
+  initialValues?: Partial<ArtworkInput>;
 };
 
 /* HELPER FUNCTIONS */
@@ -100,7 +64,7 @@ function parseCoordinate(value?: string): number | undefined {
 }
 
 // Formular-Werte in Objekt für Datenbank bündeln
-function buildArtworkPayload(values: ArtworkFormValues): ArtworkPayload {
+function buildArtworkPayload(values: ArtworkValues): ArtworkPayload {
   return {
     title: values.title,
     artist: values.artist,
@@ -185,7 +149,7 @@ export function ArtworkForm({
   );
 
   // DEFAULT VALUES
-  const defaultValues: ArtworkFormInput = {
+  const defaultValues: ArtworkInput = {
     title: initialValues?.title ?? "",
     artist: initialValues?.artist ?? "",
     description: initialValues?.description ?? "",
@@ -197,8 +161,8 @@ export function ArtworkForm({
   };
 
   // FORMULAR-INITIALISIERUNG
-  const form = useForm<ArtworkFormInput, unknown, ArtworkFormValues>({
-    resolver: zodResolver(artworkFormSchema),
+  const form = useForm<ArtworkInput, unknown, ArtworkValues>({
+    resolver: zodResolver(artworkSchema),
     defaultValues,
   });
 
@@ -227,7 +191,7 @@ export function ArtworkForm({
   /* HANDLERS */
 
   // Submit form
-  async function onSubmit(values: ArtworkFormValues) {
+  async function onSubmit(values: ArtworkValues) {
     setIsSubmitting(true);
 
     const payload = buildArtworkPayload(values);
@@ -448,7 +412,7 @@ export function ArtworkForm({
         <form id="artwork-form" onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup className="grid grid-cols-1 gap-10 lg:grid-cols-3">
             {/* Left column */}
-            <div className="space-y-6 lg:col-span-2">
+            <div className="order-2 space-y-6 lg:order-1 lg:col-span-2">
               <FormTextField
                 name="title"
                 label="Title"
@@ -473,14 +437,14 @@ export function ArtworkForm({
 
               <FormTagPillField
                 name="tags"
-                label="Tags"
+                label="Medium & Technique"
                 control={form.control}
                 description="Choose from the predefined tags."
               />
             </div>
 
             {/* Right column */}
-            <div className="space-y-6 lg:col-span-1">
+            <div className="order-1 space-y-6 lg:order-2 lg:col-span-1">
               <Field>
                 <FieldLabel className="text-xl">
                   {mode === "edit" ? "Update Image" : "Upload Image"}

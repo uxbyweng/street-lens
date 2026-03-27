@@ -79,6 +79,7 @@ export async function ArtworkDetail({
 
             {hasCoordinates ? (
               <div className="space-y-4">
+                <p className="text-lg font-medium text-foreground">Location</p>
                 <MapPicker
                   latitude={artwork.latitude}
                   longitude={artwork.longitude}
@@ -108,7 +109,9 @@ export async function ArtworkDetail({
 
             {artwork.tags?.length ? (
               <div className="space-y-2">
-                <p className="text-lg font-medium text-foreground">Tags</p>
+                <p className="text-lg font-medium text-foreground">
+                  Medium & Technique
+                </p>
                 <div className="flex flex-wrap gap-3">
                   {artwork.tags.map((tag) => (
                     <Link
