@@ -10,3 +10,5 @@ build
 .env.production.local
 .vercel
 .DS_Store
+CLAUDE.md
+
