@@ -1,3 +1,4 @@
+// auth.ts
 import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
@@ -28,12 +29,6 @@ const providers = [
           },
           async authorize(credentials) {
             try {
-              console.log("Preview credentials received:", {
-                username: credentials?.username,
-                passwordPresent: Boolean(credentials?.password),
-                vercelEnv: process.env.VERCEL_ENV,
-              });
-
               const username =
                 typeof credentials?.username === "string"
                   ? credentials.username.trim()
@@ -44,33 +39,34 @@ const providers = [
                   ? credentials.password.trim()
                   : "";
 
-              if (username !== "fisch" || password !== "fisch") {
-                console.log("Preview credentials invalid");
+              const previewUsername = process.env.PREVIEW_USERNAME;
+              const previewPassword = process.env.PREVIEW_PASSWORD;
+
+              if (!previewUsername || !previewPassword) {
+                console.error("Missing preview auth environment variables.");
                 return null;
               }
-              console.log("Preview credentials received:", {
-                usernameRaw: credentials?.username,
-                passwordRaw: credentials?.password,
-                usernameType: typeof credentials?.username,
-                passwordType: typeof credentials?.password,
-                vercelEnv: process.env.VERCEL_ENV,
-              });
+
+              if (
+                username !== previewUsername ||
+                password !== previewPassword
+              ) {
+                return null;
+              }
 
               await connectDB();
 
-              console.log("Preview credentials DB connection ok");
-
               const provider = "credentials";
-              const providerAccountId = "preview-fisch-user";
+              const providerAccountId = "preview-admin-user";
 
               const previewUser = await User.findOneAndUpdate(
                 { provider, providerAccountId },
                 {
                   provider,
                   providerAccountId,
-                  username: "fisch",
-                  name: "Neuer Fisch",
-                  email: "test@example.com",
+                  username: previewUsername,
+                  name: "Preview Admin",
+                  email: "preview-admin@example.com",
                   image: "",
                   role: "admin",
                 },
@@ -80,12 +76,6 @@ const providers = [
                   setDefaultsOnInsert: true,
                 }
               );
-
-              console.log("Preview user upserted:", {
-                id: previewUser?._id?.toString(),
-                provider: previewUser?.provider,
-                providerAccountId: previewUser?.providerAccountId,
-              });
 
               if (!previewUser) {
                 return null;
@@ -182,13 +172,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           "providerAccountId" in user &&
           typeof user.providerAccountId === "string"
             ? user.providerAccountId
-            : "preview-fisch-user";
+            : "preview-admin-user";
         token.role =
           "role" in user && user.role === "admin" ? "admin" : "standard";
         token.username =
           "username" in user && typeof user.username === "string"
             ? user.username
-            : "fisch";
+            : "";
 
         return token;
       }
