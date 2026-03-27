@@ -1,6 +1,6 @@
 "use client";
-
-import * as React from "react";
+import { useState } from "react";
+import type { SubmitEvent } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -12,12 +12,12 @@ const isPreview = process.env.NEXT_PUBLIC_VERCEL_ENV === "preview";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [username, setUsername] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [error, setError] = React.useState("");
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  async function handlePreviewLogin(event: React.FormEvent<HTMLFormElement>) {
+  async function handlePreviewLogin(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
     setIsSubmitting(true);

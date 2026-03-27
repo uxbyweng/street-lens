@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 import { IconMaximize, IconX } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,7 @@ type FullscreenOverlayProps = {
 };
 
 function useLockBodyScroll(isLocked: boolean) {
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isLocked) return;
 
     const previousOverflow = document.body.style.overflow;
@@ -41,7 +41,7 @@ function FullscreenOverlay({
 }: FullscreenOverlayProps) {
   useLockBodyScroll(true);
 
-  React.useEffect(() => {
+  useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
         onClose();
@@ -114,13 +114,13 @@ export function ArtworkImageViewer({
   alt,
   className,
 }: ArtworkImageViewerProps) {
-  const [isFullscreenOpen, setIsFullscreenOpen] = React.useState(false);
+  const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
 
-  const openFullscreen = React.useCallback(() => {
+  const openFullscreen = useCallback(() => {
     setIsFullscreenOpen(true);
   }, []);
 
-  const closeFullscreen = React.useCallback(() => {
+  const closeFullscreen = useCallback(() => {
     setIsFullscreenOpen(false);
   }, []);
 

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { Plus } from "lucide-react";
+import { IconPlus } from "@tabler/icons-react";
 import { auth } from "@/auth";
 import { ArtworkList } from "@/components/artworks/artwork-list";
 import { getArtworks } from "@/lib/data/artworks";
@@ -103,15 +103,13 @@ export default async function ArtworksPage({
     );
   }
 
-  const pageTitle = "Artworks";
-  const pageSubtitle = "";
-
   return (
     <>
       <PageIntro
-        title={pageTitle}
-        subtitle={pageSubtitle}
-        className="font-fjalla rounded-none h-70 lg:h-100 sm:px-5 md:px-10 lg:px-40 lg:py-15 text-black  bg-[url('/images/stage_artworks.jpg')] bg-cover bg-top bg-no-repeat"
+        title="Artworks"
+        subtitle="Not every gallery has opening hours. Some just happen to be on your way."
+        bgImage="/images/stage_artworks.jpg"
+        className="font-fjalla rounded-none h-70 lg:h-80 sm:px-5 md:px-10 lg:px-40 lg:py-15 text-black"
       />
 
       <section className="mx-auto mt-6 max-w-6xl px-4">
@@ -139,7 +137,7 @@ export default async function ArtworksPage({
           aria-label="Add artwork"
           className="fixed bottom-5 right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-sky-600 text-white shadow-lg transition-transform hover:scale-105 hover:bg-sky-700"
         >
-          <Plus className="h-10 w-10" />
+          <IconPlus size={30} stroke={3} className="h-10 w-10" />
         </Link>
       ) : null}
     </>

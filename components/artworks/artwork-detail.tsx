@@ -58,7 +58,7 @@ export async function ArtworkDetail({
             </div>
 
             {artwork.description ? (
-              <p className="max-w-3xl text-lg leading-relaxed text-foreground sm:text-xl">
+              <p className="whitespace-pre-line max-w-3xl text-lg leading-relaxed text-foreground sm:text-xl">
                 {artwork.description}
               </p>
             ) : null}

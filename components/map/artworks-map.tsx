@@ -123,7 +123,10 @@ export function ArtworksMap({
                 </MarkerLabel>
               </MarkerContent>
 
-              <MarkerPopup closeButton={true} className="bg-black px-5 py-3">
+              <MarkerPopup
+                closeButton={true}
+                className="bg-black px-5 py-3 [&_button]:cursor-pointer [&_button]:m-3"
+              >
                 <div className="w-56 lg:w-90 space-y-3">
                   <div className="space-y-2">
                     <div className="space-y-1">
@@ -135,7 +138,7 @@ export function ArtworksMap({
                       </p>
                     </div>
 
-                    <div className="flex items-center gap-1 text-xs lg:text-base text-white/80">
+                    <div className="flex items-center text-xs lg:text-base text-white/80">
                       <LikeToggle
                         artworkId={artwork._id}
                         initialLiked={Boolean(artwork.isLiked)}
@@ -144,7 +147,7 @@ export function ArtworksMap({
                           event.preventDefault();
                           event.stopPropagation();
                         }}
-                        className="cursor-pointer inline-flex items-center gap-1.5 rounded-md px-1 py-1 transition disabled:opacity-60"
+                        className="cursor-pointer inline-flex items-center gap-1.5 rounded-md transition disabled:opacity-60"
                         likedIconClassName="size-5 fill-current text-pink-500"
                         unlikedIconClassName="size-5 text-white hover:text-pink-500"
                         countClassName="text-xs text-white/90"

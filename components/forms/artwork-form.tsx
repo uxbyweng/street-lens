@@ -1,12 +1,12 @@
-"use client"; // Sagt Next.js: Dies ist ein interaktives Bauteil für den Browser
+"use client";
 
 /* IMPORTS */
-import * as React from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { zodResolver } from "@hookform/resolvers/zod"; // Verbindet Formular mit Validierung
-import { Controller, useForm } from "react-hook-form"; // Das Hauptwerkzeug für Formulare
-import { toast } from "sonner"; // Fehlermeldungen (Popups)
-import * as z from "zod"; // Werkzeug, um Regeln für Eingabefelder festzulegen
+import { zodResolver } from "@hookform/resolvers/zod"; // Form Validierung
+import * as z from "zod"; // Formular Schema/Regeln
+import { Controller, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { ArtworkImageUpload } from "@/components/forms/artwork-image-upload";
 import {
   extractCoordinatesFromImage,
@@ -46,7 +46,7 @@ const artworkFormSchema = z.object({
   description: z
     .string()
     .min(10, "Description must be at least 10 characters.")
-    .max(1000, "Description must be at most 1000 characters."),
+    .max(2500, "Description must be at most 2500 characters."),
   imageUrl: z.string().trim().optional(),
   cloudinaryPublicId: z.string().trim().optional(),
   latitude: z
@@ -115,11 +115,12 @@ function buildArtworkPayload(values: ArtworkFormValues): ArtworkPayload {
 
 const MAX_IMAGE_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
 
-// --- API-FUNKTION: DATEN SPEICHERN ---
+// API-FUNKTION:
+// neues Artwork erstellen (POST) oder bestehendes editieren (PATCH)
 async function saveArtwork(
   payload: ArtworkPayload,
   options: {
-    mode: "create" | "edit"; //  neu erstellen (POST) oder editieren (PATCH)
+    mode: "create" | "edit";
     artworkId?: string;
   }
 ) {
@@ -152,35 +153,31 @@ async function saveArtwork(
   return result;
 }
 
-// --- HAUPT-KOMPONENTE ---
+// --- MAIN COMPONENT ---
 export function ArtworkForm({
   mode,
   artworkId,
   initialValues,
 }: ArtworkFormProps) {
   // STATUS-VARIABLEN (States)
-  const router = useRouter(); // Um User nach dem Speichern weiterzuleiten
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [isUploadingImage, setIsUploadingImage] = React.useState(false);
-  const [selectedFileName, setSelectedFileName] = React.useState<string | null>(
-    null
-  );
-  const [imagePreviewUrl, setImagePreviewUrl] = React.useState<string | null>(
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(
     initialValues?.imageUrl ?? null
   );
-  const [imageStatusMessage, setImageStatusMessage] = React.useState<
-    string | null
-  >(null);
-  const [imageStatusVariant, setImageStatusVariant] = React.useState<
+  const [imageStatusMessage, setImageStatusMessage] = useState<string | null>(
+    null
+  );
+  const [imageStatusVariant, setImageStatusVariant] = useState<
     "default" | "success" | "warning"
   >("default");
-  const [areCoordinatesEditable, setAreCoordinatesEditable] = React.useState(
+  const [areCoordinatesEditable, setAreCoordinatesEditable] = useState(
     !initialValues?.latitude || !initialValues?.longitude
   );
   const [hasAutoExtractedCoordinates, setHasAutoExtractedCoordinates] =
-    React.useState(
-      Boolean(initialValues?.latitude && initialValues?.longitude)
-    );
+    useState(Boolean(initialValues?.latitude && initialValues?.longitude));
 
   const sanitizedTags: AllowedArtworkTag[] = (initialValues?.tags ?? []).filter(
     (tag): tag is AllowedArtworkTag =>
@@ -219,7 +216,7 @@ export function ArtworkForm({
       : undefined;
 
   // USEEFFECT
-  React.useEffect(() => {
+  useEffect(() => {
     return () => {
       if (imagePreviewUrl?.startsWith("blob:")) {
         URL.revokeObjectURL(imagePreviewUrl);

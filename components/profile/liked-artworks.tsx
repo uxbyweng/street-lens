@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { IconHeart, IconChevronDown } from "@tabler/icons-react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
 
@@ -28,8 +29,12 @@ export function LikedArtworks({ likedArtworks }: LikedArtworksProps) {
     .slice(0, 3);
 
   return (
-    <section className="mt-6">
-      <AccordionPrimitive.Root type="single" collapsible>
+    <section>
+      <AccordionPrimitive.Root
+        type="single"
+        collapsible
+        defaultValue="liked-artworks"
+      >
         <AccordionPrimitive.Item
           value="liked-artworks"
           className="rounded-2xl border border-white/10 bg-background/90 px-4 shadow-xl backdrop-blur-md"
@@ -83,12 +88,14 @@ export function LikedArtworks({ likedArtworks }: LikedArtworksProps) {
                   ))}
                 </div>
 
-                <Link
-                  href="/artworks?liked=true"
-                  className="inline-flex items-center rounded-lg border border-white/15 px-3 py-2 text-sm font-medium transition hover:bg-white/5"
-                >
-                  See all likes
-                </Link>
+                <Button asChild className="w-full md:w-auto mt-8 lg:mt-10">
+                  <Link
+                    href="/artworks?liked=true"
+                    className="inline-flex items-center rounded-lg border border-white/15 px-3 py-2 text-sm font-medium transition hover:bg-white/5"
+                  >
+                    <span>See all likes</span>
+                  </Link>
+                </Button>
               </div>
             )}
           </AccordionPrimitive.Content>

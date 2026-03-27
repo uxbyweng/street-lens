@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
@@ -14,7 +14,7 @@ import {
 } from "@tabler/icons-react";
 
 export function MobileMenu() {
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const { data: session, status } = useSession();
 
@@ -25,7 +25,7 @@ export function MobileMenu() {
     ...(session?.user ? [{ href: "/profile", label: "Profile" }] : []),
   ];
 
-  React.useEffect(() => {
+  useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
 
     return () => {

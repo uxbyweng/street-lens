@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -16,8 +16,8 @@ type DeleteArtworkButtonProps = {
 
 export function DeleteArtworkButton({ artworkId }: DeleteArtworkButtonProps) {
   const router = useRouter();
-  const [isConfirming, setIsConfirming] = React.useState(false);
-  const [isDeleting, setIsDeleting] = React.useState(false);
+  const [isConfirming, setIsConfirming] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   async function handleDelete() {
     setIsDeleting(true); // Button sperren und "Lösche..." anzeigen

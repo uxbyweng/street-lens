@@ -162,7 +162,7 @@ export const getArtworkMetadataById = cache(
     id: string
   ): Promise<Pick<
     Artwork,
-    "_id" | "title" | "artist" | "description"
+    "_id" | "title" | "artist" | "description" | "imageUrl"
   > | null> => {
     if (!Types.ObjectId.isValid(id)) {
       return null;
@@ -171,7 +171,7 @@ export const getArtworkMetadataById = cache(
     await connectDB();
 
     const artwork = await ArtworkModel.findById(id)
-      .select("title artist description")
+      .select("title artist description imageUrl")
       .lean();
 
     if (!artwork) {
@@ -183,6 +183,7 @@ export const getArtworkMetadataById = cache(
       title: artwork.title,
       artist: artwork.artist,
       description: artwork.description,
+      imageUrl: artwork.imageUrl,
     };
   }
 );

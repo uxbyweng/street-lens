@@ -24,7 +24,7 @@ export async function POST(_request: Request, { params }: RouteContext) {
     );
   }
 
-  // Check id User is logged in
+  // Check if User is logged in
   const session = await auth();
   const userId = session?.user?.id;
   if (!userId) {

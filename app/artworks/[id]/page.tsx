@@ -2,10 +2,10 @@ import mongoose from "mongoose";
 import { notFound } from "next/navigation";
 import { ArtworkDetail } from "@/components/artworks/artwork-detail";
 import type { Metadata } from "next";
+import { getArtworkById, getArtworkMetadataById } from "@/lib/data/artworks";
 import { auth } from "@/auth";
 import { connectDB } from "@/lib/db/mongodb";
 import { Like } from "@/lib/models/like";
-import { getArtworkById, getArtworkMetadataById } from "@/lib/data/artworks";
 
 export const dynamic = "force-dynamic";
 
@@ -28,10 +28,38 @@ export async function generateMetadata({
     };
   }
 
+  const title = `${artwork.title} by ${artwork.artist}`;
+  const description =
+    artwork.description?.trim() ||
+    `View details for ${artwork.title} on STREET LENS.`;
+
+  const image = artwork.imageUrl || "/images/og-default.jpg";
+  const url = `/artworks/${artwork._id}`;
+
   return {
-    title: `${artwork.title} by ${artwork.artist}`,
-    description:
-      artwork.description ?? `View details for ${artwork.title} on STREETLENS.`,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "article",
+      url,
+      siteName: "STREET LENS",
+      images: [
+        {
+          url: image,
+          width: 1200,
+          height: 630,
+          alt: artwork.title || "Artwork preview",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [image],
+    },
   };
 }
 

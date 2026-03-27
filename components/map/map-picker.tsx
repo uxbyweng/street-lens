@@ -1,6 +1,7 @@
+// components/map/map-picker.tsx
 "use client";
 
-import * as React from "react";
+import { useEffect, useRef } from "react";
 import {
   Map,
   MapControls,
@@ -47,7 +48,7 @@ function MapClickHandler({
 }) {
   const { map, isLoaded } = useMap();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!map || !isLoaded || disabled) return;
 
     const handleClick = (event: { lngLat: { lat: number; lng: number } }) => {
@@ -75,9 +76,9 @@ function MapViewportSync({
   longitude: number;
 }) {
   const { map, isLoaded } = useMap();
-  const isFirstRender = React.useRef(true);
+  const isFirstRender = useRef(true);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!map || !isLoaded) return;
 
     if (isFirstRender.current) {
@@ -149,7 +150,7 @@ export function MapPicker({
           <MarkerContent>
             <div className="relative flex items-center justify-center">
               <div className="pointer-events-none absolute h-18 w-18 rounded-full bg-orange-500/15" />
-              <div className="pointer-events-none absolute h-12 w-12 rounded-full bg-orange-500/35 animate-ping animation-duration-[2s]" />
+              <div className="pointer-events-none absolute h-12 w-12 animate-ping rounded-full bg-orange-500/35 animation-duration-[2s]" />
               <div className="relative h-4 w-4 rounded-full bg-pink-500 shadow-lg shadow-pink-500/50" />
             </div>
           </MarkerContent>

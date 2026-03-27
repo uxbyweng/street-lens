@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useCallback } from "react";
 import Image from "next/image";
 import { useDropzone } from "react-dropzone";
 import { Button } from "@/components/ui/button";
@@ -29,7 +29,7 @@ export function ArtworkImageUpload({
 }: ArtworkImageUploadProps) {
   const isDisabled = isUploadingImage || isSubmitting;
 
-  const handleDrop = React.useCallback(
+  const handleDrop = useCallback(
     async (acceptedFiles: File[]) => {
       const file = acceptedFiles[0];
 
@@ -93,7 +93,7 @@ export function ArtworkImageUpload({
               <p className={`text-xs ${statusClassName}`}>{statusMessage}</p>
             ) : (
               <p className="text-xs text-muted-foreground">
-                Max. 4 MB · JPG, PNG, WebP
+                Max. 10 MB · JPG, PNG, WebP
               </p>
             )}
           </div>
