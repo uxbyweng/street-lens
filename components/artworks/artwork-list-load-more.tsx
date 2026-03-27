@@ -28,6 +28,12 @@ export function ArtworkListLoadMore({
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(initialArtworks.length === pageSize);
 
+  function handleArtworkRemoved(artworkId: string) {
+    setArtworks((current) =>
+      current.filter((artwork) => artwork._id !== artworkId)
+    );
+  }
+
   async function handleLoadMore() {
     if (isLoading || !hasMore) return;
 
@@ -75,6 +81,7 @@ export function ArtworkListLoadMore({
       <ArtworkList
         artworks={artworks}
         isLikedFilterActive={isLikedFilterActive}
+        onArtworkRemoved={handleArtworkRemoved}
       />
 
       {hasMore ? (

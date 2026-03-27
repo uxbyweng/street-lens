@@ -19,6 +19,7 @@ type LikeToggleProps = {
   likedIconClassName?: string;
   unlikedIconClassName?: string;
   refreshOnSuccess?: boolean;
+  onToggleSuccess?: (nextLiked: boolean) => void;
 };
 
 export function LikeToggle({
@@ -33,6 +34,7 @@ export function LikeToggle({
   likedIconClassName = "size-5 fill-current text-pink-500",
   unlikedIconClassName = "size-5 text-white",
   refreshOnSuccess = false,
+  onToggleSuccess,
 }: LikeToggleProps) {
   const [liked, setLiked] = useState(initialLiked);
   const [likeCount, setLikeCount] = useState(initialLikeCount);
@@ -67,6 +69,7 @@ export function LikeToggle({
 
       setLiked(data.liked);
       setLikeCount(data.likeCount);
+      onToggleSuccess?.(data.liked);
     } catch {
       toast.error("Could not update like. Please try again.");
     } finally {

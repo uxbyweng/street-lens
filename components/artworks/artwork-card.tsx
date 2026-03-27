@@ -15,6 +15,7 @@ type ArtworkCardProps = {
   href: string;
   index: number;
   isLikedFilterActive?: boolean;
+  onArtworkRemoved?: (artworkId: string) => void;
 };
 
 export function ArtworkCard({
@@ -22,6 +23,7 @@ export function ArtworkCard({
   href,
   index,
   isLikedFilterActive = false,
+  onArtworkRemoved,
 }: ArtworkCardProps) {
   const shouldPreload = index < 3;
   const hasCoordinates = artwork.latitude != null && artwork.longitude != null;
@@ -66,6 +68,11 @@ export function ArtworkCard({
                 initialLiked={Boolean(artwork.isLiked)}
                 initialLikeCount={artwork.likeCount ?? 0}
                 refreshOnSuccess={isLikedFilterActive}
+                onToggleSuccess={(nextLiked) => {
+                  if (isLikedFilterActive && !nextLiked) {
+                    onArtworkRemoved?.(artwork._id);
+                  }
+                }}
                 onClick={(event) => {
                   event.preventDefault();
                   event.stopPropagation();

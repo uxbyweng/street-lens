@@ -140,7 +140,7 @@ export async function getLatestArtworks(
 
   let userLikedArtworkIds = new Set<string>();
 
-  if (userId) {
+  if (userId && Types.ObjectId.isValid(userId)) {
     const userLikes = await Like.find({
       userId,
       artworkId: { $in: artworkIds },
@@ -176,7 +176,7 @@ export async function getArtworksForOverview(options?: {
 
   let userLikedArtworkIds = new Set<string>();
 
-  if (userId) {
+  if (userId && Types.ObjectId.isValid(userId)) {
     const userLikes = await Like.find({ userId })
       .sort({ createdAt: -1 })
       .lean();

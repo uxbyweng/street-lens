@@ -160,8 +160,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
 
     async jwt({ token, account, profile, user }) {
-      await connectDB();
-
       if (account?.provider === "credentials" && user) {
         token.userId = user.id;
         token.provider =
@@ -183,26 +181,42 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         return token;
       }
 
+      const hasRequiredTokenData =
+        typeof token.userId === "string" &&
+        typeof token.provider === "string" &&
+        typeof token.providerAccountId === "string" &&
+        typeof token.role === "string";
+
+      if (hasRequiredTokenData) {
+        return token;
+      }
+
       const provider = account?.provider ?? token.provider;
       const providerAccountId =
         account && profile
           ? String(profile.sub ?? profile.id ?? "")
           : token.providerAccountId;
 
-      if (provider && providerAccountId) {
-        const dbUser = await User.findOne({
-          provider,
-          providerAccountId,
-        }).lean();
-
-        if (dbUser) {
-          token.userId = dbUser._id.toString();
-          token.provider = dbUser.provider;
-          token.providerAccountId = dbUser.providerAccountId;
-          token.role = dbUser.role;
-          token.username = dbUser.username ?? "";
-        }
+      if (!provider || !providerAccountId) {
+        return token;
       }
+
+      await connectDB();
+
+      const dbUser = await User.findOne({
+        provider,
+        providerAccountId,
+      }).lean();
+
+      if (!dbUser) {
+        return token;
+      }
+
+      token.userId = dbUser._id.toString();
+      token.provider = dbUser.provider;
+      token.providerAccountId = dbUser.providerAccountId;
+      token.role = dbUser.role;
+      token.username = dbUser.username ?? "";
 
       return token;
     },

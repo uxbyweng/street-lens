@@ -9,11 +9,13 @@ type ArtworkListItem = Artwork & {
 type ArtworkListProps = {
   artworks?: ArtworkListItem[];
   isLikedFilterActive?: boolean;
+  onArtworkRemoved?: (artworkId: string) => void;
 };
 
 export function ArtworkList({
   artworks = [],
   isLikedFilterActive = false,
+  onArtworkRemoved,
 }: ArtworkListProps) {
   if (artworks.length === 0) {
     return (
@@ -32,6 +34,7 @@ export function ArtworkList({
             href={`/artworks/${artwork._id}`}
             index={index}
             isLikedFilterActive={isLikedFilterActive}
+            onArtworkRemoved={onArtworkRemoved}
           />
         </li>
       ))}
