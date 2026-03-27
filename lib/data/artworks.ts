@@ -139,6 +139,85 @@ export async function getLatestArtworks(
   );
 }
 
+export async function getArtworksForOverview(options?: {
+  userId?: string;
+  likedOnly?: boolean;
+}): Promise<(Artwork & { likeCount: number; isLiked: boolean })[]> {
+  await connectDB();
+
+  const userId = options?.userId;
+  const likedOnly = options?.likedOnly ?? false;
+
+  let userLikedArtworkIds = new Set<string>();
+
+  if (userId) {
+    const userLikes = await Like.find({ userId })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    userLikedArtworkIds = new Set(
+      userLikes.map((like) => like.artworkId.toString())
+    );
+
+    if (likedOnly) {
+      const artworkIds = userLikes.map((like) => like.artworkId);
+
+      const likedArtworks = await ArtworkModel.find({
+        _id: { $in: artworkIds },
+      }).lean();
+
+      const likeCounts = await Like.aggregate([
+        {
+          $match: {
+            artworkId: { $in: artworkIds },
+          },
+        },
+        {
+          $group: {
+            _id: "$artworkId",
+            likeCount: { $sum: 1 },
+          },
+        },
+      ]);
+
+      const likeCountMap = new Map<string, number>(
+        likeCounts.map((entry) => [entry._id.toString(), entry.likeCount])
+      );
+
+      return likedArtworks.map((artwork) =>
+        serializeArtwork(
+          artwork,
+          likeCountMap.get(artwork._id.toString()) ?? 0,
+          true
+        )
+      );
+    }
+  }
+
+  const artworks = await ArtworkModel.find().sort({ createdAt: -1 }).lean();
+
+  const likeCounts = await Like.aggregate([
+    {
+      $group: {
+        _id: "$artworkId",
+        likeCount: { $sum: 1 },
+      },
+    },
+  ]);
+
+  const likeCountMap = new Map<string, number>(
+    likeCounts.map((entry) => [entry._id.toString(), entry.likeCount])
+  );
+
+  return artworks.map((artwork) =>
+    serializeArtwork(
+      artwork,
+      likeCountMap.get(artwork._id.toString()) ?? 0,
+      userLikedArtworkIds.has(artwork._id.toString())
+    )
+  );
+}
+
 export const getArtworkById = cache(
   async (id: string): Promise<Artwork | null> => {
     if (!Types.ObjectId.isValid(id)) {
