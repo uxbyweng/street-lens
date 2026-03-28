@@ -116,6 +116,24 @@ async function saveArtwork(
   return result;
 }
 
+async function debugExifOnServer(file: File) {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const response = await fetch("/api/debug-exif", {
+    method: "POST",
+    body: formData,
+  });
+
+  const result = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(result?.error || "Server EXIF debug failed.");
+  }
+
+  return result;
+}
+
 // --- MAIN COMPONENT ---
 export function ArtworkForm({
   mode,
@@ -323,6 +341,13 @@ export function ArtworkForm({
 
       // Bild zu Cloudinary schicken
       const uploadResult = await uploadImageToCloudinary(file);
+
+      const serverExifDebug = await debugExifOnServer(file);
+
+      setDebugExifInfo((prev) => ({
+        ...(prev ?? {}),
+        serverExifDebug,
+      }));
 
       // SecureURL speichern
       const secureUrl = uploadResult.secureUrl;
