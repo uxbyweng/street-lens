@@ -48,17 +48,26 @@ export async function extractCoordinatesWithDebug(
 
     // exifr.gps(file) sucht nach Breiten- und Längengraden in den Bilddaten
     gpsDataRaw = await exifr.gps(file);
-    latitude = Number(gpsDataRaw?.latitude ?? null);
-    longitude = Number(gpsDataRaw?.longitude ?? null);
+    latitude = Number(
+      (gpsDataRaw as Record<string, unknown> | null)?.latitude ?? null
+    );
+    longitude = Number(
+      (gpsDataRaw as Record<string, unknown> | null)?.longitude ?? null
+    );
 
     // Fallback: Wenn exifr.gps() null zurückgibt, versuche exifr.parse()
     if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
       fullExifRaw = await exifr.parse(file);
+      const exifObj = fullExifRaw as Record<string, unknown>;
       latitude = Number(
-        fullExifRaw?.latitude ?? fullExifRaw?.gps?.latitude ?? null
+        exifObj?.latitude ??
+          (exifObj?.gps as Record<string, unknown> | undefined)?.latitude ??
+          null
       );
       longitude = Number(
-        fullExifRaw?.longitude ?? fullExifRaw?.gps?.longitude ?? null
+        exifObj?.longitude ??
+          (exifObj?.gps as Record<string, unknown> | undefined)?.longitude ??
+          null
       );
     }
 
