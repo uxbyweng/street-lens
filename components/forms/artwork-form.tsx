@@ -9,7 +9,9 @@ import { toast } from "sonner";
 import { ArtworkImageUpload } from "@/components/forms/artwork-image-upload";
 import {
   extractCoordinatesFromImage,
+  extractCoordinatesWithDebug,
   uploadImageToCloudinary,
+  type ExifDebugInfo,
 } from "@/lib/cloudinary/client-upload";
 import { MapPicker } from "@/components/map/map-picker";
 import { FormTextField } from "@/components/forms/form-text-field";
@@ -141,6 +143,9 @@ export function ArtworkForm({
   );
   const [hasAutoExtractedCoordinates, setHasAutoExtractedCoordinates] =
     useState(Boolean(initialValues?.latitude && initialValues?.longitude));
+  const [exifDebugInfo, setExifDebugInfo] = useState<ExifDebugInfo | null>(
+    null
+  );
 
   const sanitizedTags: AllowedArtworkTag[] = (initialValues?.tags ?? []).filter(
     (tag): tag is AllowedArtworkTag =>
@@ -248,6 +253,7 @@ export function ArtworkForm({
   async function handleImageSelection(file: File) {
     setImageStatusMessage(null);
     setImageStatusVariant("default");
+    setExifDebugInfo(null);
 
     if (file.size > MAX_IMAGE_FILE_SIZE_BYTES) {
       setImageStatusMessage(
@@ -291,8 +297,10 @@ export function ArtworkForm({
     setIsUploadingImage(true);
 
     try {
-      // Koordinaten aus dem Bild lesen (falls vorhanden)
-      const extractedCoordinates = await extractCoordinatesFromImage(file);
+      // Koordinaten aus dem Bild lesen (mit Debug-Info)
+      const { coordinates: extractedCoordinates, debug } =
+        await extractCoordinatesWithDebug(file);
+      setExifDebugInfo(debug);
 
       // Bild zu Cloudinary schicken
       const uploadResult = await uploadImageToCloudinary(file);
@@ -404,6 +412,7 @@ export function ArtworkForm({
     setHasAutoExtractedCoordinates(
       Boolean(initialValues?.latitude && initialValues?.longitude)
     );
+    setExifDebugInfo(null);
   }
 
   // --- (JSX) ---
@@ -460,6 +469,43 @@ export function ArtworkForm({
                   statusMessage={imageStatusMessage}
                   statusVariant={imageStatusVariant}
                 />
+
+                {exifDebugInfo && (
+                  <div className="mt-4 rounded-lg border border-amber-500 bg-amber-950 p-3 text-xs text-amber-100">
+                    <p className="mb-2 font-bold text-amber-300">
+                      🐛 EXIF Debug Info:
+                    </p>
+                    <div className="space-y-1">
+                      <p>
+                        <strong>File:</strong> {exifDebugInfo.fileInfo.name} (
+                        {exifDebugInfo.fileInfo.type},{" "}
+                        {exifDebugInfo.fileInfo.size} bytes)
+                      </p>
+                      <p>
+                        <strong>GPS via exifr.gps():</strong>{" "}
+                        {exifDebugInfo.gpsDataRaw
+                          ? `${JSON.stringify(exifDebugInfo.gpsDataRaw)}`
+                          : "null"}
+                      </p>
+                      <p>
+                        <strong>Full EXIF via exifr.parse():</strong>{" "}
+                        {exifDebugInfo.fullExifRaw
+                          ? `GPS: ${JSON.stringify(exifDebugInfo.fullExifRaw.gps || exifDebugInfo.fullExifRaw?.latitude ? { latitude: exifDebugInfo.fullExifRaw.latitude, longitude: exifDebugInfo.fullExifRaw.longitude } : "not found")}`
+                          : "null"}
+                      </p>
+                      <p>
+                        <strong>Extracted:</strong> Lat={exifDebugInfo.latitude}
+                        , Lng=
+                        {exifDebugInfo.longitude}
+                      </p>
+                      {exifDebugInfo.error && (
+                        <p className="text-red-300">
+                          <strong>Error:</strong> {exifDebugInfo.error}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                )}
               </Field>
 
               <Field>

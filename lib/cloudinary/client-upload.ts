@@ -8,11 +8,94 @@ export type ExtractedCoordinates = {
   longitude: number;
 };
 
+export type ExifDebugInfo = {
+  fileInfo: {
+    name: string;
+    type: string;
+    size: number;
+  };
+  gpsDataRaw: unknown;
+  fullExifRaw: unknown;
+  latitude: number | null;
+  longitude: number | null;
+  error?: string;
+};
+
 type CloudinaryUploadResult = {
   secureUrl: string;
   publicId: string;
   originalFilename?: string;
 };
+
+// --- FUNKTION: KOORDINATEN AUSLESEN MIT DEBUG-INFO ---
+/**
+ * Versucht, GPS-Daten aus einer Bilddatei zu extrahieren und gibt Debug-Info zurück.
+ */
+export async function extractCoordinatesWithDebug(
+  file: File
+): Promise<{ coordinates: ExtractedCoordinates | null; debug: ExifDebugInfo }> {
+  const fileInfo = {
+    name: file.name,
+    type: file.type,
+    size: file.size,
+  };
+
+  try {
+    let gpsDataRaw: unknown = null;
+    let fullExifRaw: unknown = null;
+    let latitude: number | null = null;
+    let longitude: number | null = null;
+
+    // exifr.gps(file) sucht nach Breiten- und Längengraden in den Bilddaten
+    gpsDataRaw = await exifr.gps(file);
+    latitude = Number(gpsDataRaw?.latitude ?? null);
+    longitude = Number(gpsDataRaw?.longitude ?? null);
+
+    // Fallback: Wenn exifr.gps() null zurückgibt, versuche exifr.parse()
+    if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+      fullExifRaw = await exifr.parse(file);
+      latitude = Number(
+        fullExifRaw?.latitude ?? fullExifRaw?.gps?.latitude ?? null
+      );
+      longitude = Number(
+        fullExifRaw?.longitude ?? fullExifRaw?.gps?.longitude ?? null
+      );
+    }
+
+    const hasValidCoordinates =
+      Number.isFinite(latitude) && Number.isFinite(longitude);
+
+    const coordinates = hasValidCoordinates
+      ? {
+          latitude: Number(latitude!.toFixed(6)),
+          longitude: Number(longitude!.toFixed(6)),
+        }
+      : null;
+
+    return {
+      coordinates,
+      debug: {
+        fileInfo,
+        gpsDataRaw,
+        fullExifRaw,
+        latitude: hasValidCoordinates ? latitude : null,
+        longitude: hasValidCoordinates ? longitude : null,
+      },
+    };
+  } catch (error) {
+    return {
+      coordinates: null,
+      debug: {
+        fileInfo,
+        gpsDataRaw: null,
+        fullExifRaw: null,
+        latitude: null,
+        longitude: null,
+        error: error instanceof Error ? error.message : String(error),
+      },
+    };
+  }
+}
 
 // --- FUNKTION: KOORDINATEN AUSLESEN ---
 /**
@@ -21,41 +104,8 @@ type CloudinaryUploadResult = {
 export async function extractCoordinatesFromImage(
   file: File
 ): Promise<ExtractedCoordinates | null> {
-  try {
-    // exifr.gps(file) sucht nach Breiten- und Längengraden in den Bilddaten
-    const gpsData = await exifr.gps(file);
-    console.log("gpsData from exifr:", gpsData);
-
-    let latitude = Number(gpsData?.latitude);
-    let longitude = Number(gpsData?.longitude);
-
-    // Fallback: Wenn exifr.gps() auf Mobile null zurückgibt, versuche exifr.parse()
-    // (wichtig für Android-Kompatibilität)
-    if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
-      const fallbackData = await exifr.parse(file, { gps: true });
-      latitude = Number(fallbackData?.latitude);
-      longitude = Number(fallbackData?.longitude);
-      console.log("fallbackData from exifr.parse:", fallbackData);
-    }
-
-    const hasValidCoordinates =
-      Number.isFinite(latitude) && Number.isFinite(longitude);
-
-    // Wenn keine GPS-Daten vorhanden > "null" zurückgeben.
-    if (!hasValidCoordinates) {
-      return null;
-    }
-    // Wenn alles passt, geben wir die Koordinaten zurück.
-    // toFixed(6) rundet auf 6 Nachkommastellen für eine saubere Speicherung.
-    return {
-      latitude: Number(latitude.toFixed(6)),
-      longitude: Number(longitude.toFixed(6)),
-    };
-  } catch (error) {
-    // Fehler Logging bei Absturz (z.b. Datei ist defekt)
-    console.error("Client EXIF GPS extraction failed:", error);
-    return null;
-  }
+  const { coordinates } = await extractCoordinatesWithDebug(file);
+  return coordinates;
 }
 
 // --- FUNKTION: BILD HOCHLADEN ---
