@@ -487,13 +487,21 @@ export function ArtworkForm({
                           : "null"}
                       </p>
                       <p>
+                        <strong>Full EXIF keys:</strong> [
+                        {exifDebugInfo.gpsSearchResults.allKeys.join(", ")}]
+                      </p>
+                      <p>
+                        <strong>GPS-related keys:</strong> [
+                        {exifDebugInfo.gpsSearchResults.gpsRelatedKeys.join(
+                          ", "
+                        ) || "none"}
+                        ]
+                      </p>
+                      <p>
                         <strong>Full EXIF via exifr.parse():</strong>{" "}
-                        {exifDebugInfo.fullExifRaw
-                          ? JSON.stringify(exifDebugInfo.fullExifRaw).substring(
-                              0,
-                              200
-                            )
-                          : "null"}
+                        <pre className="mt-1 overflow-auto rounded bg-black/30 p-2">
+                          {JSON.stringify(exifDebugInfo.fullExifRaw, null, 2)}
+                        </pre>
                       </p>
                       <p>
                         <strong>Extracted:</strong> Lat={exifDebugInfo.latitude}

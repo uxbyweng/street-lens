@@ -16,6 +16,10 @@ export type ExifDebugInfo = {
   };
   gpsDataRaw: unknown;
   fullExifRaw: unknown;
+  gpsSearchResults: {
+    allKeys: string[];
+    gpsRelatedKeys: string[];
+  };
   latitude: number | null;
   longitude: number | null;
   error?: string;
@@ -81,12 +85,22 @@ export async function extractCoordinatesWithDebug(
         }
       : null;
 
+    // GPS-Suche in der vollständigen EXIF-Struktur
+    const allKeys = Object.keys((fullExifRaw as Record<string, unknown>) || {});
+    const gpsRelatedKeys = allKeys.filter((key) =>
+      key.toLowerCase().includes("gps")
+    );
+
     return {
       coordinates,
       debug: {
         fileInfo,
         gpsDataRaw,
         fullExifRaw,
+        gpsSearchResults: {
+          allKeys,
+          gpsRelatedKeys,
+        },
         latitude: hasValidCoordinates ? latitude : null,
         longitude: hasValidCoordinates ? longitude : null,
       },
@@ -98,6 +112,10 @@ export async function extractCoordinatesWithDebug(
         fileInfo,
         gpsDataRaw: null,
         fullExifRaw: null,
+        gpsSearchResults: {
+          allKeys: [],
+          gpsRelatedKeys: [],
+        },
         latitude: null,
         longitude: null,
         error: error instanceof Error ? error.message : String(error),
