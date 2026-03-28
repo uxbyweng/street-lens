@@ -26,8 +26,17 @@ export async function extractCoordinatesFromImage(
     const gpsData = await exifr.gps(file);
     console.log("gpsData from exifr:", gpsData);
 
-    const latitude = Number(gpsData?.latitude);
-    const longitude = Number(gpsData?.longitude);
+    let latitude = Number(gpsData?.latitude);
+    let longitude = Number(gpsData?.longitude);
+
+    // Fallback: Wenn exifr.gps() auf Mobile null zurückgibt, versuche exifr.parse()
+    // (wichtig für Android-Kompatibilität)
+    if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+      const fallbackData = await exifr.parse(file, { gps: true });
+      latitude = Number(fallbackData?.latitude);
+      longitude = Number(fallbackData?.longitude);
+      console.log("fallbackData from exifr.parse:", fallbackData);
+    }
 
     const hasValidCoordinates =
       Number.isFinite(latitude) && Number.isFinite(longitude);
