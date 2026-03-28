@@ -1,5 +1,8 @@
 "use client";
 
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+
 type ErrorPageProps = {
   error: Error & { digest?: string };
   reset: () => void;
@@ -12,23 +15,28 @@ export default function ArtworkDetailErrorPage({
   console.error(error);
 
   return (
-    <section className="mx-auto max-w-3xl rounded-2xl border p-6">
-      <h1 className="text-2xl font-semibold">Artwork details</h1>
-      <p
-        role="alert"
-        className="mt-4 rounded-2xl border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive"
-      >
-        Something went wrong while loading the artwork details. Please try
-        again.
-      </p>
+    <section className="mx-auto max-w-6xl px-4 py-8">
+      <div className="rounded-2xl bg-none p-6">
+        <h1 className="font-fjalla text-center text-xl uppercase text-gray-400 mt-10">
+          Error while loading artwork details
+        </h1>
+        <Image
+          src="/images/not-found-ghost.gif"
+          alt="Loading ghost"
+          width={100}
+          height={100}
+          unoptimized
+          className="mx-auto mt-15"
+        />
 
-      <button
-        type="button"
-        onClick={() => reset()}
-        className="mt-4 rounded-full border px-4 py-2 text-sm font-medium"
-      >
-        Try again
-      </button>
+        <Button
+          type="button"
+          onClick={() => reset()}
+          className="mt-15 mx-auto block cursor-pointer rounded-full px-6"
+        >
+          Try again
+        </Button>
+      </div>
     </section>
   );
 }

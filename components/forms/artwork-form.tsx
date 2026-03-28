@@ -55,13 +55,6 @@ type ArtworkFormProps = {
 };
 
 /* HELPER FUNCTIONS */
-// Text in Zahl umwandeln, falls möglich
-function parseCoordinate(value?: string): number | undefined {
-  if (!value) return undefined;
-
-  const parsedValue = Number(value);
-  return Number.isNaN(parsedValue) ? undefined : parsedValue;
-}
 
 // Formular-Werte in Objekt für Datenbank bündeln
 function buildArtworkPayload(values: ArtworkValues): ArtworkPayload {
@@ -71,8 +64,8 @@ function buildArtworkPayload(values: ArtworkValues): ArtworkPayload {
     description: values.description,
     imageUrl: values.imageUrl || undefined,
     cloudinaryPublicId: values.cloudinaryPublicId || undefined,
-    latitude: parseCoordinate(values.latitude),
-    longitude: parseCoordinate(values.longitude),
+    latitude: values.latitude,
+    longitude: values.longitude,
     tags: values.tags ?? [],
   };
 }

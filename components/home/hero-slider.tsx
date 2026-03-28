@@ -112,34 +112,40 @@ export function HeroSlider() {
                 <div className="absolute inset-0 bg-linear-to-t from-[#000514] via-[#000514]/55 to-transparent" />
               </div>
 
-              <div className="relative flex h-[calc(100vh-10rem)] md:h-[calc(100vh-5rem)] items-center">
+              <div className="relative flex h-[calc(100vh-10rem)] md:h-[calc(100vh-5rem)]">
                 <div className="mx-auto w-full max-w-6xl px-4">
-                  <div className="max-w-2xl">
-                    <h1 className="mb-2 mt-20 font-fjalla text-6xl md:text-7xl leading-none text-white md:mt-50">
-                      {slide.title}
-                    </h1>
+                  <div className="flex h-full max-w-2xl flex-col pt-14 md:block md:pt-0">
+                    <div className="min-h-60 md:min-h-0">
+                      <h1 className="font-fjalla mt-50 text-5xl leading-none text-white md:mt-50 md:text-7xl">
+                        {slide.title}
+                      </h1>
+                    </div>
 
                     {slide.cta && slide.href ? (
-                      <div className="mt-8">
-                        <h2 className="mb-8 font-fjalla text-3xl md:text-4xl text-gray-400">
-                          {slide.subtitle}
-                        </h2>
+                      <>
+                        <div className="mt-4 h-20 md:mt-8 md:h-auto">
+                          <h2 className="font-fjalla text-2xl leading-tight text-gray-400 md:text-4xl">
+                            {slide.subtitle}
+                          </h2>
+                        </div>
 
-                        <Button asChild className="w-full md:w-auto">
-                          <Link
-                            href={slide.href}
-                            tabIndex={isActive ? 0 : -1}
-                            className="group inline-flex items-center gap-2 text-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-                          >
-                            <span>{slide.cta}</span>
-                            <IconChevronRight
-                              size={30}
-                              stroke={4}
-                              className="transition-transform group-hover:translate-x-1"
-                            />
-                          </Link>
-                        </Button>
-                      </div>
+                        <div className="mt-auto pb-2.5 md:mt-8 md:pb-0">
+                          <Button asChild className="w-full sm:w-auto">
+                            <Link
+                              href={slide.href}
+                              tabIndex={isActive ? 0 : -1}
+                              className="group inline-flex items-center gap-2 text-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                            >
+                              <span>{slide.cta}</span>
+                              <IconChevronRight
+                                size={30}
+                                stroke={4}
+                                className="transition-transform group-hover:translate-x-1"
+                              />
+                            </Link>
+                          </Button>
+                        </div>
+                      </>
                     ) : null}
                   </div>
                 </div>
