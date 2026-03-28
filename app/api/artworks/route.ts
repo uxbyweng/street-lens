@@ -90,8 +90,8 @@ export async function POST(request: Request) {
       description: data.description,
       imageUrl: data.imageUrl ?? "",
       cloudinaryPublicId: data.cloudinaryPublicId ?? "",
-      latitude: data.latitude,
-      longitude: data.longitude,
+      latitude: Number(data.latitude),
+      longitude: Number(data.longitude),
       tags: data.tags ?? [],
       owner: owner._id,
     });
