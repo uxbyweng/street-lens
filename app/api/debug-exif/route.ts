@@ -6,54 +6,23 @@ export async function POST(request: Request) {
     const formData = await request.formData();
     const file = formData.get("file");
 
-    if (!(file instanceof File)) {
+    if (!file || typeof file === "string") {
       return NextResponse.json(
-        { success: false, error: "No file received." },
+        { success: false, error: "No valid file received." },
         { status: 400 }
       );
     }
 
     const buffer = await file.arrayBuffer();
 
-    let gpsFromBuffer: unknown = null;
-    let parsedGpsOnly: unknown = null;
-    let parsedAll: unknown = null;
-
-    try {
-      gpsFromBuffer = await exifr.gps(buffer);
-    } catch (error) {
-      gpsFromBuffer = {
-        error: error instanceof Error ? error.message : String(error),
-      };
-    }
-
-    try {
-      parsedGpsOnly = await exifr.parse(buffer, { gps: true });
-    } catch (error) {
-      parsedGpsOnly = {
-        error: error instanceof Error ? error.message : String(error),
-      };
-    }
-
-    try {
-      parsedAll = await exifr.parse(buffer, true);
-    } catch (error) {
-      parsedAll = {
-        error: error instanceof Error ? error.message : String(error),
-      };
-    }
+    const gps = await exifr.gps(buffer);
+    const parsed = await exifr.parse(buffer, true);
 
     return NextResponse.json({
       success: true,
-      fileMeta: {
-        name: file.name,
-        type: file.type,
-        size: file.size,
-        lastModified: file.lastModified,
-      },
-      gpsFromBuffer,
-      parsedGpsOnly,
-      parsedAll,
+      gps,
+      latitude: parsed?.latitude,
+      longitude: parsed?.longitude,
     });
   } catch (error) {
     return NextResponse.json(
