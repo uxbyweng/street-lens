@@ -18,32 +18,61 @@ type CloudinaryUploadResult = {
 /**
  * Versucht, GPS-Daten aus einer Bilddatei zu extrahieren.
  */
+// export async function extractCoordinatesFromImage(
+//   file: File
+// ): Promise<ExtractedCoordinates | null> {
+//   try {
+//     // exifr.gps(file) sucht nach Breiten- und Längengraden in den Bilddaten
+//     const gpsData = await exifr.gps(file);
+//     console.log("gpsData from exifr:", gpsData);
+
+//     const latitude = Number(gpsData?.latitude);
+//     const longitude = Number(gpsData?.longitude);
+
+//     const hasValidCoordinates =
+//       Number.isFinite(latitude) && Number.isFinite(longitude);
+
+//     // Wenn keine GPS-Daten vorhanden > "null" zurückgeben.
+//     if (!hasValidCoordinates) {
+//       return null;
+//     }
+//     // Wenn alles passt, geben wir die Koordinaten zurück.
+//     // toFixed(6) rundet auf 6 Nachkommastellen für eine saubere Speicherung.
+//     return {
+//       latitude: Number(latitude.toFixed(6)),
+//       longitude: Number(longitude.toFixed(6)),
+//     };
+//   } catch (error) {
+//     // Fehler Logging bei Absturz (z.b. Datei ist defekt)
+//     console.error("Client EXIF GPS extraction failed:", error);
+//     return null;
+//   }
+// }
+
 export async function extractCoordinatesFromImage(
   file: File
 ): Promise<ExtractedCoordinates | null> {
   try {
-    // exifr.gps(file) sucht nach Breiten- und Längengraden in den Bilddaten
     const gpsData = await exifr.gps(file);
-    console.log("gpsData from exifr:", gpsData);
 
-    const latitude = Number(gpsData?.latitude);
-    const longitude = Number(gpsData?.longitude);
+    let latitude = Number(gpsData?.latitude);
+    let longitude = Number(gpsData?.longitude);
 
-    const hasValidCoordinates =
-      Number.isFinite(latitude) && Number.isFinite(longitude);
+    if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+      const fallbackData = await exifr.parse(file, { gps: true });
+      latitude = Number(fallbackData?.latitude);
+      longitude = Number(fallbackData?.longitude);
+    }
 
-    // Wenn keine GPS-Daten vorhanden > "null" zurückgeben.
-    if (!hasValidCoordinates) {
+    if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
       return null;
     }
-    // Wenn alles passt, geben wir die Koordinaten zurück.
-    // toFixed(6) rundet auf 6 Nachkommastellen für eine saubere Speicherung.
+
     return {
       latitude: Number(latitude.toFixed(6)),
       longitude: Number(longitude.toFixed(6)),
     };
   } catch (error) {
-    // Fehler Logging bei Absturz (z.b. Datei ist defekt)
     console.error("Client EXIF GPS extraction failed:", error);
     return null;
   }
