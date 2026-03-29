@@ -93,21 +93,28 @@ export default async function ArtworkDetailPage({
   const baseUrl =
     process.env.NEXT_PUBLIC_APP_URL ?? "https://street-lens.vercel.app";
 
+  const description = artwork.description
+    ? artwork.description.slice(0, 300)
+    : undefined;
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "VisualArtwork",
     name: artwork.title,
-    creator: {
+    artist: {
       "@type": "Person",
       name: artwork.artist,
     },
-    description: artwork.description || undefined,
+    description,
     image: artwork.imageUrl || undefined,
     url: `${baseUrl}/artworks/${artwork._id}`,
+    material: artwork.tags?.length ? artwork.tags.join(", ") : undefined,
+    artform: "Street Art",
     ...(artwork.latitude != null && artwork.longitude != null
       ? {
           contentLocation: {
             "@type": "Place",
+            name: "Berlin",
             geo: {
               "@type": "GeoCoordinates",
               latitude: artwork.latitude,
