@@ -115,7 +115,7 @@ export function ArtworkImageViewer({
   alt,
   className,
 }: ArtworkImageViewerProps) {
-  const detailSrc = getCloudinaryImageUrl(src, "w_2400,q_auto,f_auto");
+  const detailSrc = getCloudinaryImageUrl(src, "w_1200,q_auto,f_auto");
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
 
   const openFullscreen = useCallback(() => {
