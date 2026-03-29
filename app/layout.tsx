@@ -64,11 +64,17 @@ export default function RootLayout({
       className={cn("dark font-sans", roboto.variable, fjallaOne.variable)}
     >
       <body>
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-background focus:px-4 focus:py-2 focus:text-foreground focus:ring-2 focus:ring-ring"
+        >
+          Skip to content
+        </a>
         <AuthSessionProvider>
           <UserLocationBootstrap />
           <div className="flex min-h-screen flex-col bg-background text-foreground">
             <Header />
-            <main className="flex-1 min-h-0 w-full">{children}</main>
+            <main id="main-content" className="flex-1 min-h-0 w-full">{children}</main>
           </div>
           <Toaster position="top-center" />
         </AuthSessionProvider>
