@@ -17,6 +17,7 @@ interface Slide {
   cta?: string;
   href?: string;
   imagePositionX?: string;
+  alt: string;
 }
 
 const slides: Slide[] = [
@@ -28,6 +29,7 @@ const slides: Slide[] = [
     cta: "Start exploring",
     href: "/artworks",
     imagePositionX: "80%",
+    alt: "Night scene in Berlin featuring a detailed paste-up of 'Faye the Fox' by street artist Dared. The anthropomorphic fox wears a blue dress and hat against a green backdrop, placed on a pillar next to a glowing shop window and blurred cafe seating.",
   },
   {
     id: 2,
@@ -37,6 +39,7 @@ const slides: Slide[] = [
     cta: "Open the map",
     href: "/map",
     imagePositionX: "60%",
+    alt: "Night view of a residential building in Berlin-Kreuzberg featuring the iconic large-scale mural 'Astronaut Cosmonaut' by Victor Ash. The stencil-style artwork depicts a floating astronaut in black and white, towering over the urban cityscape.",
   },
   {
     id: 3,
@@ -46,6 +49,7 @@ const slides: Slide[] = [
     cta: "Browse artworks",
     href: "/artworks",
     imagePositionX: "30%",
+    alt: "A vibrant brick wall in a Berlin courtyard at night, heavily covered with various graffiti tags, stickers, and urban posters. The scene captures the raw subculture of the city, showcasing layered street art characters and colorful textures.",
   },
   {
     id: 4,
@@ -55,6 +59,7 @@ const slides: Slide[] = [
     cta: "Map it out",
     href: "/map",
     imagePositionX: "75%",
+    alt: "Atmospheric evening at Holzmarkt 25 by the Spree in Berlin, showing the 'Pampa' area with fairy lights and a sun sail. In the background, the colorful mural 'Big Business!' by artist Cranio is visible on a creative residential and studio building.",
   },
 ];
 
@@ -99,7 +104,7 @@ export function HeroSlider() {
               <div className="absolute inset-0">
                 <Image
                   src={slide.image}
-                  alt=""
+                  alt={slide.alt}
                   width={800}
                   height={450}
                   sizes="100vw"
