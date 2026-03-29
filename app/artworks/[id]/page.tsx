@@ -4,7 +4,6 @@ import { ArtworkDetail } from "@/components/artworks/artwork-detail";
 import type { Metadata } from "next";
 import { getArtworkById, getArtworkMetadataById } from "@/lib/data/artworks";
 import { auth } from "@/auth";
-import { connectDB } from "@/lib/db/mongodb";
 import { Like } from "@/lib/models/like";
 
 export const dynamic = "force-dynamic";
@@ -69,28 +68,28 @@ export default async function ArtworkDetailPage({
   params,
 }: ArtworkDetailPageProps) {
   const { id } = await params;
-  const artwork = await getArtworkById(id);
+
+  // Artwork-Daten und Session parallel laden
+  const [artwork, session] = await Promise.all([
+    getArtworkById(id),
+    auth(),
+  ]);
 
   if (!artwork) {
     notFound();
   }
 
-  const session = await auth();
   const userId = session?.user?.id ?? null;
 
-  await connectDB();
-
-  const likeCount = await Like.countDocuments({ artworkId: id });
-
-  const initialLiked =
+  // Like-Daten parallel laden (connectDB ist bereits durch getArtworkById passiert)
+  const [likeCount, likeExists] = await Promise.all([
+    Like.countDocuments({ artworkId: id }),
     userId && mongoose.Types.ObjectId.isValid(userId)
-      ? Boolean(
-          await Like.exists({
-            artworkId: id,
-            userId,
-          })
-        )
-      : false;
+      ? Like.exists({ artworkId: id, userId })
+      : null,
+  ]);
+
+  const initialLiked = Boolean(likeExists);
 
   const baseUrl =
     process.env.NEXT_PUBLIC_APP_URL ?? "https://street-lens.vercel.app";

@@ -2,20 +2,14 @@ import Image from "next/image";
 
 export default function ArtworkDetailLoading() {
   return (
-    <section className="mx-auto max-w-6xl px-4 py-8">
-      <div className="rounded-2xl  bg-none p-6">
-        <h1 className="font-fjalla text-center text-xl uppercase text-gray-400 mt-10">
-          Loading artwork ...
-        </h1>
-        <Image
-          src="/images/loading-ghost.gif"
-          alt="Loading ghost"
-          width={100}
-          height={100}
-          unoptimized
-          className="mx-auto mt-15"
-        />
-      </div>
-    </section>
+    <div className="flex aspect-video lg:max-h-120 w-full items-center justify-center bg-muted">
+      <Image
+        src="/images/loading-ghost.gif"
+        alt="Loading artwork..."
+        width={100}
+        height={100}
+        unoptimized
+      />
+    </div>
   );
 }

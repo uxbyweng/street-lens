@@ -35,6 +35,7 @@ import {
   type ArtworkInput,
   type ArtworkValues,
 } from "@/lib/validations/artwork";
+import { revalidateArtworkPaths } from "@/lib/actions/revalidate";
 
 /* LOCAL TYPES */
 type ArtworkPayload = {
@@ -205,6 +206,9 @@ export function ArtworkForm({
       );
 
       const createdArtworkId = result?.data?._id;
+
+      // Server Action invalidiert Client- UND Server-Cache (inkl. /map)
+      await revalidateArtworkPaths(artworkId ?? createdArtworkId);
 
       if (mode === "edit" && artworkId) {
         router.push(`/artworks/${artworkId}`);

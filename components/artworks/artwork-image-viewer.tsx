@@ -117,6 +117,7 @@ export function ArtworkImageViewer({
 }: ArtworkImageViewerProps) {
   const detailSrc = getCloudinaryImageUrl(src, "w_1200,q_auto,f_auto");
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   const openFullscreen = useCallback(() => {
     setIsFullscreenOpen(true);
@@ -129,25 +130,45 @@ export function ArtworkImageViewer({
   return (
     <>
       <div className={cn("relative", className)}>
+        {/* Lade-Animation solange das Bild noch nicht geladen ist */}
+        {!isImageLoaded && (
+          <div className="flex aspect-video lg:max-h-120 w-full items-center justify-center bg-muted">
+            <Image
+              src="/images/loading-ghost.gif"
+              alt="Loading artwork..."
+              width={100}
+              height={100}
+              unoptimized
+            />
+          </div>
+        )}
+
         <Image
           src={detailSrc}
           alt={alt}
           width={1200}
           height={675}
           sizes="(max-width: 768px) 100vw, 1024px"
-          className="aspect-video lg:aspect-auto lg:max-h-120 w-full object-cover object-[center_20%]"
+          priority
+          className={cn(
+            "aspect-video lg:aspect-auto lg:max-h-120 w-full object-cover object-[center_20%] transition-opacity duration-500",
+            isImageLoaded ? "opacity-100" : "opacity-0 absolute inset-0"
+          )}
+          onLoad={() => setIsImageLoaded(true)}
         />
 
-        <Button
-          type="button"
-          size="icon"
-          variant="secondary"
-          className="absolute right-3 top-3 z-10 cursor-pointer"
-          onClick={openFullscreen}
-          aria-label="Open image in fullscreen"
-        >
-          <IconMaximize className="h-5 w-5" />
-        </Button>
+        {isImageLoaded && (
+          <Button
+            type="button"
+            size="icon"
+            variant="secondary"
+            className="absolute right-3 top-3 z-10 cursor-pointer"
+            onClick={openFullscreen}
+            aria-label="Open image in fullscreen"
+          >
+            <IconMaximize className="h-5 w-5" />
+          </Button>
+        )}
       </div>
 
       {isFullscreenOpen ? (
