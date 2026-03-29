@@ -89,6 +89,7 @@ export function HeroSlider() {
     <section
       aria-roledescription="carousel"
       aria-label="Featured artworks and navigation"
+      aria-live="polite"
       className="relative h-[calc(100vh-10rem)] md:h-[calc(100vh-5rem)] w-full overflow-hidden"
     >
       <Slider ref={sliderRef} {...settings}>
