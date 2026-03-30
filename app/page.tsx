@@ -24,11 +24,14 @@ export default async function HomePage() {
             Newest Artworks
           </h2>
         </div>
-        <ArtworkList artworks={latestArtworks} isAuthenticated={Boolean(session?.user)} />
+        <ArtworkList
+          artworks={latestArtworks}
+          isAuthenticated={Boolean(session?.user)}
+        />
         <Button asChild className="w-full md:w-auto mt-8 lg:mt-10">
           <Link
             href="/artworks"
-            className="group inline-flex items-center gap-2 text-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+            className="group inline-flex items-center gap-2 px-8 py-6 text-xl sm:px-10 sm:py-5 sm:text-1xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
           >
             <span>Show all artworks</span>
             <IconChevronRight

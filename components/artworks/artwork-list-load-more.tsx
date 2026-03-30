@@ -106,7 +106,7 @@ export function ArtworkListLoadMore({
             type="button"
             onClick={handleLoadMore}
             disabled={isLoading}
-            className="cursor-pointer rounded-full px-6"
+            className="group inline-flex items-center gap-2 px-8 py-6 text-xl sm:px-10 sm:py-5 sm:text-1xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
           >
             {isLoading ? "Loading..." : "Load more artworks"}
           </Button>

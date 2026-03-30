@@ -74,7 +74,7 @@ export function HeroSlider() {
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 5000,
+    autoplaySpeed: 3000,
     pauseOnHover: true,
     arrows: false,
     fade: true,
@@ -122,7 +122,7 @@ export function HeroSlider() {
                 <div className="mx-auto w-full max-w-6xl px-4">
                   <div className="flex h-full max-w-2xl flex-col pt-14 md:block md:pt-0">
                     <div className="min-h-60 md:min-h-0">
-                      <h1 className="font-fjalla mt-50 text-5xl leading-none text-white md:mt-50 md:text-7xl">
+                      <h1 className="font-fjalla mt-40 text-5xl leading-none text-white md:mt-50 lg:mt-70 xxl:mt-100 md:text-7xl">
                         {slide.title}
                       </h1>
                     </div>
@@ -140,7 +140,7 @@ export function HeroSlider() {
                             <Link
                               href={slide.href}
                               tabIndex={isActive ? 0 : -1}
-                              className="group inline-flex items-center gap-2 text-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                              className="group inline-flex items-center gap-2 px-8 py-6 text-xl sm:px-10 sm:py-5 sm:text-1xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                             >
                               <span>{slide.cta}</span>
                               <IconChevronRight
