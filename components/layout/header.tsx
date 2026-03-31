@@ -20,12 +20,13 @@ export default function Header() {
       <div className="mx-auto flex min-h-14 max-w-6xl items-center justify-between px-4 lg:px-3">
         <Link href="/" aria-label="Go to Homepage" className="z-60 shrink-0">
           <Image
-            src="/images/logo_street_lens.png"
-            width={210}
+            src="/images/logo-bln-street-view.png"
+            width={330}
             height={40}
-            alt="STREETLENS"
+            alt="BLN STREET VIEW"
             priority
             sizes="132px"
+            className="w-55 h-auto"
           />
         </Link>
 
