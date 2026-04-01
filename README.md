@@ -1,12 +1,12 @@
-# STREET LENS
+# BERLIN STREET VIEW
 
-STREET LENS is a mobile-first full-stack web application for discovering, saving, and managing street art in Berlin in a visual, location-based way. Users can browse artworks, view details, explore locations on a map, and save favorites. Admin users can create, edit, and delete artworks, including image upload with automatic EXIF GPS extraction and Cloudinary asset management.
+BERLIN STREET VIEW is a mobile-first full-stack web application for discovering street art in Berlin in a visual, location-based way. Users can browse artworks, view details, explore locations on a map and save favorites. Admin users can create, edit, and delete artworks, including image upload with automatic EXIF GPS extraction and Cloudinary asset management. 
 
-The project started with a strong CRUD-first scope and evolved into a richer full-stack application with authentication, image upload, geo extraction, and interactive map features.
+**Live App:** https://www.berlin-street-view.de/
 
 ## Project Goals
 
-The goal of this capstone project is to build a clean, functional, and deployable full-stack application from scratch with a clear focus on:
+The goal of this project is to build a clean, functional, and deployable full-stack application from scratch with a clear focus on:
 
 - reliable CRUD operations
 - clean component and folder structure
@@ -40,48 +40,39 @@ The goal of this capstone project is to build a clean, functional, and deployabl
 
 ## Tech Stack
 
-### Runtime / Language
+### Frontend
+- Next.js 16
+- React 19
+- TypeScript
+- Tailwind CSS 
+- shadcn/ui
 
-- Node.js >= 20.9
-- TypeScript >= 5.1
-
-### Core Framework
-
-- Next.js 16.1.x
-- React 19.2.x
-
-### Styling / UI
-
-- Tailwind CSS 4.2.x
-- shadcn/ui via shadcn CLI v4
-
-### Data / Backend
-
+### Backend / Data
+- Next.js App Router
+- Route Handlers
 - MongoDB Atlas
-- Mongoose 9.2.x
-- Next.js Route Handlers (`app/api/...`) for CRUD and uploads
+- Mongoose
 
+### Tooling
+- ESLint
+- Prettier
+- PostCSS
 
 ### Media Upload
-
 - Direct Cloudinary browser upload
 - Unsigned upload preset
 - Client-side EXIF GPS extraction
 - Asset cleanup on delete
 
 ### Map / Geo
-
 - mapcn
 - MapLibre GL
 
-
 ### Deployment
-
 - Vercel
 
 
 ## Authentication & Authorization
-
 - Public read access for artworks
 - Admin-only create, edit, and delete permissions
 - GitHub and Google OAuth via Auth.js
@@ -215,9 +206,6 @@ NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-If you want to test preview authentication locally or in preview deployments, also add the preview credential variables defined in `env.example`.
-
-
 ### 4. Start development server
 
 ```bash
@@ -241,7 +229,6 @@ Open `http://localhost:3000` in the browser.
 - [ ] Nearby search
 - [ ] Distance-based discovery
 - [ ] Better filtering and sorting
-- [ ] User profile extensions
 - [ ] Comments / seen artworks / saved routes
 
 ## Deployment
