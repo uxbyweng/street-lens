@@ -3,7 +3,7 @@ import { PageIntro } from "@/components/layout/page-intro";
 
 export const metadata: Metadata = {
   title: "Imprint",
-  description: "Legal notice for STREETLENS",
+  description: "Legal notice for BERLIN STREET VIEW",
 };
 
 export default function ImprintPage() {

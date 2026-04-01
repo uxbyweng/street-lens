@@ -19,35 +19,35 @@ const roboto = Roboto({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://street-lens.vercel.app"),
+  metadataBase: new URL("https://www.berlin-street-view.de/"),
   title: {
-    default: "STREET LENS",
-    template: "%s | STREET LENS",
+    default: "BERLIN STREET VIEW",
+    template: "%s | BERLIN STREET VIEW",
   },
   description: "Explore street art in Berlin.",
   manifest: "/site.webmanifest",
-  applicationName: "STREET LENS",
+  applicationName: "BERLIN STREET VIEW",
   appleWebApp: {
-    title: "STREET LENS",
+    title: "BERLIN STREET VIEW",
   },
   openGraph: {
-    title: "STREET LENS",
+    title: "BERLIN STREET VIEW",
     description: "Explore street art in Berlin.",
-    siteName: "STREET LENS",
+    siteName: "BERLIN STREET VIEW",
     type: "website",
-    url: "https://street-lens.vercel.app",
+    url: "https://www.berlin-street-view.de/",
     images: [
       {
         url: "/images/og-default.jpg",
         width: 1200,
         height: 630,
-        alt: "STREETLENS",
+        alt: "BERLIN STREET VIEW",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "STREETLENS",
+    title: "BERLIN STREET VIEW",
     description: "Explore street art in Berlin.",
     images: ["/images/og-default.jpg"],
   },
@@ -74,7 +74,9 @@ export default function RootLayout({
           <UserLocationBootstrap />
           <div className="flex min-h-screen flex-col bg-background text-foreground">
             <Header />
-            <main id="main-content" className="flex-1 min-h-0 w-full">{children}</main>
+            <main id="main-content" className="flex-1 min-h-0 w-full">
+              {children}
+            </main>
           </div>
           <Toaster position="top-center" />
         </AuthSessionProvider>

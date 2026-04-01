@@ -33,7 +33,10 @@ export async function generateMetadata({
     `View details for ${artwork.title} on STREET LENS.`;
 
   const ogImage = artwork.imageUrl?.includes("res.cloudinary.com")
-    ? artwork.imageUrl.replace("/upload/", "/upload/w_1200,h_630,c_fill,g_auto,q_auto,f_auto/")
+    ? artwork.imageUrl.replace(
+        "/upload/",
+        "/upload/w_1200,h_630,c_fill,g_auto,q_auto,f_auto/"
+      )
     : artwork.imageUrl || "/images/og-default.jpg";
   const url = `/artworks/${artwork._id}`;
 
@@ -70,10 +73,7 @@ export default async function ArtworkDetailPage({
   const { id } = await params;
 
   // Artwork-Daten und Session parallel laden
-  const [artwork, session] = await Promise.all([
-    getArtworkById(id),
-    auth(),
-  ]);
+  const [artwork, session] = await Promise.all([getArtworkById(id), auth()]);
 
   if (!artwork) {
     notFound();
@@ -92,7 +92,7 @@ export default async function ArtworkDetailPage({
   const initialLiked = Boolean(likeExists);
 
   const baseUrl =
-    process.env.NEXT_PUBLIC_APP_URL ?? "https://street-lens.vercel.app";
+    process.env.NEXT_PUBLIC_APP_URL ?? "https://www.berlin-street-view.de/";
 
   const description = artwork.description
     ? artwork.description.slice(0, 300)

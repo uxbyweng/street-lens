@@ -144,7 +144,7 @@ export function MobileMenu() {
 
             <div className="flex items-center gap-2">
               <TextLink
-                href="https://github.com/uxbyweng/street-lens"
+                href="https://github.com/uxbyweng/berlin-street-view"
                 target="_blank"
                 onClick={closeMenu}
               >

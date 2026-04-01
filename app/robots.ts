@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 
 const BASE_URL =
-  process.env.NEXT_PUBLIC_APP_URL ?? "https://street-lens.vercel.app";
+  process.env.NEXT_PUBLIC_APP_URL ?? "https://www.berlin-street-view.de/";
 
 export default function robots(): MetadataRoute.Robots {
   return {

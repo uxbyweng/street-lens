@@ -4,7 +4,7 @@ import { connectDB } from "@/lib/db/mongodb";
 import { Artwork } from "@/lib/models/artwork";
 
 const BASE_URL =
-  process.env.NEXT_PUBLIC_APP_URL ?? "https://street-lens.vercel.app";
+  process.env.NEXT_PUBLIC_APP_URL ?? "https://www.berlin-street-view.de/";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   await connectDB();

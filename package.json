@@ -1,7 +1,7 @@
 {
-  "name": "street-lens",
+  "name": "berlin-street-view",
   "version": "0.1.0",
-  "description": "A mobile-first web application to create, manage, and discover spots in a simple, visual way. Users can add entries with text, images, and location data, browse existing spots, and later explore them on an interactive map.",
+  "description": "A mobile-first web application to explore street art in Berlin",
   "main": "index.js",
   "private": true,
   "scripts": {
@@ -18,15 +18,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/uxbyweng/street-lens.git"
+    "url": "git+https://github.com/uxbyweng/berlin-street-view.git"
   },
   "keywords": [],
   "artist": "Karsten Weng",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/uxbyweng/street-lens/issues"
+    "url": "https://github.com/uxbyweng/berlin-street-view/issues"
   },
-  "homepage": "https://github.com/uxbyweng/street-lens#readme",
+  "homepage": "https://github.com/uxbyweng/berlin-street-view#readme",
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
     "@tabler/icons-react": "^3.40.0",

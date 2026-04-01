@@ -21,9 +21,9 @@ const ARTWORKS_PAGE_SIZE = 15;
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Street Art in Berlin – Browse Murals & Urban Art",
+  title: "Street Artworks",
   description:
-    "Explore a curated collection of street art, murals, and graffiti from Berlin. Discover hidden gems, find locations on the map, and learn about the artists behind the walls.",
+    "Browse Murals & Urban Art Explore a curated collection of street art, murals, and graffiti from Berlin. Discover hidden gems, find locations on the map, and learn about the artists behind the walls.",
 };
 
 export default async function ArtworksPage({
