@@ -23,17 +23,21 @@ export const artworkSchema = z.object({
   imageUrl: z.string().trim().optional(),
   cloudinaryPublicId: z.string().trim().optional(),
   latitude: z
-    .union([z.string(), z.number()])
-    .transform((value) => Number(value))
-    .refine((value) => !Number.isNaN(value) && value >= -90 && value <= 90, {
-      message: "Latitude must be between -90 and 90.",
-    }),
+    .string()
+    .trim()
+    .min(1, "Latitude is required.")
+    .refine((value) => {
+      const number = Number(value);
+      return Number.isFinite(number) && number >= -90 && number <= 90;
+    }, "Latitude must be between -90 and 90."),
   longitude: z
-    .union([z.string(), z.number()])
-    .transform((value) => Number(value))
-    .refine((value) => !Number.isNaN(value) && value >= -180 && value <= 180, {
-      message: "Longitude must be between -180 and 180.",
-    }),
+    .string()
+    .trim()
+    .min(1, "Longitude is required.")
+    .refine((value) => {
+      const number = Number(value);
+      return Number.isFinite(number) && number >= -180 && number <= 180;
+    }, "Longitude must be between -180 and 180."),
   tags: z.array(z.enum(ALLOWED_TAGS)).default([]),
 });
 

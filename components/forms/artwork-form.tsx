@@ -56,6 +56,12 @@ type ArtworkFormProps = {
 };
 
 /* HELPER FUNCTIONS */
+function parseCoordinate(value?: string): number | undefined {
+  if (!value) return undefined;
+
+  const parsedValue = Number(value);
+  return Number.isNaN(parsedValue) ? undefined : parsedValue;
+}
 
 // Formular-Werte in Objekt für Datenbank bündeln
 function buildArtworkPayload(values: ArtworkValues): ArtworkPayload {
@@ -65,8 +71,8 @@ function buildArtworkPayload(values: ArtworkValues): ArtworkPayload {
     description: values.description,
     imageUrl: values.imageUrl || undefined,
     cloudinaryPublicId: values.cloudinaryPublicId || undefined,
-    latitude: values.latitude,
-    longitude: values.longitude,
+    latitude: parseCoordinate(values.latitude),
+    longitude: parseCoordinate(values.longitude),
     tags: values.tags ?? [],
   };
 }
@@ -111,6 +117,41 @@ async function saveArtwork(
   return result;
 }
 
+async function debugExifOnServer(file: File) {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const response = await fetch("/api/debug-exif", {
+    method: "POST",
+    body: formData,
+  });
+
+  const rawText = await response.text();
+
+  let parsed: unknown = null;
+
+  try {
+    parsed = JSON.parse(rawText);
+  } catch {
+    parsed = {
+      success: false,
+      error: "Response was not valid JSON.",
+      rawText,
+      status: response.status,
+    };
+  }
+
+  if (!response.ok) {
+    return {
+      success: false,
+      status: response.status,
+      ...(typeof parsed === "object" && parsed !== null ? parsed : { parsed }),
+    };
+  }
+
+  return parsed;
+}
+
 // --- MAIN COMPONENT ---
 export function ArtworkForm({
   mode,
@@ -141,6 +182,10 @@ export function ArtworkForm({
     (tag): tag is AllowedArtworkTag =>
       ALLOWED_TAGS.includes(tag as AllowedArtworkTag)
   );
+  const [debugExifInfo, setDebugExifInfo] = useState<Record<
+    string,
+    unknown
+  > | null>(null);
 
   // DEFAULT VALUES
   const defaultValues: ArtworkInput = {
@@ -246,6 +291,15 @@ export function ArtworkForm({
   async function handleImageSelection(file: File) {
     setImageStatusMessage(null);
     setImageStatusVariant("default");
+    setDebugExifInfo({
+      stage: "file-selected",
+      fileMeta: {
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        lastModified: file.lastModified,
+      },
+    });
 
     if (file.size > MAX_IMAGE_FILE_SIZE_BYTES) {
       setImageStatusMessage(
@@ -289,11 +343,41 @@ export function ArtworkForm({
     setIsUploadingImage(true);
 
     try {
-      // Koordinaten aus dem Bild lesen (falls vorhanden)
-      const extractedCoordinates = await extractCoordinatesFromImage(file);
+      // Koordinaten aus dem Bild lesen (mit Debug-Info)
+      const extractedCoordinates = await extractCoordinatesFromImage(
+        file,
+        (payload) => {
+          setDebugExifInfo((prev) => ({
+            ...(prev ?? {}),
+            fileMeta: {
+              name: file.name,
+              type: file.type,
+              size: file.size,
+              lastModified: file.lastModified,
+            },
+            [payload.step]: payload.data,
+          }));
+        }
+      );
 
       // Bild zu Cloudinary schicken
       const uploadResult = await uploadImageToCloudinary(file);
+
+      let serverExifDebug: unknown;
+
+      try {
+        serverExifDebug = await debugExifOnServer(file);
+      } catch (error) {
+        serverExifDebug = {
+          success: false,
+          error: error instanceof Error ? error.message : String(error),
+        };
+      }
+
+      setDebugExifInfo((prev) => ({
+        ...(prev ?? {}),
+        serverExifDebug,
+      }));
 
       // SecureURL speichern
       const secureUrl = uploadResult.secureUrl;
@@ -311,8 +395,8 @@ export function ArtworkForm({
       });
 
       const hasExtractedCoordinates =
-        typeof extractedCoordinates?.latitude === "number" &&
-        typeof extractedCoordinates?.longitude === "number";
+        Number.isFinite(extractedCoordinates?.latitude) &&
+        Number.isFinite(extractedCoordinates?.longitude);
 
       if (hasExtractedCoordinates) {
         form.setValue("latitude", String(extractedCoordinates.latitude), {
@@ -328,7 +412,7 @@ export function ArtworkForm({
         setImageStatusMessage("Image uploaded and geo coordinates extracted.");
         setImageStatusVariant("success");
         setHasAutoExtractedCoordinates(true);
-        setAreCoordinatesEditable(false); // GPS gefunden? Dann Felder sperren
+        setAreCoordinatesEditable(false);
 
         toast.success("Image uploaded and geo coordinates extracted.", {
           className: "!bg-green-200 !text-green-700 !border-green-500 mt-15",
@@ -457,6 +541,16 @@ export function ArtworkForm({
                   statusVariant={imageStatusVariant}
                 />
               </Field>
+              {debugExifInfo ? (
+                <div className="rounded-xl border border-amber-500/40 bg-amber-500/10 p-3">
+                  <p className="mb-2 text-sm font-semibold text-amber-200">
+                    EXIF Debug
+                  </p>
+                  <pre className="overflow-x-auto whitespace-pre-wrap break-words text-xs text-amber-100">
+                    {JSON.stringify(debugExifInfo, null, 2)}
+                  </pre>
+                </div>
+              ) : null}
 
               <Field>
                 <div className="flex items-center justify-between gap-3">

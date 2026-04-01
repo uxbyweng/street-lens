@@ -1,8 +1,7 @@
 "use client";
 
-import { useCallback } from "react";
 import Image from "next/image";
-import { useDropzone } from "react-dropzone";
+import { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { IconUpload } from "@tabler/icons-react";
 
@@ -27,32 +26,31 @@ export function ArtworkImageUpload({
   statusMessage,
   statusVariant = "default",
 }: ArtworkImageUploadProps) {
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const isDisabled = isUploadingImage || isSubmitting;
 
-  const handleDrop = useCallback(
-    async (acceptedFiles: File[]) => {
-      const file = acceptedFiles[0];
+  async function handleNativeFileChange(
+    event: React.ChangeEvent<HTMLInputElement>
+  ) {
+    const file = event.target.files?.[0];
 
-      if (!file) {
-        return;
-      }
+    if (!file) {
+      return;
+    }
 
-      await onFileSelect(file);
-    },
-    [onFileSelect]
-  );
+    await onFileSelect(file);
 
-  const { getRootProps, getInputProps, open, isDragActive } = useDropzone({
-    onDrop: handleDrop,
-    accept: {
-      "image/*": [],
-    },
-    multiple: false,
-    noClick: !!imagePreviewUrl,
-    noKeyboard: !!imagePreviewUrl,
-    disabled: isDisabled,
-    useFsAccessApi: false,
-  });
+    // wichtig: gleiche Datei erneut auswählbar machen
+    event.target.value = "";
+  }
+
+  function openFilePicker() {
+    if (isDisabled) {
+      return;
+    }
+
+    inputRef.current?.click();
+  }
 
   const statusClassName =
     statusVariant === "success"
@@ -64,6 +62,15 @@ export function ArtworkImageUpload({
   if (imagePreviewUrl) {
     return (
       <div className="space-y-3">
+        <input
+          ref={inputRef}
+          type="file"
+          accept="image/jpeg,image/jpg,image/png,image/webp"
+          className="hidden"
+          onChange={handleNativeFileChange}
+          disabled={isDisabled}
+        />
+
         <div className="overflow-hidden rounded-xl border">
           <div className="relative aspect-video w-full">
             <Image
@@ -103,44 +110,41 @@ export function ArtworkImageUpload({
             type="button"
             variant="outline"
             size="sm"
-            onClick={open}
+            onClick={openFilePicker}
             disabled={isDisabled}
           >
             {isUploadingImage ? "Uploading..." : "Change image"}
           </Button>
         </div>
-
-        <input {...getInputProps()} />
       </div>
     );
   }
 
   return (
-    <div
-      {...getRootProps()}
-      className={[
-        "rounded-xl border border-dashed p-6 transition",
-        isDisabled ? "cursor-not-allowed opacity-60" : "cursor-pointer",
-        isDragActive
-          ? "border-primary bg-muted"
-          : "border-border bg-muted/40 hover:bg-muted/60",
-      ].join(" ")}
-    >
-      <input {...getInputProps()} />
+    <div className="rounded-xl border border-dashed border-border bg-muted/40 p-6">
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/jpeg,image/jpg,image/png,image/webp"
+        className="hidden"
+        onChange={handleNativeFileChange}
+        disabled={isDisabled}
+      />
 
       <div className="flex aspect-video flex-col items-center justify-center gap-3 text-center">
         <IconUpload className="size-6" />
+
         <div className="space-y-1">
-          <p className="text-sm font-medium text-foreground">
-            <span className="hidden md:inline">
-              {isDragActive
-                ? "Drop image here"
-                : "Drag an image here or choose one"}
-            </span>
-          </p>
+          <p className="text-sm font-medium text-foreground">Choose an image</p>
         </div>
 
-        <Button type="button" variant="outline" size="sm" disabled={isDisabled}>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          disabled={isDisabled}
+          onClick={openFilePicker}
+        >
           Choose image
         </Button>
 
